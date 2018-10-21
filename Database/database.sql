@@ -20,7 +20,7 @@ CREATE TABLE Courses (
 CREATE TABLE Sections (
 	sectionID varchar(10) not null,
     courseID int(11) not null,
-    type varchar(10),
+    type varchar(10) not null,
     startTime varchar(10) not null,
     endTime varchar(10) not null,
     days varchar(20) not null,
