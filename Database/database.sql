@@ -47,7 +47,7 @@ CREATE TABLE Constraints (
     FOREIGN KEY fkCourseID2(courseID) REFERENCES Courses(courseID)
 );
 
-# Our connections will be undirected, 
+# Our connections will be undirected, so they will be stored as an adjacency matrix
 CREATE TABLE Relationships (
 	fromUser int(11) not null,
     toUser int(11) not null,
