@@ -42,6 +42,7 @@ CREATE TABLE Constraints (
     name varchar(50),
     startTime varchar(50),
     endTime varchar(50),
+    days varchar(20),
     # Link each constraint to a user, and possibly a course
     FOREIGN KEY fkUserID(userID) REFERENCES Users(userID),
     FOREIGN KEY fkCourseID2(courseID) REFERENCES Courses(courseID)
