@@ -6,52 +6,41 @@ USE ScheduleMe;
 
 CREATE TABLE Users (
 	userID int(11) primary key auto_increment not null,
+    facebookID varchar(50),
     name varchar(50) not null,
-    email varchar(50),
-    phone int(10)
+    email varchar(50)
+);
+
+CREATE TABLE Schools (
+    schoolID int(11) primary key auto_increment not null, 
+    schoolName varchar(100) not null
 );
 
 CREATE TABLE Courses (
 	courseID int(11) primary key auto_increment not null,
     name varchar(100) not null,
-    units int(2) not null
+    department varchar(6) not null,
+    schoolID int(11) not null, 
+    # reference to school ID for schools
+    FOREIGN KEY fkschoolID1(schoolID) REFERENCES Schools(schoolID)
 );
 
 CREATE TABLE Sections (
-	sectionID varchar(10) not null,
+	sectionID int(10) not null primary key,
     courseID int(11) not null,
     type varchar(10) not null,
     startTime varchar(10) not null,
     endTime varchar(10) not null,
+    # seperate days by commas
     days varchar(20) not null,
-    availableSpots int(5) not null,
-    totalSpots int(5) not null,
-    instructor varchar(50),
-    location varchar(10),
     # Link each section to a specific course
     FOREIGN KEY fkCourseID1(courseID) REFERENCES Courses(courseID)
 );
 
-# A constraint can either be a required class or a custom constraint
-# In the case of a custom constraint, courseID will be null
-# In the case of a required class, the name and times will be returned from the the course and section
-CREATE TABLE Constraints (
-	constraintID int(11) primary key auto_increment not null,
-    userID int(11) not null,
-    courseID int(11),
-    name varchar(50),
-    startTime varchar(50),
-    endTime varchar(50),
-    days varchar(20),
-    # Link each constraint to a user, and possibly a course
-    FOREIGN KEY fkUserID(userID) REFERENCES Users(userID),
-    FOREIGN KEY fkCourseID2(courseID) REFERENCES Courses(courseID)
-);
-
-# Our connections will be undirected, so they will be stored as an adjacency matrix
-CREATE TABLE Relationships (
-	fromUser int(11) not null,
-    toUser int(11) not null,
-    FOREIGN KEY fkFromUser(fromUser) REFERENCES Users(userID),
-    FOREIGN KEY fkToUser(toUser) REFERENCES Users(userID)
+CREATE TABLE Schedules (
+    scheduleID int(11) primary key auto_increment not null,
+    sectionID int(11) not null, 
+    userID int(11) not null, 
+    FOREIGN KEY fksectionID1(sectionID) REFERENCES Sections(sectionID),
+    FOREIGN KEY fkuserID1(userID) REFERENCES Users(userID)
 );
