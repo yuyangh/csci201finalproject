@@ -202,8 +202,8 @@ def get_department_courses(url):
     page = urllib.request.urlopen(url, context=new_context)
     soup = BeautifulSoup(page.read(), "html.parser")
 
-    department_set = dict()
-    result_set = dict()
+    department_dict = dict()
+    result_dict = dict()
     # get department name
     department_name = get_department_name(soup)
 
@@ -246,9 +246,9 @@ def get_department_courses(url):
 
         # add course into department dict
         course_id = str(get_course_department(course_description)) + str(get_course_number(course_description))
-        department_set[course_id] = course_sections
-    result_set[department_name] = department_set
-    return result_set
+        department_dict[course_id] = course_sections
+    result_dict[department_name] = department_dict
+    return result_dict
 
 
 def get_expected_class_size(url):
@@ -278,10 +278,15 @@ def get_expected_class_size(url):
         registerStudentsList[index] = get_num_students_in_class(registerStudentsList[index])
     return get_students_experience(registerStudentsList)
 
-
-def concat_department_courses():
-    # concat several departmen result into one dict
+def concat_department_dict():
+    # concat several department result into school dict
     pass
+
+
+def get_school_dict(result_dict,school_name="USC"):
+    school_dict=dict()
+    school_dict[school_name]=result_dict
+    return school_dict
 
 
 def main():
@@ -298,9 +303,9 @@ def main():
         #       str(getExpectedClassSize(programsURL[programURL])))
         result_dict = get_department_courses(programsURL[programURL])
         # print(str(result_dict))
-        json_str = json.dumps(result_dict)
+        school_dict=get_school_dict(result_dict,"USC")
         with open("result.json", "w") as file:
-            json.dump(result_dict, file, indent=4)
+            json.dump(school_dict, file, indent=4)
         print()
         print("complete writing json...")
 
