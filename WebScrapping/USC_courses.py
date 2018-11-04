@@ -11,11 +11,6 @@ DAY_ABBREVIATIONS = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
 
-# turn test into int
-def getUnits(units):
-    return int(units[1:2])
-
-
 def get_course_number(course_description):
     pos = course_description.find(":")
     result = []
@@ -61,6 +56,11 @@ def get_section_time(time_text):
 
 
 def get_section_number(section_number):
+    '''
+
+    :param section_number: section number and a letter D or R
+    :return: section number
+    '''
     return section_number[:-1]
 
 
@@ -68,7 +68,7 @@ def get_section_day(day_text):
     '''
 
     :param day_text: day description on classes.usc
-    :return: a list containing the day of the section in number, such as [1,2] is Mon and Tue
+    :return: a list containing the day of the section in number, such as [1,2] means Mon and Tue
     '''
     days = day_text.strip().split(",")
     for index in range(0, len(days)):
@@ -83,12 +83,13 @@ def get_section_day(day_text):
                 return [1, 3, 5]
             else:
                 print("days")
+        # section only has 1 day
         else:
             for index in range(0, len(DAY_NAMES)):
                 if days[0] == DAY_NAMES[index]:
                     day.append(index + 1)
             return day
-    # if there are 2 word
+    # if there are 2 words
     if len(days) == 2:
         for i in range(0, len(days)):
             for index in range(0, len(DAY_ABBREVIATIONS)):
@@ -97,6 +98,40 @@ def get_section_day(day_text):
                     break
         return day
     return day
+
+
+def get_section_info(index, sectionID_list, type_list, time_list, day_list):
+    '''
+
+    :param index:
+    :param sectionID_list: section ID in one course
+    :param type_list: types in one course
+    :param time_list: times for one course
+    :param day_list:  days for one course
+    :return: a section with its info
+    '''
+    section_info = dict()
+    section_info["sectionID"] = get_section_number(sectionID_list[index].text)
+    section_info["type"] = type_list[index].text
+    section_info["startTime"] = str(get_section_time(time_list[index].text)[0])
+    section_info["endTime"] = str(get_section_time(time_list[index].text)[1])
+    section_info["days"] = get_section_day(day_list[index].text)
+    return section_info
+
+
+def check_section_info_integrity(section_info):
+    '''
+
+    :param section_info: a section_info dictionary
+    :return: a bool decide whether section_info can be
+    '''
+    # check time not empty
+    if section_info["startTime"] is None or section_info["endTime"] is None:
+        return False
+    # check days not TBA
+    if -1 in section_info["days"]:
+        return False
+    return True
 
 
 def get_units_list(soup):
@@ -108,8 +143,8 @@ def get_units_list(soup):
     unitsList = []
     for course in soup.find_all('div', class_='course-id'):
         for units in course.find_all('span', class_='units'):
-            if (getUnits(units.text) not in unitsList):
-                unitsList.append(getUnits(units.text))
+            if (get_course_units(units.text) not in unitsList):
+                unitsList.append(get_course_units(units.text))
     unitsList.sort()
     return unitsList
 
@@ -121,7 +156,21 @@ def get_num_students_in_class(registered):
     return int(registered[:pos])
 
 
+def get_department_name(soup):
+    '''
+
+    :param soup: python soup object
+    :return: department name
+    '''
+    return soup.find("abbr").text
+
+
 def get_students_experience(registeredList):
+    '''
+
+    :param registeredList: students in each class
+    :return: expected experience
+    '''
     temp = []
     sumStudents = int()
     sumExperience = int()
@@ -142,41 +191,50 @@ def get_students_experience(registeredList):
 
 
 def get_department_courses(url):
+    '''
+    get one department's courses, containing each course
+    each course has several sections
+    each section has sectionID, type, startTime, endTime, days
+    :param url:course url on classes.usc
+    :return: a dictionary containing information above
+    '''
     new_context = ssl._create_unverified_context()
-    page = urllib.request.urlopen(url,context=new_context)
+    page = urllib.request.urlopen(url, context=new_context)
     soup = BeautifulSoup(page.read(), "html.parser")
 
     department_set = dict()
     result_set = dict()
     # get department name
-    department_name = soup.find("abbr").text
+    department_name = get_department_name(soup)
 
     # go through each course
     for course in soup.find_all('div', class_="course-info"):
-        # course_description: CSCI 104L: Data Structures and Object Oriented Design (4.0 units)
+        # course_description example: CSCI 104L: Data Structures and Object Oriented Design (4.0 units)
         course_description = course.find('a', class_='courselink').text
         print()
         # print(course_description)
 
-        print(get_course_department(course_description), get_course_number(course_description),
+        print(get_course_department(course_description),
+              get_course_number(course_description),
               get_course_units(course_description))
 
+        # get all sections under one course
         section_list = course.find('table', class_="sections responsive")
-        # print(section_list)
+
         sectionID_list = course.find_all('td', class_="section")
         time_list = section_list.find_all('td', class_="time")
         type_list = section_list.find_all('td', class_="type")
         day_list = section_list.find_all('td', class_="days")
 
-        course_sections=list()
+        # sections under one course
+        course_sections = list()
+
         for idx in range(len(type_list)):
-            section_info = dict()
-            section_info["sectionID"] = get_section_number(sectionID_list[idx].text)
-            section_info["type"] = type_list[idx].text
-            section_info["startTime"] = str(get_section_time(time_list[idx].text)[0])
-            section_info["endTime"] = str(get_section_time(time_list[idx].text)[1])
-            section_info["days"] = get_section_day(day_list[idx].text)
-            course_sections.append(section_info)
+            # each section has following keys
+            section_info = get_section_info(idx, sectionID_list, type_list, time_list, day_list)
+            # if section info is complete, add to the course_sections
+            if check_section_info_integrity(section_info):
+                course_sections.append(section_info)
             # print(temp)
 
             print("{:20}".format(get_section_number(sectionID_list[idx].text)),
@@ -185,8 +243,10 @@ def get_department_courses(url):
                   "{:20}".format(str(get_section_time(time_list[idx].text)[1])),
                   "{:30}".format(str(get_section_day(day_list[idx].text))),
                   (day_list[idx].text))
-        department_set[
-            str(get_course_department(course_description)) + str(get_course_number(course_description))] = course_sections
+
+        # add course into department dict
+        course_id = str(get_course_department(course_description)) + str(get_course_number(course_description))
+        department_set[course_id] = course_sections
     result_set[department_name] = department_set
     return result_set
 
@@ -218,8 +278,11 @@ def get_expected_class_size(url):
         registerStudentsList[index] = get_num_students_in_class(registerStudentsList[index])
     return get_students_experience(registerStudentsList)
 
+
 def concat_department_courses():
+    # concat several departmen result into one dict
     pass
+
 
 def main():
     # open the page
@@ -234,13 +297,15 @@ def main():
         # print("Students expected class size <" + str(CLASS_LEVEL_LIMIT) + " level in", programURL, "is:\t",
         #       str(getExpectedClassSize(programsURL[programURL])))
         result_dict = get_department_courses(programsURL[programURL])
-        print(str(result_dict))
+        # print(str(result_dict))
         json_str = json.dumps(result_dict)
         with open("result.json", "w") as file:
             json.dump(result_dict, file, indent=4)
+        print()
         print("complete writing json...")
 
 
 if __name__ == "__main__":
     main()
-# todo ignore class with none or -1
+# todo how to store empty class into the database
+# todo cross list class will be dealt with Luz
