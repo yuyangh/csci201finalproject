@@ -111,11 +111,11 @@ def get_section_info(index, sectionID_list, type_list, time_list, day_list):
     :return: a section with its info
     '''
     section_info = dict()
-    section_info["sectionID"] = get_section_number(sectionID_list[index].text)
-    section_info["type"] = type_list[index].text
-    section_info["startTime"] = str(get_section_time(time_list[index].text)[0])
-    section_info["endTime"] = str(get_section_time(time_list[index].text)[1])
-    section_info["days"] = get_section_day(day_list[index].text)
+    section_info["SectionID"] = get_section_number(sectionID_list[index].text)
+    section_info["Type"] = type_list[index].text
+    section_info["StartTime"] = str(get_section_time(time_list[index].text)[0])
+    section_info["EndTime"] = str(get_section_time(time_list[index].text)[1])
+    section_info["Days"] = get_section_day(day_list[index].text)
     return section_info
 
 
@@ -126,10 +126,10 @@ def check_section_info_integrity(section_info):
     :return: a bool decide whether section_info can be
     '''
     # check time not empty
-    if section_info["startTime"] is None or section_info["endTime"] is None:
+    if section_info["StartTime"] is None or section_info["EndTime"] is None:
         return False
     # check days not TBA
-    if -1 in section_info["days"]:
+    if -1 in section_info["Days"]:
         return False
     return True
 
@@ -190,20 +190,20 @@ def get_students_experience(registeredList):
         return sumExperience / sumStudents
 
 
-def get_department_courses(url):
+def get_department_courses_list(url):
     '''
     get one department's courses, containing each course
     each course has several sections
     each section has sectionID, type, startTime, endTime, days
     :param url:course url on classes.usc
-    :return: a dictionary containing information above
+    :return: a list containing information above
     '''
     new_context = ssl._create_unverified_context()
     page = urllib.request.urlopen(url, context=new_context)
     soup = BeautifulSoup(page.read(), "html.parser")
 
+    course_list = list()
     department_dict = dict()
-    result_dict = dict()
     # get department name
     department_name = get_department_name(soup)
 
@@ -246,9 +246,18 @@ def get_department_courses(url):
 
         # add course into department dict
         course_id = str(get_course_department(course_description)) + str(get_course_number(course_description))
-        department_dict[course_id] = course_sections
-    result_dict[department_name] = department_dict
-    return result_dict
+        course_dict = dict()
+        course_dict["CourseID"] = course_id
+        course_dict["Sections"] = course_sections
+        # print(course_dict)
+
+        course_list.append(course_dict)
+        # print(course_list)
+
+    department_dict["DepartmentName"] = department_name
+    department_dict["Courses"] = course_list
+    # print(result_dict)
+    return department_dict
 
 
 def get_expected_class_size(url):
@@ -278,15 +287,17 @@ def get_expected_class_size(url):
         registerStudentsList[index] = get_num_students_in_class(registerStudentsList[index])
     return get_students_experience(registerStudentsList)
 
-def concat_department_dict():
+
+def concat_department_dict(department_dict_list):
     # concat several department result into school dict
     pass
 
 
-def get_school_dict(result_dict,school_name="USC"):
-    school_dict=dict()
-    school_dict[school_name]=result_dict
-    return school_dict
+def get_school_dict(department_list, school_name="USC"):
+    school_dict = dict()
+    school_dict["SchoolName"] = school_name
+    school_dict["Departments"] = department_list
+    return {"Schools": [school_dict]}
 
 
 def main():
@@ -297,17 +308,74 @@ def main():
                    "urlPHYS": "http://classes.usc.edu/term-20183/classes/phys/",
                    "urlWRIT": "http://classes.usc.edu/term-20183/classes/writ",
                    }
-    programsURL = {"urlCSCI": "http://classes.usc.edu/term-20191/classes/csci"}
+    programsURL = {"urlWRIT": "http://classes.usc.edu/term-20183/classes/writ",
+                   "urlCSCI": "http://classes.usc.edu/term-20191/classes/csci"}
+    department_list = list()
     for programURL in programsURL:
         # print("Students expected class size <" + str(CLASS_LEVEL_LIMIT) + " level in", programURL, "is:\t",
         #       str(getExpectedClassSize(programsURL[programURL])))
-        result_dict = get_department_courses(programsURL[programURL])
+        department_dict = get_department_courses_list(programsURL[programURL])
+        department_list.append(department_dict)
         # print(str(result_dict))
-        school_dict=get_school_dict(result_dict,"USC")
-        with open("result.json", "w") as file:
-            json.dump(school_dict, file, indent=4)
-        print()
-        print("complete writing json...")
+    school_dict = get_school_dict(department_list, "USC")
+    with open("result.json", "w") as file:
+        json.dump(school_dict, file, indent=4)
+    print()
+    print("complete writing json...")
+
+
+def check_json_existence(file_path):
+    '''
+    by specifying the file address,
+    open the file to see whether it has corresponding class information
+    :param file_path:
+    :return: boolean
+    '''
+    with open(file_path, mode="r") as file:
+        lines = file.readlines()
+        if len(lines) > 100:
+            return True
+        else:
+            return False
+
+
+def check_time_conversion(time_text):
+    '''
+    manually check to see whether we get the same time
+    :param time_text: text we got after doing web scraping
+    :return:
+    '''
+    time = datetime.strptime(time_text, "%H:%M")
+    time.strftime("%I:%M %p")
+    print(time)
+
+
+def check_day_conversion(day_list):
+    '''
+    manually check to see whether we got the conversion correct
+    :param day_list: a list of day, such as [1,2] means Mon & Tue
+    :return:
+    '''
+    for day in day_list:
+        print(DAY_NAMES[day - 1], end=" ")
+    print()
+
+def test_json_integrity(json_file_path):
+    '''
+    check to see whether the json format correctly
+    :param json_file_path: json file path
+    :return: boolean
+    '''
+    try:
+        with open(json_file_path, 'r') as file:
+            load_dict = json.load(file)
+            print(load_dict)
+            return True
+    except:
+        print("Error in open the file")
+        return False
+
+
 
 
 if __name__ == "__main__":
