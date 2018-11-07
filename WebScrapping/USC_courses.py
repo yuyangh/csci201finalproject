@@ -1,11 +1,11 @@
-import json
-
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+import json
 import urllib.request
 import ssl
+import USC_departments
 
-# only focus on undergraduate
+
 CLASS_LEVEL_LIMIT = 500
 DAY_ABBREVIATIONS = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 DAY_NAMES = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
@@ -25,22 +25,24 @@ def get_course_department(course_description):
 
 
 def get_course_units(course_description):
-    '''
+    """
     :param course_description: the title of the course on USC website
     :return: a string that only includes the least amount of units
-    '''
+    """
     return course_description[course_description.find("(") + 1:course_description.rfind(" ")]
 
 
 def get_section_time(time_text):
-    '''
+    """
 
     :param time_text: a string in this format "10:00-10:50am"
     :return: a tuple of start time and end time in 24 hour format
-    '''
+    """
     # print(time_text)
     if time_text.find("-") == -1:
         return (None, None)
+    # if there are multiple time for one section, only get the first one
+    time_text = time_text[:time_text.find('m') + 1]
     start_time_str, end_time_str = time_text.split("-")[:2]
     suffix = time_text[-2:]
 
@@ -56,26 +58,26 @@ def get_section_time(time_text):
 
 
 def get_section_number(section_number):
-    '''
+    """
 
     :param section_number: section number and a letter D or R
     :return: section number
-    '''
+    """
     return section_number[:-1]
 
 
 def get_section_day(day_text):
-    '''
+    """
 
     :param day_text: day description on classes.usc
     :return: a list containing the day of the section in number, such as [1,2] means Mon and Tue
-    '''
+    """
     days = day_text.strip().split(",")
     for index in range(0, len(days)):
         days[index] = days[index].strip()
     day = []
     # if there is one word
-    if (len(days) == 1):
+    if len(days) == 1:
         if len(days[0]) == 3:
             if days[0] == "TBA":
                 return [-1]
@@ -101,7 +103,7 @@ def get_section_day(day_text):
 
 
 def get_section_info(index, sectionID_list, type_list, time_list, day_list):
-    '''
+    """
 
     :param index:
     :param sectionID_list: section ID in one course
@@ -109,7 +111,7 @@ def get_section_info(index, sectionID_list, type_list, time_list, day_list):
     :param time_list: times for one course
     :param day_list:  days for one course
     :return: a section with its info
-    '''
+    """
     section_info = dict()
     section_info["SectionID"] = get_section_number(sectionID_list[index].text)
     section_info["Type"] = type_list[index].text
@@ -120,11 +122,11 @@ def get_section_info(index, sectionID_list, type_list, time_list, day_list):
 
 
 def check_section_info_integrity(section_info):
-    '''
+    """
 
     :param section_info: a section_info dictionary
     :return: a bool decide whether section_info can be
-    '''
+    """
     # check time not empty
     if section_info["StartTime"] is None or section_info["EndTime"] is None:
         return False
@@ -135,11 +137,11 @@ def check_section_info_integrity(section_info):
 
 
 def get_units_list(soup):
-    '''
+    """
     get the range of the units
     :param soup: beautiful soup object
     :return:
-    '''
+    """
     unitsList = []
     for course in soup.find_all('div', class_='course-id'):
         for units in course.find_all('span', class_='units'):
@@ -156,21 +158,23 @@ def get_num_students_in_class(registered):
     return int(registered[:pos])
 
 
-def get_department_name(soup):
-    '''
+def get_department_abbreviation(soup):
+    """
 
     :param soup: python soup object
     :return: department name
-    '''
+    """
+    if soup.find("abbr") is None:
+        return None
     return soup.find("abbr").text
 
 
 def get_students_experience(registeredList):
-    '''
+    """
 
     :param registeredList: students in each class
     :return: expected experience
-    '''
+    """
     temp = []
     sumStudents = int()
     sumExperience = int()
@@ -191,13 +195,13 @@ def get_students_experience(registeredList):
 
 
 def get_department_courses_list(url):
-    '''
+    """
     get one department's courses, containing each course
     each course has several sections
     each section has sectionID, type, startTime, endTime, days
     :param url:course url on classes.usc
     :return: a list containing information above
-    '''
+    """
     new_context = ssl._create_unverified_context()
     page = urllib.request.urlopen(url, context=new_context)
     soup = BeautifulSoup(page.read(), "html.parser")
@@ -205,7 +209,9 @@ def get_department_courses_list(url):
     course_list = list()
     department_dict = dict()
     # get department name
-    department_name = get_department_name(soup)
+    department_name = get_department_abbreviation(soup)
+    if department_name is None:
+        return None
 
     # go through each course
     for course in soup.find_all('div', class_="course-info"):
@@ -270,7 +276,7 @@ def get_expected_class_size(url):
     for course in soup.find_all('div', class_="course-info"):
         # focus on specific class level
         courseDescription = course.find('a', class_='courselink').text
-        if (get_course_number(courseDescription) >= CLASS_LEVEL_LIMIT):
+        if get_course_number(courseDescription) >= CLASS_LEVEL_LIMIT:
             continue
 
         # section information
@@ -280,7 +286,7 @@ def get_expected_class_size(url):
         for sectionIndex in range(len(registerList)):
             # because type and registered are bijective, so we can use same index
             # also, we only count for lecture
-            if (typeList[sectionIndex].text == "Lecture"):
+            if typeList[sectionIndex].text == "Lecture":
                 registerStudentsList.append(registerList[sectionIndex].text)
 
     for index in range(len(registerStudentsList)):
@@ -302,19 +308,18 @@ def get_school_dict(department_list, school_name="USC"):
 
 def main():
     # open the page
-    programsURL = {"urlCSCI": "http://classes.usc.edu/term-20183/classes/csci",
-                   "urlITP": "http://classes.usc.edu/term-20183/classes/itp/",
-                   "urlMATH": "http://classes.usc.edu/term-20183/classes/math",
-                   "urlPHYS": "http://classes.usc.edu/term-20183/classes/phys/",
-                   "urlWRIT": "http://classes.usc.edu/term-20183/classes/writ",
-                   }
-    programsURL = {"urlWRIT": "http://classes.usc.edu/term-20183/classes/writ",
-                   "urlCSCI": "http://classes.usc.edu/term-20191/classes/csci"}
+    url_2019_spring = "https://classes.usc.edu/term-20183/"
+    programs_URL = {"http://classes.usc.edu/term-20183/classes/writ",
+                   "http://classes.usc.edu/term-20191/classes/csci"}
+    programs_URL = USC_departments.get_all_departments(url_2019_spring)
+    # programsURL = ["https://classes.usc.edu/term-20183/classes/CTPR/"]
     department_list = list()
-    for programURL in programsURL:
+    for program_url in programs_URL:
         # print("Students expected class size <" + str(CLASS_LEVEL_LIMIT) + " level in", programURL, "is:\t",
         #       str(getExpectedClassSize(programsURL[programURL])))
-        department_dict = get_department_courses_list(programsURL[programURL])
+        department_dict = get_department_courses_list(program_url)
+        if department_dict is None:
+            continue
         department_list.append(department_dict)
         # print(str(result_dict))
     school_dict = get_school_dict(department_list, "USC")
@@ -322,60 +327,6 @@ def main():
         json.dump(school_dict, file, indent=4)
     print()
     print("complete writing json...")
-
-
-def check_json_existence(file_path):
-    '''
-    by specifying the file address,
-    open the file to see whether it has corresponding class information
-    :param file_path:
-    :return: boolean
-    '''
-    with open(file_path, mode="r") as file:
-        lines = file.readlines()
-        if len(lines) > 100:
-            return True
-        else:
-            return False
-
-
-def check_time_conversion(time_text):
-    '''
-    manually check to see whether we get the same time
-    :param time_text: text we got after doing web scraping
-    :return:
-    '''
-    time = datetime.strptime(time_text, "%H:%M")
-    time.strftime("%I:%M %p")
-    print(time)
-
-
-def check_day_conversion(day_list):
-    '''
-    manually check to see whether we got the conversion correct
-    :param day_list: a list of day, such as [1,2] means Mon & Tue
-    :return:
-    '''
-    for day in day_list:
-        print(DAY_NAMES[day - 1], end=" ")
-    print()
-
-def test_json_integrity(json_file_path):
-    '''
-    check to see whether the json format correctly
-    :param json_file_path: json file path
-    :return: boolean
-    '''
-    try:
-        with open(json_file_path, 'r') as file:
-            load_dict = json.load(file)
-            print(load_dict)
-            return True
-    except:
-        print("Error in open the file")
-        return False
-
-
 
 
 if __name__ == "__main__":
