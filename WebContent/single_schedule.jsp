@@ -5,10 +5,11 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>ScheduleMe (Single User)</title>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	</head>
 	<body>
-	<script>
+		<script>
 			(function(d, s, id){
 				var js, fjs = d.getElementsByTagName(s)[0];
 			    if (d.getElementById(id)) {return;}
@@ -74,13 +75,40 @@
 		     }
 		</script>
 		
-		<!-- facebook button -->
-		<div><a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png"/></a></div> 
+
 		
 		<div class="container-fluid">
-  			<h1>My First Bootstrap Page</h1>      
-  			<p>This part is inside a .container-fluid class.</p> 
-  			<p>The .container-fluid class provides a full width container, spanning the entire width of the viewport.</p>           
+			<div class="row" style="background-color: #E9E9E9; padding: 15px; height:10%">
+				<div class="col-md-3">
+					<button type="button" class="btn btn-info btn-block" style="height: 90%; margin:auto;">
+						Generate Schedules <i class="fas fa-cogs"></i>
+					</button>
+				</div>
+				<div class="col-md-3">
+					<button type="button" class="btn btn-primary btn-block" style="height: 90%; margin:auto;">
+						Schedule with Friends <i class="fas fa-arrow-right"></i>
+					</button>
+				</div>
+				<div class="col-md-3">
+				</div>
+				<div class="col-md-2">
+					<!-- facebook button -->
+					<div style="height:90%"><a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png" style="border-radius:5px"/></a></div>
+				</div>
+				<div class="col-md-1">
+				</div>
+			</div>
+			<div class="row" style="background-color: green; height:90%">
+				<div class="col-md-6" style="border-right: solid black 2px;">
+					next row <br />
+					next row
+				</div>
+				<div class="col-md-6">
+					next row <br />
+					next row
+				</div>
+			</div>
+			</div>
 		</div>
 	</body>
 </html>
