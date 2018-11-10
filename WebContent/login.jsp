@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -10,6 +9,14 @@
 	
 	<body>
 		<script>
+		//session variables
+		//sessionStorage.getItem("userID");
+		//sessionStorage.getItem("userName"); 
+		//sessionStorage.getItem("userEmail"); 
+		//sessionStorage.getItem("userPicURL"); 
+		//sessionStorage.getItem("friendList"); //must use below function to get properties: name, id
+		//copy and paste to get friendList -> var fl = []; function getFriendListIntoArrayVar(fl)
+		
 			(function(d, s, id){
 				var js, fjs = d.getElementsByTagName(s)[0];
 			    if (d.getElementById(id)) {return;}
@@ -18,10 +25,9 @@
 			    fjs.parentNode.insertBefore(js, fjs);
 			}(document, 'script', 'facebook-jssdk'));
 
-		  	//282325632395045 //real appID
 			window.fbAsyncInit = function() {
 			    FB.init({
-			      appId: '439137799950838',
+			      appId: '562234917553248',
 			      cookie: true,
 			      xfbml: true,
 			      version: 'v3.2'
@@ -49,32 +55,54 @@
 		    	FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'}, function (response) {
 		        	document.getElementById('fbButton').setAttribute("onclick","fbLogout()");
 		        	document.getElementById('fbButton').innerHTML = '<img src="fblogout.png"/>';
-		        	var userID = response.id;
-	    	    	sessionStorage.setItem("userID", userID);    	  
+	    	    	sessionStorage.setItem("userID", response.id); 
+	    	    	sessionStorage.setItem("userName", response.name);
+	    	    	sessionStorage.setItem("userEmail", response.email);
+	    	    	sessionStorage.setItem("userPicURL", response.picture.data.url);
+	    	    	
 					//TODO: uncomment line below to add user to database 
-					// addUniqueUser(userID);
+					// addUniqueUser(response.id, response.name, response.email, response.picture.data.url);
 	    	    	
 	    		    //TODO: uncomment line below for normal functionality
 	    		    //window.location.href = 'single_schedule.jsp';
-		          	//document.getElementById('userData').innerHTML = '<p><b>FB ID:</b> '+response.id+'</p><p><b>Name:</b> '+response.first_name+' '+response.last_name+'</p><p><b>Email:</b> '+response.email+'</p><p><b>Gender:</b> '+response.gender+'</p><p><b>Locale:</b> '+response.locale+'</p><p><b>Picture:</b> <img src="'+response.picture.data.url+'"/></p><p><b>FB Profile:</b> <a target="_blank" href="'+response.link+'">click to view profile</a></p>';
 	    	    	//TODO: after app submission
-		          	FB.api(
-	    	    		    "/me/friends",
-	    	    		    function (response) {
-	    	    		      if (response && !response.error) {
-	    	    		        /* handle the result */
-	    	    		      }
-	    	    		      console.log("response obj: " + response.id);
-	    	    		    }
-	    	    		);
+		          	FB.api("/me/friends", function (response) {
+	    	    		if (response && !response.error) { //on success
+	    	    			storeFriendsInStorage(response);
+	    	    		} else { // on error 
+	    	    		}
+	    	    	});
 		    	});
 		   	}
+			
+			//var fl = []
+			function getFriendListIntoArrayVar(fl) {
+    			var tfl = JSON.parse(sessionStorage.getItem("friendList"));
+    			for(i = 0; i < tfl.length; i++) {
+    				fl.push(JSON.parse(tfl[i]));
+    			}
+			}
+			
+			function storeFriendsInStorage(response) {
+				var fl = [];
+ 				for(i = 0; i < response.data.length; i++) {
+ 					fl.push(JSON.stringify(response.data[i]));
+ 				}
+    			sessionStorage.setItem("friendList", JSON.stringify(fl));
+			}
+			
+			function printObjectKeyValPairs(obj) {
+				Object.getOwnPropertyNames(obj).forEach(
+  					  function (val, idx, array) {
+  					  	console.log(val + ' -> ' + obj[val]);
+  					  }
+  				);
+			}
 		  
 		  	function fbLogout() {
 		    	FB.logout(function() {
 		          	document.getElementById('fbButton').setAttribute("onclick","fbLogin()");
 		          	document.getElementById('fbButton').innerHTML = '<img src="fblogin.png"/>';
-		          	//document.getElementById('userData').innerHTML = '';
 		      	});
 		   	}
 		  	
@@ -83,11 +111,11 @@
 		  	}
 		  	
 		  	// DELEGATE: LUZ AddUniqueUserServlet
-		  	// - get string userID, add this userID IFF the ID is unique
+		  	// - get string userID, IFF the ID is unique -> add it + userName, userEmail, userPicURL
 		  	// - no response needed
-		    function addUniqueUser(userID) { 
+		    function addUniqueUser(userID, userName, userEmail, userPicURL) { 
 				var xhttp = new XMLHttpRequest();
-			   	xhttp.open("POST", "AddUniqueUserServlet?userID="+userID, true);
+			   	xhttp.open("POST", "AddUniqueUserServlet?userID="+userID + "&userName="+userName + "&userEmail="+userEmail + "&userPicURL="+userPicURL, true);
 			   	xhttp.onreadystatechange = function() { 
 			   		//console.log(this.responseText);
 			   	}
