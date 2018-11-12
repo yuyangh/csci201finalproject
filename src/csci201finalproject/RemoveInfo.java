@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 /*
 Fixing:
+days not showing up when adding constraint
 
 implementing:
 adding new constraint

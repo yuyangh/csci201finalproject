@@ -117,11 +117,22 @@
 }
 
 .constraint-row{
-	max-height: 23%;
+	max-height: 15%;
 }
 
 .first-constraint-row{
-	margin-top: 5px;
+	margin-top: 20px;
+	max-height: 15%;
+}
+
+.constraint-row-add{
+	margin-bottom: 20px;
+	max-height: 23%;
+}
+
+.first-constraint-row-add{
+	margin-top: 20px;
+	margin-bottom: 20px;
 	max-height: 23%;
 }
 
@@ -139,10 +150,21 @@
 	width: 10px;
 }
 
-.constraint-button{
+.constraint-add{
+	padding: 0px;
 	width:90%;
 	height:100%;
 	background-color: #2bb315;
+	border: solid #343434 1px;
+	text-align: center;
+	font:12px arial, sans-serif;
+}
+
+.constraint-remove{
+	padding: 0px;
+	width:90%;
+	height:100%;
+	background-color: #b31911;
 	border: solid #343434 1px;
 	text-align: center;
 	font:12px arial, sans-serif;

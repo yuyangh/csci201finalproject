@@ -217,7 +217,7 @@
 												<div class="row justify-content-center panel-header">Other Time Constraints</div>
 												<div class="row flex-grow-1">
 													<div class="col-12 panel-content" id="constraints_table">
-														<div class="row first-constraint-row">
+														<div class="row h-100 first-constraint-row-add">
 															<div class="col-1 no-padding">
 																<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="monday"> Mon.</label>
 														    	<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="tuesday"> Tues.</label><br>
@@ -236,7 +236,7 @@
 																<input type="text" onfocus="(this.type='time')" placeholder=" End Time" class="class-entry" id="end_time">
 															</div>
 															<div class="col-3 no-padding">
-																<button type="button" class="btn btn-success constraint-button" onclick="addConstraint()">Add Constraint</button>
+																<button type="button" class="btn btn-success constraint-add" onclick="addConstraint()">Add Constraint</button>
 															</div>
 														</div>
 													</div>
