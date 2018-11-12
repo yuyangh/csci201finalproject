@@ -7,7 +7,7 @@ USE ScheduleMe;
 CREATE TABLE ActiveGroups (
     groupCode int(11) primary key not null, 
     # 0 = not locked, 1 = locked
-    locked int(1) not null, 
+    locked int(1) not null 
 );
 
 CREATE TABLE Users (
@@ -16,7 +16,7 @@ CREATE TABLE Users (
     name varchar(50) not null,
     email varchar(50), 
     groupCode int(11),
-    FOREIGN KEY fkgroupCode(groupCode) REFERENCES ActiveGroups(groupCode)
+    FOREIGN KEY fkGroupCode(groupCode) REFERENCES ActiveGroups(groupCode)
 );
 
 CREATE TABLE Schools (
@@ -24,31 +24,38 @@ CREATE TABLE Schools (
     schoolName varchar(100) not null
 );
 
+CREATE TABLE Departments (
+	departmentID int(11) primary key auto_increment not null,
+    departmentName varchar(100) not null,
+    schoolID int(11) not null,
+    FOREIGN KEY fkSchoolID(schoolID) REFERENCES Schools(schoolID)
+);
+
 CREATE TABLE Courses (
 	courseID int(11) primary key auto_increment not null,
-    name varchar(100) not null,
-    department varchar(6) not null,
-    schoolID int(11) not null, 
-    # reference to school ID for schools
-    FOREIGN KEY fkschoolID1(schoolID) REFERENCES Schools(schoolID)
+    courseName varchar(100) not null,
+    departmentID int(11) not null, 
+    # reference to department ID for departments
+    FOREIGN KEY fkDepartmentID(departmentID) REFERENCES Departments(departmentID)
 );
 
 CREATE TABLE Sections (
-	sectionID int(10) not null primary key,
+	sectionID int(11) primary key auto_increment not null,
+    sectionName varchar(10) not null,
     courseID int(11) not null,
-    type varchar(10) not null,
+    type varchar(25) not null,
     startTime varchar(10) not null,
     endTime varchar(10) not null,
     # seperate days by commas
     days varchar(20) not null,
     # Link each section to a specific course
-    FOREIGN KEY fkCourseID1(courseID) REFERENCES Courses(courseID)
+    FOREIGN KEY fkCourseID(courseID) REFERENCES Courses(courseID)
 );
 
 CREATE TABLE Schedules (
     scheduleID int(11) primary key auto_increment not null,
     sectionID int(11) not null, 
     userID int(11) not null, 
-    FOREIGN KEY fksectionID1(sectionID) REFERENCES Sections(sectionID),
-    FOREIGN KEY fkuserID1(userID) REFERENCES Users(userID)
+    FOREIGN KEY fkSectionID(sectionID) REFERENCES Sections(sectionID),
+    FOREIGN KEY fkUserID(userID) REFERENCES Users(userID)
 );
