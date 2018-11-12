@@ -4,10 +4,10 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Solo Scheduling</title>
+		<title>Friend Scheduling</title>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<link rel="stylesheet" href="single_schedule.css">
+		<link rel="stylesheet" href="friend_schedule.css">
 	</head>
 	<body>
 		<script>
@@ -157,22 +157,36 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<button type="button" class="btn btn-info btn-block schedule-button">
-										Generate Schedules <i class="fas fa-cogs"></i>
-									</button>
-								</div>
-								<div class="col-3">
-									<a class="btn btn-primary btn-block fake-button" href="friend_schedule.jsp">
-										Schedule with Friends <i class="fas fa-arrow-right"></i>
+									<a class="btn btn-primary btn-block schedule-button" href="single_schedule.jsp">
+										<i class="fas fa-arrow-left"></i> Schedule Solo
 									</a>
 								</div>
 								<div class="col-3">
+									<button type="button" class="btn btn-info btn-block schedule-button">
+										Lock My Classes & Constraints <i class="fas fa-lock"></i>
+									</button>
 								</div>
-								<div class="col-2">
-									<!-- facebook button -->
-									<a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png" class="fb-button" /></a>
+								<div class="col-6">
 								</div>
-								<div class="col-1">
+							</div>
+							<div class="row button-bar">
+								<div class="col-3">
+									<button type="button" class="btn btn-info btn-block schedule-button">
+										Generate Friend Group Code <i class="fas fa-sync-alt"></i>
+									</button>
+								</div>
+								<div class="col-3">
+									<input type="text" class="group-code-input" id="friend-group-code-input" placeholder="Enter Friend Group Code">
+								</div>
+								<div class="col-3">
+									<button type="button" class="btn btn-info btn-block schedule-button">
+										Join Friend Group <i class="fas fa-running"></i>
+									</button>
+								</div>
+								<div class="col-3">
+									<button type="button" class="btn btn-info btn-block schedule-button">
+										Lock Friend Group <i class="fas fa-lock"></i>
+									</button>
 								</div>
 							</div>
 							<div class="row flex-grow-1 h-100">
@@ -183,8 +197,6 @@
 												<div class="row justify-content-center panel-header">My Classes</div>
 												<div class="row flex-grow-1">
 													<div class="col-12 panel-content" id="classes_table">
-														
-													<!--
 														<div class="row h-100 header-row">
 															<div class="col-4 h-100 group-header">
 																Group 1
@@ -211,7 +223,6 @@
 															<div class="col-8 no-padding">
 															</div>
 														</div>
-													-->
 													</div>
 												</div>
 											</div>

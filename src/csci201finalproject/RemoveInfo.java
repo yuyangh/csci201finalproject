@@ -20,10 +20,12 @@ import java.util.ArrayList;
 
 /*
 Fixing:
+weird layout of buttons on friend scheduling
 
 implementing:
-add constraint (start and end times)
-friend scheduling page
+navigating between login page, solo schedule page, and friend schedule page
+database interactions in both pages
+buttons on friend scheduling page
 display generated schedules
 */
 
@@ -43,7 +45,9 @@ public class RemoveInfo extends HttpServlet {
 				session.setAttribute("constraints", new ArrayList<ArrayList<String>>());
 			}
 			ArrayList<ArrayList<String>> constraints = (ArrayList<ArrayList<String>>)session.getAttribute("constraints");
-			constraints.remove(Integer.parseInt(request.getParameter("constraint_num")));
+			if((Integer.parseInt(request.getParameter("constraint_num")) >= 0) && (Integer.parseInt(request.getParameter("constraint_num")) <= constraints.size()-1)) {
+				constraints.remove(Integer.parseInt(request.getParameter("constraint_num")));
+			}
 			// Re-print UI
 			for(int j = 0; j < constraints.size(); j++) {
 				if(j == 0) {
@@ -100,14 +104,16 @@ public class RemoveInfo extends HttpServlet {
 				session.setAttribute("groups", new ArrayList<ArrayList<ArrayList<String>>>());
 			}
 			ArrayList<ArrayList<ArrayList<String>>> groups = (ArrayList<ArrayList<ArrayList<String>>>)session.getAttribute("groups");
-			if(request.getParameter("action").equals("group")) {
-	        	// Remove group from 'groups' session variable
-				groups.remove(Integer.parseInt(request.getParameter("group_num")));
-	        }
-			else if(request.getParameter("action").equals("class")) {
-	        	// Remove class from 'groups' session variable
-				groups.get(Integer.parseInt(request.getParameter("group_num"))).remove(Integer.parseInt(request.getParameter("class_num")));
-	        }
+			if((Integer.parseInt(request.getParameter("group_num")) >= 0) && (Integer.parseInt(request.getParameter("group_num")) <= groups.size()-1)) {
+				if(request.getParameter("action").equals("group")) {
+		        	// Remove group from 'groups' session variable
+					groups.remove(Integer.parseInt(request.getParameter("group_num")));
+		        }
+				else if(request.getParameter("action").equals("class")) {
+		        	// Remove class from 'groups' session variable
+					groups.get(Integer.parseInt(request.getParameter("group_num"))).remove(Integer.parseInt(request.getParameter("class_num")));
+		        }
+			}
 			// Re-print UI
 	        for(int i = 0; i < groups.size(); i++) {
 	        	out.println("<div class=\"row h-100 header-row\">");
