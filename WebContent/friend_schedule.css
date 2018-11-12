@@ -46,6 +46,15 @@
 	padding: 0px;
 }
 
+.fake-button {
+	height: 100%;
+	width: 100%;
+	margin: auto;
+	font-size: 12px;
+	padding: 0px;
+	padding-top: 5px;
+}
+
 .panel-content{
 	overflow: scroll;
 	margin-left: 5px;
@@ -55,8 +64,9 @@
 .group-header{
 	height: 100%;
 	width: 100%;
-	background-color: #939393;
+	background-color: #b9b9b9;
 	border: solid #727272 1px;
+	border-radius: 5px 0px 0px 0px;
 	text-align: center;
 	font:15px arial, sans-serif;
 	padding-top: 7px;
@@ -92,24 +102,44 @@
 	padding-left: 5px;
 }
 
-.button-add{
-	width:80%;
+.button-add-class{
+	width:90%;
 	height:100%;
-	background-color: #2bb315;
+	background-color: #53d042;
+	border-radius: 0px 5px 5px 0px;
 	border: solid #343434 1px;
 	font:15px arial, sans-serif;
 }
 
-.button-remove{
+.button-add-group{
 	width:80%;
 	height:100%;
-	background-color: #b31911;
+	background-color: #53d042;
 	border: solid #343434 1px;
+	font:15px arial, sans-serif;
+}
+
+.button-remove-class{
+	width:90%;
+	height:100%;
+	background-color: #e34648;
+	border: solid #343434 1px;
+	border-radius: 0px 5px 5px 0px;
+	font:15px arial, sans-serif;
+}
+
+.button-remove-group{
+	width:80%;
+	height:100%;
+	background-color: #e34648;
+	border: solid #343434 1px;
+	border-radius: 0px 5px 0px 0px;
 	font:15px arial, sans-serif;
 }
 
 .group-add-row{
 	margin-top: 15px;
+	margin-bottom: 20px;
 }
 
 .no-padding{
@@ -127,13 +157,13 @@
 
 .constraint-row-add{
 	margin-bottom: 20px;
-	max-height: 23%;
+	max-height: 27%;
 }
 
 .first-constraint-row-add{
 	margin-top: 20px;
 	margin-bottom: 20px;
-	max-height: 23%;
+	max-height: 27%;
 }
 
 .checkbox-label{
@@ -154,8 +184,9 @@
 	padding: 0px;
 	width:90%;
 	height:100%;
-	background-color: #2bb315;
+	background-color: #53d042;
 	border: solid #343434 1px;
+	border-radius: 0px 5px 5px 0px;
 	text-align: center;
 	font:12px arial, sans-serif;
 }
@@ -164,10 +195,21 @@
 	padding: 0px;
 	width:90%;
 	height:100%;
-	background-color: #b31911;
+	background-color: #e34648;
 	border: solid #343434 1px;
+	border-radius: 0px 5px 5px 0px;
 	text-align: center;
 	font:12px arial, sans-serif;
+}
+
+.days-block{
+	padding-left: 5px;
+	padding-right: 7px;
+	margin:auto;
+	height:100%;
+	width:100%;
+	background-color: #eeeeee;
+	border: solid #727272 1px;
 }
 
 .group-code-input{

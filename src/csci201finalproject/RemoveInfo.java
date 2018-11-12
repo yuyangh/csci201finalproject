@@ -76,16 +76,22 @@ public class RemoveInfo extends HttpServlet {
 			else {
 				out.println("<div class=\"row constraint-row-add\">");
 			}
+        	out.println("<div class=\"col-3 days-block\">");
+        	out.println("<div class=\"row\">");
         	out.println("<div class=\"col-1 no-padding\">");
+        	out.println("</div>");
+        	out.println("<div class=\"col-4 no-padding\">");
         	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"monday\"> Mon.</label>");
         	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"tuesday\"> Tues.</label><br>");
         	out.println("</div>");
-        	out.println("<div class=\"col-1 no-padding\">");
+        	out.println("<div class=\"col-4 no-padding\">");
         	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"wednesday\"> Wed.</label><br>");
         	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"thursday\"> Thurs.</label><br>");
         	out.println("</div>");
-        	out.println("<div class=\"col-1 no-padding\">");
+        	out.println("<div class=\"col-3 no-padding\">");
         	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"friday\"> Fri.</label><br>");
+        	out.println("</div>");
+        	out.println("</div>");
         	out.println("</div>");
         	out.println("<div class=\"col-3 no-padding\">");
         	out.println("<input type=\"text\" onfocus=\"(this.type='time')\" placeholder=\" Start Time\" class=\"class-entry\" id=\"start_time\">");
@@ -121,7 +127,7 @@ public class RemoveInfo extends HttpServlet {
 	        	out.println("Group " + (i+1));
 	        	out.println("</div>");
 	        	out.println("<div class=\"col-4 no-padding\">");
-	        	out.println("<button type=\"button\" class=\"btn btn-danger button-remove\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
+	        	out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
 	        	out.println("</div>");
 	        	out.println("</div>");
 	        	for(int j = 0; j < groups.get(i).size(); j++) {
@@ -133,7 +139,7 @@ public class RemoveInfo extends HttpServlet {
 	        		out.println(groups.get(i).get(j).get(1));
 	        		out.println("</div>");
 	        		out.println("<div class=\"col-4 no-padding\">");
-	        		out.println("<button type=\"button\" class=\"btn btn-danger button-remove\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+	        		out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
 	        		out.println("</div>");
 	        		out.println("</div>");
 	        	}
@@ -145,13 +151,13 @@ public class RemoveInfo extends HttpServlet {
         		out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
         		out.println("</div>");
         		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<button type=\"button\" class=\"btn btn-success button-add\" onclick=\"addClass(" + i + ")\">Add Class</button>");
+        		out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
         		out.println("</div>");
         		out.println("</div>");
 	        }
         	out.println("<div class=\"row group-add-row\">");
         	out.println("<div class=\"col-4 no-padding\">");
-        	out.println("<button type=\"button\" class=\"btn btn-success button-add\" onclick=\"addGroup()\">Add Group</button>");
+        	out.println("<button type=\"button\" class=\"btn btn-success button-add-group\" onclick=\"addGroup()\">Add Group</button>");
         	out.println("</div>");
         	out.println("<div class=\"col-8 no-padding\">");
         	out.println("</div>");

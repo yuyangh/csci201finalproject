@@ -197,32 +197,6 @@
 												<div class="row justify-content-center panel-header">My Classes</div>
 												<div class="row flex-grow-1">
 													<div class="col-12 panel-content" id="classes_table">
-														<div class="row h-100 header-row">
-															<div class="col-4 h-100 group-header">
-																Group 1
-															</div>
-															<div class="col-4 no-padding">
-																<button type="button" class="btn btn-danger button-remove" onclick="removeGroup(0)">Remove Group</button>
-															</div>
-														</div>
-														<div class="row h-100 class-row">
-															<div class="col-4 no-padding">
-																<input type="text" class="class-input" id="department_input0" placeholder="Department Code">
-															</div>
-															<div class="col-4 no-padding">
-																<input type="text" class="class-input" id="number_input0" placeholder="Course Number">
-															</div>
-															<div class="col-4 no-padding">
-																<button type="button" class="btn btn-success button-add" onclick="addClass(0)">Add Class</button>
-															</div>
-														</div>
-														<div class="row group-add-row">
-															<div class="col-4 no-padding">
-																<button type="button" class="btn btn-success button-add" onclick="addGroup()">Add Group</button>
-															</div>
-															<div class="col-8 no-padding">
-															</div>
-														</div>
 													</div>
 												</div>
 											</div>
@@ -234,28 +208,6 @@
 												<div class="row justify-content-center panel-header">Other Time Constraints</div>
 												<div class="row flex-grow-1">
 													<div class="col-12 panel-content" id="constraints_table">
-														<div class="row h-100 first-constraint-row-add">
-															<div class="col-1 no-padding">
-																<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="monday"> Mon.</label>
-														    	<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="tuesday"> Tues.</label><br>
-															</div>
-															<div class="col-1 no-padding">
-																<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="wednesday"> Wed.</label><br>
-														    	<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="thursday"> Thurs.</label><br>
-															</div>
-															<div class="col-1 no-padding">
-														    	<label class="checkbox-label"><input class="day-checkbox" type="checkbox" id="friday"> Fri.</label><br>
-															</div>
-															<div class="col-3 no-padding">
-																<input type="text" onfocus="(this.type='time')" placeholder=" Start Time" class="class-entry" id="start_time">
-															</div>
-															<div class="col-3 no-padding">
-																<input type="text" onfocus="(this.type='time')" placeholder=" End Time" class="class-entry" id="end_time">
-															</div>
-															<div class="col-3 no-padding">
-																<button type="button" class="btn btn-success constraint-add" onclick="addConstraint()">Add Constraint</button>
-															</div>
-														</div>
 													</div>
 												</div>
 											</div>
