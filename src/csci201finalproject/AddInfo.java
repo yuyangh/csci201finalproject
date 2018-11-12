@@ -45,9 +45,6 @@ public class AddInfo extends HttpServlet {
 			constraints.add(constraint);
 			// Re-print UI
 			for(int j = 0; j < constraints.size(); j++) {
-				for(int s = 0; s < 7; s++) {
-					System.out.println(constraints.get(j).get(s));
-				}
 				if(j == 0) {
 					out.println("<div class=\"row h-100 first-constraint-row\">");
 				}

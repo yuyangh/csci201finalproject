@@ -20,11 +20,9 @@ import java.util.ArrayList;
 
 /*
 Fixing:
-days not showing up when adding constraint
 
 implementing:
-adding new constraint
-removing constraint
+add constraint (start and end times)
 friend scheduling page
 display generated schedules
 */
@@ -44,13 +42,57 @@ public class RemoveInfo extends HttpServlet {
 			if(session.getAttribute("constraints") == null) {
 				session.setAttribute("constraints", new ArrayList<ArrayList<String>>());
 			}
-			
-			
-			
+			ArrayList<ArrayList<String>> constraints = (ArrayList<ArrayList<String>>)session.getAttribute("constraints");
+			constraints.remove(Integer.parseInt(request.getParameter("constraint_num")));
 			// Re-print UI
-			
-			
-			
+			for(int j = 0; j < constraints.size(); j++) {
+				if(j == 0) {
+					out.println("<div class=\"row h-100 first-constraint-row\">");
+				}
+				else {
+					out.println("<div class=\"row h-100 constraint-row\">");
+				}
+        		out.println("<div class=\"col-3 h-100 class-entry\">");
+        		out.println(buildDayString(constraints.get(j).get(0), constraints.get(j).get(1), constraints.get(j).get(2), constraints.get(j).get(3), constraints.get(j).get(4)));
+        		out.println("</div>");
+        		out.println("<div class=\"col-3 h-100 class-entry\">");
+        		out.println(constraints.get(j).get(5));
+        		out.println("</div>");
+        		out.println("<div class=\"col-3 h-100 class-entry\">");
+        		out.println(constraints.get(j).get(6));
+        		out.println("</div>");
+        		out.println("<div class=\"col-3 no-padding\">");
+        		out.println("<button type=\"button\" class=\"btn btn-danger constraint-remove\" onclick=\"removeConstraint(" + j + ")\">Remove Constraint</button>");
+        		out.println("</div>");
+        		out.println("</div>");
+        	}
+			if(constraints.size() <= 0) {
+				out.println("<div class=\"row first-constraint-row-add\">");
+			}
+			else {
+				out.println("<div class=\"row constraint-row-add\">");
+			}
+        	out.println("<div class=\"col-1 no-padding\">");
+        	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"monday\"> Mon.</label>");
+        	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"tuesday\"> Tues.</label><br>");
+        	out.println("</div>");
+        	out.println("<div class=\"col-1 no-padding\">");
+        	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"wednesday\"> Wed.</label><br>");
+        	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"thursday\"> Thurs.</label><br>");
+        	out.println("</div>");
+        	out.println("<div class=\"col-1 no-padding\">");
+        	out.println("<label class=\"checkbox-label\"><input class=\"day-checkbox\" type=\"checkbox\" id=\"friday\"> Fri.</label><br>");
+        	out.println("</div>");
+        	out.println("<div class=\"col-3 no-padding\">");
+        	out.println("<input type=\"text\" onfocus=\"(this.type='time')\" placeholder=\" Start Time\" class=\"class-entry\" id=\"start_time\">");
+        	out.println("</div>");
+        	out.println("<div class=\"col-3 no-padding\">");
+        	out.println("<input type=\"text\" onfocus=\"(this.type='time')\" placeholder=\" End Time\" class=\"class-entry\" id=\"end_time\">");
+        	out.println("</div>");
+        	out.println("<div class=\"col-3 no-padding\">");
+        	out.println("<button type=\"button\" class=\"btn btn-success constraint-add\" onclick=\"addConstraint()\">Add Constraint</button>");
+        	out.println("</div>");
+        	out.println("</div>");
         }
 		else {
 			// Update 'groups' session variable
@@ -110,5 +152,27 @@ public class RemoveInfo extends HttpServlet {
         	out.println("</div>");
 		}
 	}
-
+	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {
+		String str = "";
+		if(monday.equals("1")) {
+			str += "M";
+		}
+		if(tuesday.equals("1")) {
+			if(str != "") str += "/";
+			str += "T";
+		}
+		if(wednesday.equals("1")) {
+			if(str != "") str += "/";
+			str += "W";
+		}
+		if(thursday.equals("1")) {
+			if(str != "") str += "/";
+			str += "Th";
+		}
+		if(friday.equals("1")) {
+			if(str != "") str += "/";
+			str += "F";
+		}
+		return str;
+	}
 }
