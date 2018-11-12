@@ -166,13 +166,11 @@
 										Schedule with Friends <i class="fas fa-arrow-right"></i>
 									</a>
 								</div>
-								<div class="col-3">
+								<div class="col-4">
 								</div>
 								<div class="col-2">
 									<!-- facebook button -->
 									<a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png" class="fb-button" /></a>
-								</div>
-								<div class="col-1">
 								</div>
 							</div>
 							<div class="row flex-grow-1 h-100">

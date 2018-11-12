@@ -157,7 +157,7 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-primary btn-block schedule-button" href="single_schedule.jsp">
+									<a class="btn btn-primary btn-block fake-button" href="single_schedule.jsp">
 										<i class="fas fa-arrow-left"></i> Schedule Solo
 									</a>
 								</div>
