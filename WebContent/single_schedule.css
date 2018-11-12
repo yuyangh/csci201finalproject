@@ -1,0 +1,149 @@
+@charset "UTF-8";
+
+.panel-classes {
+	border: solid #c2c2c2 1px;
+}
+
+.panel-constraints {
+	border-right: solid #c2c2c2 1px;
+	border-left: solid #c2c2c2 1px;
+	border-bottom: solid #c2c2c2 1px;
+}
+
+.panel-schedules {
+	border-right: solid #c2c2c2 1px;
+	border-top: solid #c2c2c2 1px;
+	border-bottom: solid #c2c2c2 1px;
+}
+
+.panel-header {
+	color: #3c3c3c;
+	padding: 2px;
+	font: 15px arial, sans-serif;
+	background-color: #E9E9E9;
+	border-bottom: solid #c2c2c2 1px;
+	max-height: 22px;
+	min-height: 22px;
+}
+
+.fb-button {
+	border-radius: 5px;
+	height: 100%;
+	width: auto;
+}
+
+.button-bar {
+	background-color: #eeeeee;
+	padding: 5px;
+	max-height: 8%;
+}
+
+.schedule-button {
+	height: 100%;
+	width: 100%;
+	margin: auto;
+	font-size: 12px;
+	padding: 0px;
+}
+
+.panel-content{
+	overflow: scroll;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.group-header{
+	height: 100%;
+	width: 100%;
+	background-color: #939393;
+	border: solid #727272 1px;
+	text-align: center;
+	font:15px arial, sans-serif;
+	padding-top: 7px;
+}
+
+.header-row{
+	margin-top: 20px;
+	max-height: 15%;
+}
+
+.class-row{
+	max-height: 15%;
+}
+
+.class-entry{
+	margin:auto;
+	height:100%;
+	width:100%;
+	background-color: #eeeeee;
+	border: solid #727272 1px;
+	font:15px arial, sans-serif;
+	padding-top: 7px;
+	padding-left: 5px;
+}
+
+.class-input{
+	margin:auto;
+	height:100%;
+	width:100%;
+	background-color: #eeeeee;
+	border: solid #727272 1px;
+	font:15px arial, sans-serif;
+	padding-left: 5px;
+}
+
+.button-add{
+	width:80%;
+	height:100%;
+	background-color: #2bb315;
+	border: solid #343434 1px;
+	font:15px arial, sans-serif;
+}
+
+.button-remove{
+	width:80%;
+	height:100%;
+	background-color: #b31911;
+	border: solid #343434 1px;
+	font:15px arial, sans-serif;
+}
+
+.group-add-row{
+	margin-top: 15px;
+}
+
+.no-padding{
+	padding:0px;
+}
+
+.constraint-row{
+	max-height: 23%;
+}
+
+.first-constraint-row{
+	margin-top: 5px;
+	max-height: 23%;
+}
+
+.checkbox-label{
+	max-height: 30%;
+	padding: 0px;
+	margin: auto;
+	font:10px arial, sans-serif;
+}
+
+.day-checkbox{
+	padding: 0px;
+	margin: auto;
+	height: 12px;
+	width: 10px;
+}
+
+.constraint-button{
+	width:90%;
+	height:100%;
+	background-color: #2bb315;
+	border: solid #343434 1px;
+	text-align: center;
+	font:12px arial, sans-serif;
+}

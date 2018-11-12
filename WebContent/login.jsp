@@ -21,7 +21,7 @@
 		  	//282325632395045 //real appID
 			window.fbAsyncInit = function() {
 			    FB.init({
-			      appId: '439137799950838',
+			      appId: '562234917553248',
 			      cookie: true,
 			      xfbml: true,
 			      version: 'v3.2'
@@ -64,7 +64,7 @@
 	    	    		      if (response && !response.error) {
 	    	    		        /* handle the result */
 	    	    		      }
-	    	    		      console.log("response obj: " + response.id);
+	    	    		      console.log("response obj: " + response.data.length);
 	    	    		    }
 	    	    		);
 		    	});
