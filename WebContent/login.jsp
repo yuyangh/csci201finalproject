@@ -65,7 +65,6 @@
 	    	    	
 	    		    //TODO: uncomment line below for normal functionality
 	    		    //window.location.href = 'single_schedule.jsp';
-	    	    	//TODO: after app submission
 		          	FB.api("/me/friends", function (response) {
 	    	    		if (response && !response.error) { //on success
 	    	    			storeFriendsInStorage(response);
