@@ -25,7 +25,6 @@ public class AddInfo extends HttpServlet {
 	private static ArrayList<AddClass> totalClasses;
 	private static ArrayList<Constraint> totalConstraints;
 	
-	
     public AddInfo() {
         super();
         totalClasses = new ArrayList<AddClass>();
@@ -42,6 +41,7 @@ public class AddInfo extends HttpServlet {
 			}
 			ArrayList<ArrayList<String>> constraints = (ArrayList<ArrayList<String>>)session.getAttribute("constraints");
 			ArrayList<String> constraint = new ArrayList<String>();
+			
 			constraint.add(request.getParameter("monday"));
 			constraint.add(request.getParameter("tuesday"));
 			constraint.add(request.getParameter("wednesday"));
