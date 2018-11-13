@@ -21,8 +21,15 @@ import java.util.ArrayList;
 @WebServlet("/AddInfo")
 public class AddInfo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	// principle structures for storing our info and sending it to thread 
+	private static ArrayList<AddClass> totalClasses;
+	private static ArrayList<Constraint> totalConstraints;
+	
+	
     public AddInfo() {
         super();
+        totalClasses = new ArrayList<AddClass>();
+        totalConstraints = new ArrayList<Constraint>();
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
