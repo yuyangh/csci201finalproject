@@ -20,8 +20,9 @@ def get_all_departments(url):
     department_url_list = list()
 
     for department_div in department_div_list:
+        # if the division is a tag, it will have a link inside
         if type(department_div) is bs4.element.Tag:
-            # print(department_div)
+            # get the link part
             department_url = department_div.find('a')['href']
             # print(department_url)
             department_url_list.append(department_url)
