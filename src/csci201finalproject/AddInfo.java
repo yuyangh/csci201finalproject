@@ -25,6 +25,7 @@ public class AddInfo extends HttpServlet {
 	private static ArrayList<AddClass> totalClasses;
 	private static ArrayList<Constraint> totalConstraints;
 	
+	
     public AddInfo() {
         super();
         totalClasses = new ArrayList<AddClass>();

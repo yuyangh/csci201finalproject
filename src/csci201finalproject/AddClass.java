@@ -5,7 +5,11 @@ import java.util.ArrayList;
 public class AddClass {
 	private String className;
 	private RetriveSections retriveSections;
-	private ArrayList<Section> totalSections;
+	private ArrayList<ArrayList<Section>> totalSections;
+	/* private ArrayList<Section> quiz;
+	private ArrayList<Section> lab;
+	private ArrayList<Section> lecture;
+	private ArrayList<Section> discussion; */
 	
 	public AddClass(String deptName, String classCode) {
 		this.className = deptName + classCode;
@@ -13,7 +17,7 @@ public class AddClass {
 		this.totalSections = retriveSections.getSections();
 	}
 	
-	public ArrayList<Section> getTotalSections() {
+	public ArrayList<ArrayList<Section>> getTotalSections() {
 		return totalSections;
 	}
 }

@@ -19,7 +19,10 @@ public class RetriveSections {
 		totalSections = new ArrayList<Section>();
 	}
 	
-	public ArrayList<Section> getSections() {
+	public ArrayList<ArrayList<Section>> getSections() {
+		// giant array list of quizzes, blah 
+		ArrayList<ArrayList<Section>> typedSections = new ArrayList<ArrayList<Section>>();
+		
 		Connection conn = null;
 		ResultSet rs = null;
 		java.sql.PreparedStatement checkParams = null;
@@ -47,13 +50,28 @@ public class RetriveSections {
 					String startTime = sectionResult.getString("startTime");
 					String endTime = sectionResult.getString("endTime");
 					String days = sectionResult.getString("days");
-					String[] daysParsed = days.split(",");
+					String[] daysParsed = days.split(" ");
 					ArrayList<Integer> daysInts = new ArrayList<Integer>();
 					for(int i  = 0; i < daysParsed.length; i++) {
 						daysInts.add(Integer.parseInt(daysParsed[i]));
 					}
 					totalSections.add(new Section(sectionID, type, startTime, endTime, daysInts));
 				}
+
+				java.sql.PreparedStatement getTypes = conn.prepareStatement("SELECT DISTINCT type FROM Sections WHERE courseID=?");
+				getTypes.setInt(1, courseID);
+				ResultSet ourTypes = getTypes.executeQuery();
+				while(ourTypes.next()) {
+					 ArrayList<Section> oneType = new ArrayList<Section>();
+					 for(int i = 0; i < totalSections.size(); i++) {
+						 if(totalSections.get(i).getType().equals(ourTypes.getString("type"))) {
+							 oneType.add(totalSections.get(i));
+						 }
+					 }
+					 typedSections.add(oneType);
+				}
+				
+				
 				if(getCourseSections != null) {
 					getCourseSections.close();
 				}
@@ -78,6 +96,6 @@ public class RetriveSections {
 			System.out.println("Could not find database: " + e.getMessage());
 		}
 		
-		return this.totalSections;
+		return typedSections;
 	}
 }
