@@ -52,38 +52,44 @@ public class AddClass {
 				Section num1 = totalSections.get(0).get(i);
 				for(int j = 0; j < totalSections.get(1).size(); j++) {
 					Section num2 = totalSections.get(1).get(j);
-						for(int k = 0; k < totalSections.get(2).size(); k++) {
-							Section num3 = totalSections.get(2).get(k);
-							if(!num1.doesConflict(num3.getStartTime(), num3.getEndTime(), num3.getDays()) &&
-								!num2.doesConflict(num3.getStartTime(), num3.getEndTime(), num3.getDays()) &&
-								!num1.doesConflict(num2.getStartTime(),num2.getEndTime(),num2.getDays())) {
-
-								ArrayList<Section> a = new ArrayList<Section>();
-								a.add(totalSections.get(0).get(i));
-								a.add(totalSections.get(1).get(j));
-								a.add(totalSections.get(2).get(k));
-								permutations.add(a);
-							}
-							else {
-								System.out.println("Conflict");
-							}
+					for(int k = 0; k < totalSections.get(2).size(); k++) {
+						Section num3 = totalSections.get(2).get(k);
+						if(!num1.doesConflict(num3.getStartTime(), num3.getEndTime(), num3.getDays()) && !num2.doesConflict(num3.getStartTime(), num3.getEndTime(), num3.getDays()) && !num1.doesConflict(num2.getStartTime(),num2.getEndTime(),num2.getDays())) {							
+							ArrayList<Section> a = new ArrayList<Section>();
+							a.add(totalSections.get(0).get(i));
+							a.add(totalSections.get(1).get(j));
+							a.add(totalSections.get(2).get(k));
+							permutations.add(a);
 						}
-	
+						else {
+							System.out.println("Conflict");
+						}
+					}
 				}
 			}
 		}
 		//Lecture, Lab, Quiz, Discussion
 		else if(numTypes == 4) {
 			for(int i = 0; i < totalSections.get(0).size(); i++) {
+				Section num1 = totalSections.get(0).get(i);
 				for(int j = 0; j < totalSections.get(1).size(); j++) {
-					for(int k = 0; k < totalSections.get(2).size(); k++) {
-						for(int l = 0; l < totalSections.get(3).size(); l++) {
-							ArrayList<Section> a = new ArrayList<Section>();
-							a.add(totalSections.get(0).get(i));
-							a.add(totalSections.get(1).get(j));
-							a.add(totalSections.get(2).get(k));
-							a.add(totalSections.get(3).get(l));
-							permutations.add(a);
+					Section num2 = totalSections.get(1).get(j);
+					if(!num1.doesConflict(num2.getStartTime(),num2.getEndTime(),num2.getDays())) {
+						for(int k = 0; k < totalSections.get(2).size(); k++) {
+							Section num3 = totalSections.get(2).get(k);
+							if(!num1.doesConflict(num3.getStartTime(), num3.getEndTime(), num3.getDays()) &&
+								!num2.doesConflict(num3.getStartTime(), num3.getEndTime(), num3.getDays()) ){
+								for(int l = 0; l < totalSections.get(3).size(); l++) {
+									Section num4 = totalSections.get(3).get(l);
+
+									ArrayList<Section> a = new ArrayList<Section>();
+									a.add(totalSections.get(0).get(i));
+									a.add(totalSections.get(1).get(j));
+									a.add(totalSections.get(2).get(k));
+									a.add(totalSections.get(3).get(l));
+									permutations.add(a);
+								}
+							}
 						}
 					}
 				}

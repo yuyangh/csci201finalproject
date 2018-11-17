@@ -3,7 +3,7 @@ package csci201finalproject;
 import java.util.ArrayList;
 
 public class TestClass {
-	
+
 	public static void main(String[] args) {
 		//Verify that totalSections works
 		AddClass test = new AddClass("CSCI", "CSCI103");

@@ -77,6 +77,7 @@ public class Section {
 					// if the otherStarTime is greater than the startTime but less than the end time => conflict
 					if(this.StartTime.compareTo(otherStartTime) < 0 && this.EndTime.compareTo(otherStartTime) > 0) return true;
 					if(this.StartTime.compareTo(otherEndTime) < 0 && this.EndTime.compareTo(otherEndTime) > 0) return true;
+					if(this.StartTime.compareTo(otherStartTime)>0 && this.EndTime.compareTo(otherEndTime)<0) return true;
 				}
 			}
 		}
