@@ -12,21 +12,21 @@ public class RetriveSections {
 	private String dept;
 	private String classCode;
 	private ArrayList<Section> totalSections;
-	
+
 	public RetriveSections(String dept, String classCode) {
 		this.dept = dept;
 		this.classCode = classCode;
 		totalSections = new ArrayList<Section>();
 	}
-	
+
 	public ArrayList<ArrayList<Section>> getSections() {
-		// giant array list of quizzes, blah 
+		// giant array list of quizzes, blah
 		ArrayList<ArrayList<Section>> typedSections = new ArrayList<ArrayList<Section>>();
-		
+
 		Connection conn = null;
 		ResultSet rs = null;
 		java.sql.PreparedStatement checkParams = null;
-		
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			//Class.forName("com.mysql.jdbc.Driver");
@@ -40,13 +40,14 @@ public class RetriveSections {
 			if(rs.next()) {
 				System.out.println("Course " + rs.getString("courseName") + " with ID " + rs.getInt("courseID") + " found in dept " + rs.getString("departmentName"));
 				int courseID = rs.getInt("courseID");
-				
+
 				java.sql.PreparedStatement getCourseSections = conn.prepareStatement("SELECT * FROM Sections WHERE courseID=?");
 				getCourseSections.setInt(1, courseID);
 				ResultSet sectionResult = getCourseSections.executeQuery();
 				while(sectionResult.next()) {
 					/* Returning all necessary info to populate our array list*/
 					String sectionID = sectionResult.getString("sectionID");
+					String sectionName = sectionResult.getString("sectionName");
 					String type = sectionResult.getString("type");
 					String startTime = sectionResult.getString("startTime");
 					String endTime = sectionResult.getString("endTime");
@@ -56,7 +57,7 @@ public class RetriveSections {
 					for(int i  = 0; i < daysParsed.length; i++) {
 						daysInts.add(Integer.parseInt(daysParsed[i]));
 					}
-					totalSections.add(new Section(sectionID, type, startTime, endTime, daysInts));
+					totalSections.add(new Section(sectionID,sectionName, type, startTime, endTime, daysInts));
 				}
 
 				java.sql.PreparedStatement getTypes = conn.prepareStatement("SELECT DISTINCT type FROM Sections WHERE courseID=?");
@@ -71,32 +72,32 @@ public class RetriveSections {
 					 }
 					 typedSections.add(oneType);
 				}
-				
-				
+
+
 				if(getCourseSections != null) {
 					getCourseSections.close();
 				}
 				if(sectionResult != null) {
 					sectionResult.close();
 				}
-				
+
 			} else {
 				System.out.println("The deparment or class code does not exists!");
 			}
-			
+
 			if(checkParams != null) {
 				checkParams.close();
 			}
 			if(rs != null) {
 				rs.close();
 			}
-			
+
 		} catch (ClassNotFoundException e) {
 			System.out.println("Could not find driver: " + e.getMessage());
 		} catch (SQLException e) {
 			System.out.println("Could not find database: " + e.getMessage());
 		}
-		
+
 		return typedSections;
 	}
 }
