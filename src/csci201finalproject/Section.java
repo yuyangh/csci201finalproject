@@ -67,7 +67,7 @@ public class Section {
 		this.Days = days;
 	}
 
-	public boolean doesConflict(String otherEndTime, String otherStartTime, ArrayList<Integer> otherDays) {
+	public boolean doesConflict(String otherStartTime, String otherEndTime, ArrayList<Integer> otherDays) {
 		for(int i = 0; i < this.Days.size(); i++) {
 			for(int k = 0; k < otherDays.size(); k++) {
 				// identify potential conflict
