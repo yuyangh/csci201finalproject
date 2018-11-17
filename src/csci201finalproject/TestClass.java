@@ -3,7 +3,7 @@ package csci201finalproject;
 import java.util.ArrayList;
 
 public class TestClass {
-	
+
 	public static void main(String[] args) {
 		//Verify that totalSections works
 		AddClass test = new AddClass("CSCI", "CSCI103");
@@ -27,11 +27,10 @@ public class TestClass {
 			System.out.println();
 		}
 		System.out.println("\n\n\n");
-		//Verify class of two types results in correct permutations
-		AddClass test3 = new AddClass("BISC","BISC320");
+		//Verify class of three types results in correct permutations
+		AddClass test3 = new AddClass("PHYS","PHYS152");
 		ArrayList<ArrayList<Section>> permutations3 = test3.generatePermutations();
 		for(int i = 0; i < permutations3.size(); i++) {
-			System.out.print("Permutation: ");
 			for(int j = 0; j < permutations3.get(i).size(); j++) {
 				Section temp = permutations3.get(i).get(j);
 				System.out.print(temp.getSectionID() + " ");
@@ -39,6 +38,7 @@ public class TestClass {
 			System.out.println();
 		}
 		System.out.println("\n\n\n");
+		/*
 		//Verify class of three types results in correct permutations
 		AddClass test4 = new AddClass("ASTR","ASTR100");
 		ArrayList<ArrayList<Section>> permutations4 = test4.generatePermutations();
@@ -62,5 +62,6 @@ public class TestClass {
 			}
 			System.out.println();
 		}
+		*/
 	}
 }
