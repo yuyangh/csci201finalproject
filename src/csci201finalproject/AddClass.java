@@ -104,9 +104,6 @@ public class AddClass {
 		return permutations;
 	}
 
-	public String getClassName() {
-		return className;
-	}
 
 	public void setClassName(String className) {
 		this.className = className;
