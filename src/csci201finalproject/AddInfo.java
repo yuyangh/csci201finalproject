@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AddInfo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	// todo currently put here
-	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalHashMap =new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+
 	
     public AddInfo() {
         super();

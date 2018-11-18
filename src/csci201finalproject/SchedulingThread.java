@@ -6,16 +6,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SchedulingThread extends Thread {
 
+	// mark's version
 	private ArrayList<AddClass> totalClasses;
 	private ArrayList<Constraint> constraints;
 	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> concurrentSchedules;
+	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalHashMap =new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
 
-	private Hashtable schedules;
-	private Hashtable general;
+	// luz's version
+	private Hashtable<String, ArrayList<ArrayList<Section>>> schedules;
+	private Hashtable<String, ArrayList<ArrayList<Section>>> general;
 	private String addClassKey;
 
 	// will have to create a new instance of the thread with each time the algorithm is called
-	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, ConcurrentHashMap schedules) {
+	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints,
+	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules) {
 		System.out.println("In constructor");
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
@@ -25,8 +29,8 @@ public class SchedulingThread extends Thread {
 
 	// will have to create a new instance of the thread with each time the algorithm is called
 	// key must be passed in w/ constructor, run method cannot take parameters
-	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, Hashtable schedules,
-	                        Hashtable general, String addClassKey) {
+	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, Hashtable<String, ArrayList<ArrayList<Section>>> schedules,
+	                        Hashtable<String, ArrayList<ArrayList<Section>>> general, String addClassKey) {
 		System.out.println("In constructor");
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
@@ -67,15 +71,15 @@ public class SchedulingThread extends Thread {
 		// this step cannot be optimized with executors
 		for (AddClass addClass : totalClasses) {
 			String className = totalClasses.get(0).getClassName();
-			if (!AddInfo.generalHashMap.containsKey(className)) {
+			if (!SchedulingThread.generalHashMap.containsKey(className)) {
 				ArrayList<ArrayList<Section>> permutations = totalClasses.get(0).generatePermutations();
-				AddInfo.generalHashMap.put(className, permutations);
+				SchedulingThread.generalHashMap.put(className, permutations);
 			}
 		}
 		for (AddClass addClass : totalClasses) {
 			String className = totalClasses.get(0).getClassName();
 			if (!schedules.containsKey(className)) {
-				ArrayList<ArrayList<Section>> permutations = getPermuationWithConstraints(AddInfo.generalHashMap.get(className), constraints);
+				ArrayList<ArrayList<Section>> permutations = getPermuationWithConstraints(SchedulingThread.generalHashMap.get(className), constraints);
 				concurrentSchedules.put(className, permutations);
 			}
 
@@ -133,7 +137,7 @@ public class SchedulingThread extends Thread {
 
 
 	/* TODO: get rid of this line and investigate these warnings */
-	@SuppressWarnings("unchecked")
+	// @SuppressWarnings("unchecked")
 	public void run() {
 
         /* Check if the class is in our general hash table; if not, create all valid permutations,
@@ -265,6 +269,7 @@ public class SchedulingThread extends Thread {
 
 	public static void main(String[] args) {
 		new SchedulingThread(null, null, null);
+		new SchedulingThread(null, null, null,null, null);
 	}
 
 
