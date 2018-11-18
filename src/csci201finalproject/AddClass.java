@@ -11,6 +11,8 @@ public class AddClass {
 	private ArrayList<Section> lecture;
 	private ArrayList<Section> discussion; */
 
+
+
 	public AddClass(String deptName, String classCode) {
 		this.className = deptName + classCode;
 		this.retriveSections = new RetriveSections(deptName, classCode);
@@ -97,4 +99,26 @@ public class AddClass {
 		}
 		return permutations;
 	}
+
+	public String getClassName() {
+		return className;
+	}
+
+	public void setClassName(String className) {
+		this.className = className;
+	}
+
+	public RetriveSections getRetriveSections() {
+		return retriveSections;
+	}
+
+	public void setRetriveSections(RetriveSections retriveSections) {
+		this.retriveSections = retriveSections;
+	}
+
+	public void setTotalSections(ArrayList<ArrayList<Section>> totalSections) {
+		this.totalSections = totalSections;
+	}
+
+
 }
