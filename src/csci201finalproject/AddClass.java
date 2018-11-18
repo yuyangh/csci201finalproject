@@ -20,6 +20,10 @@ public class AddClass {
 	public ArrayList<ArrayList<Section>> getTotalSections() {
 		return totalSections;
 	}
+
+	public String getClassName() {
+		return this.className;
+	}
 	public ArrayList<ArrayList<Section>> generatePermutations(){
 		ArrayList<ArrayList<Section>> permutations = new ArrayList<ArrayList<Section>>();
 		int numTypes = totalSections.size();
