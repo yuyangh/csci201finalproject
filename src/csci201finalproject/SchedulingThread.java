@@ -1,7 +1,6 @@
 package csci201finalproject;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SchedulingThread extends Thread {
@@ -27,6 +26,7 @@ public class SchedulingThread extends Thread {
 	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules, String addClassKey) {
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
+		// dummy generalSchedules
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
 	}
@@ -188,9 +188,9 @@ public class SchedulingThread extends Thread {
 	}
 
 	/**
-	 * @param totalClasses
+	 * @param totalClasses all classes that the user would like to have
 	 * @param addClassKey  the new key inserted into the totalClasses
-	 * @return prevClass names with " " between, no " " before or after
+	 * @return each class (except addClassKey)'s name with " " between, no " " before or after
 	 */
 	public static String concatPrevClassNames(ArrayList<AddClass> totalClasses, String addClassKey) {
 		StringBuilder prevClass = new StringBuilder();
@@ -365,12 +365,12 @@ public class SchedulingThread extends Thread {
 
 	}
 
-	/* TODO: get rid of this line and investigate these warnings */
 	// @SuppressWarnings("unchecked")
 	public void run() {
 
         /* Check if the class is in our generalSchedules hash table; if not, create all valid permutations,
         where a valid permutation is defined as a set of classes (ex: lecture, lab, quiz) that do not conflict with each other. */
+		// needs to use containsKey() rather than contains()!
 		if (!generalSchedules.containsKey(addClassKey)) {
 			for (AddClass totalClass : totalClasses) {
 				if (totalClass.getClassName().equals(addClassKey)) {
@@ -387,29 +387,14 @@ public class SchedulingThread extends Thread {
 		 * schedule for that particular class.  */
 		ArrayList<ArrayList<Section>> validAgainstContraints = new ArrayList<ArrayList<Section>>();
 
-		// for (int i = 0; i < validPermutations.size(); i++) {
-		// 	/* Extract a single permutation (ex: lec, lab, quiz) of the class we just added */
-		// 	ArrayList<Section> singlePermutation = validPermutations.get(i);
-		// 	boolean stillValid = true;
-		// 	/* these for loops check whether each aspect of the permutation is valid against all the constraints.
-		// 	 * If even one aspect (a lec, lab, or quiz) does not comply with constraints, we flag that and break
-		// 	 * out of our loops accordingly */
-		// 	for (int j = 0; j < singlePermutation.size(); j++) {
-		// 		for (int k = 0; k < constraints.size(); k++) {
-		// 			Constraint singleConstraint = constraints.get(k);
-		// 			if (singlePermutation.get(j).doesConflict(singleConstraint.getStartTime(), singleConstraint.getEndTime(), singleConstraint.getDays())) {
-		// 				stillValid = false;
-		// 				break;
-		// 			}
-		// 		}
-		// 		if (!stillValid) {
-		// 			break;
-		// 		}
-		// 	}
-		// 	if (stillValid) {
-		// 		validAgainstContraints.add(singlePermutation);
-		// 	}
-		// }
+		// todo if schedules already contains the key we want, then update such key's contents by:
+		// this is a case for constraint update
+		if (schedules.containsKey(concatPrevClassNames(totalClasses, ""))) {
+			// temp= generalSchedules' key intersect constrainsts
+			// result = generalSchedules' key-{temp}
+			// push result into schedules
+			// return
+		}
 		validAgainstContraints = getPermutationWithConstraints(validPermutations, constraints);
 
 		schedules.put(addClassKey, validAgainstContraints);
@@ -417,7 +402,6 @@ public class SchedulingThread extends Thread {
 		/* Code to generate the key to find the set which we are finding the intersection of */
 		String prevClass = "";
 		prevClass = concatPrevClassNames(totalClasses, addClassKey);
-
 
 		ArrayList<ArrayList<Section>> setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validAgainstContraints);
 
