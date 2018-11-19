@@ -83,4 +83,16 @@ public class Section {
 		}
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "Section{" +
+				"SectionID='" + SectionID + '\'' +
+				", SectionName='" + SectionName + '\'' +
+				", Type='" + Type + '\'' +
+				", StartTime='" + StartTime + '\'' +
+				", EndTime='" + EndTime + '\'' +
+				", Days=" + Days +
+				'}';
+	}
 }
