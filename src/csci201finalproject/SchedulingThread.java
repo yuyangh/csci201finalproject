@@ -10,7 +10,7 @@ public class SchedulingThread extends Thread {
 	private ArrayList<AddClass> totalClasses;
 	private ArrayList<Constraint> constraints;
 	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> concurrentSchedules;
-	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalHashMap =new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalHashMap = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
 
 	// luz's version
 	private Hashtable<String, ArrayList<ArrayList<Section>>> schedules;
@@ -20,7 +20,6 @@ public class SchedulingThread extends Thread {
 	// will have to create a new instance of the thread with each time the algorithm is called
 	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints,
 	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules) {
-		System.out.println("In constructor");
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
 		this.concurrentSchedules = schedules;
@@ -31,7 +30,6 @@ public class SchedulingThread extends Thread {
 	// key must be passed in w/ constructor, run method cannot take parameters
 	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, Hashtable<String, ArrayList<ArrayList<Section>>> schedules,
 	                        Hashtable<String, ArrayList<ArrayList<Section>>> general, String addClassKey) {
-		System.out.println("In constructor");
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
 		this.schedules = schedules;
@@ -69,18 +67,18 @@ public class SchedulingThread extends Thread {
         add all non-conflicting result to the schedules hashtable*/
 
 		// this step cannot be optimized with executors
-		for (AddClass addClass : totalClasses) {
-			String className = totalClasses.get(0).getClassName();
+		for (AddClass singleAddClass : totalClasses) {
+			String className = singleAddClass.getClassName();
 			if (!SchedulingThread.generalHashMap.containsKey(className)) {
-				ArrayList<ArrayList<Section>> permutations = totalClasses.get(0).generatePermutations();
+				ArrayList<ArrayList<Section>> permutations = singleAddClass.generatePermutations();
 				SchedulingThread.generalHashMap.put(className, permutations);
 			}
 		}
-		for (AddClass addClass : totalClasses) {
-			String className = totalClasses.get(0).getClassName();
-			if (!schedules.containsKey(className)) {
-				ArrayList<ArrayList<Section>> permutations = getPermuationWithConstraints(SchedulingThread.generalHashMap.get(className), constraints);
-				concurrentSchedules.put(className, permutations);
+		for (AddClass singleAddClass : totalClasses) {
+			String className = singleAddClass.getClassName();
+			if (!concurrentSchedules.containsKey(className)) {
+				ArrayList<ArrayList<Section>> validPermutationWithConstrains = getPermuationWithConstraints(SchedulingThread.generalHashMap.get(className), constraints);
+				concurrentSchedules.put(className, validPermutationWithConstrains);
 			}
 
 		}
@@ -91,19 +89,119 @@ public class SchedulingThread extends Thread {
 
 	}
 
+	/**
+	 *
+	 * @param validPermutations permutations (ex: lec, lab, quiz) of the class
+	 * @param constraints list of Constraint object
+	 * @return valid Permutation With Constrains
+	 */
 	public static ArrayList<ArrayList<Section>> getPermuationWithConstraints
-			(ArrayList<ArrayList<Section>> permutations, ArrayList<Constraint> constraints) {
-		// todo go through each element, find conflict or not
-		// if find, continue
-		//
-		ArrayList<ArrayList<Section>> result = null;
-		return result;
+			(ArrayList<ArrayList<Section>> validPermutations, ArrayList<Constraint> constraints) {
+		ArrayList<ArrayList<Section>> validPermutationWithConstrains = new ArrayList<ArrayList<Section>>();
+
+		for (ArrayList<Section> singleValidPermutation : validPermutations) {
+			/* Extract a single permutation (ex: lec, lab, quiz) of the class we just added */
+			boolean stillValid = true;
+			/* these for loops check whether each aspect of the permutation is valid against all the constraints.
+			 * If even one aspect (a lec, lab, or quiz) does not comply with constraints, we flag that and break
+			 * out of our loops accordingly */
+			for (Section aSinglePermutation : singleValidPermutation) {
+				if(constraints!=null){
+					for (Constraint singleConstraint : constraints) {
+						if (aSinglePermutation.doesConflict(singleConstraint.getStartTime(), singleConstraint.getEndTime(), singleConstraint.getDays())) {
+							stillValid = false;
+							break;
+						}
+					}
+				}
+				if (!stillValid) {
+					break;
+				}
+			}
+			if (stillValid) {
+				validPermutationWithConstrains.add(singleValidPermutation);
+			}
+		}
+
+		return validPermutationWithConstrains;
 	}
 
-	public static ArrayList<ArrayList<Section>> concatTwoPermuations
-			(ArrayList<ArrayList<Section>> firPermutations, ArrayList<ArrayList<Section>> pSecPrmutations) {
-		ArrayList<ArrayList<Section>> result = null;
-		return result;
+	// todo think about two same permutations
+	public static ArrayList<ArrayList<Section>> concatTwoPermutations
+			(ArrayList<ArrayList<Section>> firstPermutations, ArrayList<ArrayList<Section>> secondPermutations) {
+		ArrayList<ArrayList<Section>> setIntersection =null;
+
+		/* if prevClass is still an empty string, that means the class we are adding if the first
+		 * class added (there would be no "previous" set of classes to create an intersection of).
+		 * TODO: write code to handle that case. Should be simple enough. */
+		if(firstPermutations==null){
+			if(secondPermutations==null){
+				return setIntersection;
+			}else {
+				return secondPermutations;
+			}
+		}else {
+			if(secondPermutations==null){
+				return firstPermutations;
+			}else {
+				setIntersection = new ArrayList<ArrayList<Section>>();
+				/* extracts the schedule developed for the previous classes (ex: "103 104")*/
+				/* we iterate through the valid single course schedule for the class we just added.
+				 * ex: this would be the valid schedule that fits all the constraints for a single course
+				 * called CSCI201 */
+				for (ArrayList<Section> firstSinglePermutation : firstPermutations) {
+					/* this array list will add as the container for the new single schedule developed.
+					 * For example, when one schedule for the single course CS201 is compared and has no
+					 * conflict with a schedule developed for CS103 and CS104, this is the container that
+					 * holds that new resulting schedule. NOTE: this also means that this arraylist has a
+					 * variety of sections from DIFFERENT courses. Some parsing will be required to organize it
+					 * by course again. */
+					ArrayList<Section> validSingleSetInersection = new ArrayList<Section>();
+
+					boolean stillValid = true;
+
+					for (ArrayList<Section> secondSinglePermutation : secondPermutations) {
+						/* extracts a single schedule for previous classes. ex: one mixture of lec, lab, quiz for
+						 * CS103 and CS104 that do not conflict with each other. */
+						/* these for loops breakdown the aforementioned schedules back into comparable sections. */
+						for (Section singlefirstSection : firstSinglePermutation) {
+							for (Section singleSecondSection : secondSinglePermutation) {
+								if (singlefirstSection.doesConflict(singleSecondSection.getStartTime(), singleSecondSection.getEndTime(), singleSecondSection.getDays())) {
+									/* if even one section conflicts, then it would not be a valid schedule */
+									stillValid = false;
+									break;
+								}
+								// else {
+								// 	/* otherwise, everything is fine for now and we want to push the section that
+								// 	 * works into the data set */
+								// 	validSingleSetInersection.add(singleSecondSection);
+								// }
+							}
+							if (stillValid) {
+								// /* if there were no conflicts at by the end, we can go ahead and push this section too. */
+								// validSingleSetInersection.add(singlefirstSection);
+							} else {
+								break;
+							}
+						}
+
+						if (stillValid) {
+							/* if all the sections from both schedules are compatabile, then the resulting
+							 * schedule is part of the set intersection. */
+							ArrayList<Section> singlePermutationCombination= new ArrayList<Section>();
+							singlePermutationCombination.addAll(firstSinglePermutation);
+							singlePermutationCombination.addAll(secondSinglePermutation);
+							setIntersection.add(singlePermutationCombination);
+
+						} else {
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		return setIntersection;
 	}
 
 	public static ArrayList<ArrayList<Section>> concatPermuations
@@ -142,7 +240,9 @@ public class SchedulingThread extends Thread {
 
         /* Check if the class is in our general hash table; if not, create all valid permutations,
         where a valid permutation is defined as a set of classes (ex: lecture, lab, quiz) that do not conflict with each other. */
-		if (!general.contains(addClassKey)) {
+
+
+        if (!general.contains(addClassKey)) {
 			for (int i = 0; i < totalClasses.size(); i++) {
 				if (totalClasses.get(i).getClassName().equals(addClassKey)) {
 					general.put(addClassKey, totalClasses.get(i).generatePermutations());
@@ -150,35 +250,37 @@ public class SchedulingThread extends Thread {
 			}
 		}
 
-		ArrayList<ArrayList<Section>> validPermutations = (ArrayList<ArrayList<Section>>) general.get(addClassKey);
+
+		ArrayList<ArrayList<Section>> validPermutations = general.get(addClassKey);
 		/* validAgainstContraints will be the things inserted into our schedule hashtable. This is defined as a
 		 * list of permutations that do not conflict with any constraint. Thus, they are considered a valid
 		 * schedule for that particular class.  */
 		ArrayList<ArrayList<Section>> validAgainstContraints = new ArrayList<ArrayList<Section>>();
 
-		for (int i = 0; i < validPermutations.size(); i++) {
-			/* Extract a single permutation (ex: lec, lab, quiz) of the class we just added */
-			ArrayList<Section> singlePermutation = validPermutations.get(i);
-			boolean stillValid = true;
-			/* these for loops check whether each aspect of the permutation is valid against all the constraints.
-			 * If even one aspect (a lec, lab, or quiz) does not comply with constraints, we flag that and break
-			 * out of our loops accordingly */
-			for (int j = 0; j < singlePermutation.size(); j++) {
-				for (int k = 0; k < constraints.size(); k++) {
-					Constraint singleConstraint = constraints.get(k);
-					if (singlePermutation.get(j).doesConflict(singleConstraint.getStartTime(), singleConstraint.getEndTime(), singleConstraint.getDays())) {
-						stillValid = false;
-						break;
-					}
-				}
-				if (!stillValid) {
-					break;
-				}
-			}
-			if (stillValid) {
-				validAgainstContraints.add(singlePermutation);
-			}
-		}
+		// for (int i = 0; i < validPermutations.size(); i++) {
+		// 	/* Extract a single permutation (ex: lec, lab, quiz) of the class we just added */
+		// 	ArrayList<Section> singlePermutation = validPermutations.get(i);
+		// 	boolean stillValid = true;
+		// 	/* these for loops check whether each aspect of the permutation is valid against all the constraints.
+		// 	 * If even one aspect (a lec, lab, or quiz) does not comply with constraints, we flag that and break
+		// 	 * out of our loops accordingly */
+		// 	for (int j = 0; j < singlePermutation.size(); j++) {
+		// 		for (int k = 0; k < constraints.size(); k++) {
+		// 			Constraint singleConstraint = constraints.get(k);
+		// 			if (singlePermutation.get(j).doesConflict(singleConstraint.getStartTime(), singleConstraint.getEndTime(), singleConstraint.getDays())) {
+		// 				stillValid = false;
+		// 				break;
+		// 			}
+		// 		}
+		// 		if (!stillValid) {
+		// 			break;
+		// 		}
+		// 	}
+		// 	if (stillValid) {
+		// 		validAgainstContraints.add(singlePermutation);
+		// 	}
+		// }
+		validAgainstContraints=getPermuationWithConstraints(validPermutations,constraints);
 
 		schedules.put(addClassKey, validAgainstContraints);
 
@@ -189,87 +291,119 @@ public class SchedulingThread extends Thread {
 				prevClass += totalClasses.get(p).getClassName() + " ";
 			}
 		}
-		/* the string key generated should be concatenation of all the classes inserted into table before addClass */
-		/* EX: CS103 was added to our class schedule. Then we add CS104 and that goes into our schedules hashtable. If
-		 * we want to insert CS201 next, we need to find the set intersection of the key CS201 with the set "CS103 CS104"*/
-		/* This method of key generation will have to changed when it comes to removal. We take advantage of the order of
-		 * and arraylist to generate this key */
+		// /* the string key generated should be concatenation of all the classes inserted into table before addClass */
+		// /* EX: CS103 was added to our class schedule. Then we add CS104 and that goes into our schedules hashtable. If
+		//  * we want to insert CS201 next, we need to find the set intersection of the key CS201 with the set "CS103 CS104"*/
+		// /* This method of key generation will have to changed when it comes to removal. We take advantage of the order of
+		//  * and arraylist to generate this key */
+		//
+		// ArrayList<ArrayList<Section>> prevClassesSet = null;
+		// ArrayList<ArrayList<Section>> setIntersection = new ArrayList<ArrayList<Section>>();
+		//
+		// /* if prevClass is still an empty string, that means the class we are adding if the first
+		//  * class added (there would be no "previous" set of classes to create an intersection of).
+		//  * TODO: write code to handle that case. Should be simple enough. */
+		// if (schedules.containsKey(prevClass) && prevClass != "") {
+		// 	/* extracts the schedule developed for the previous classes (ex: "103 104")*/
+		// 	prevClassesSet = schedules.get(prevClass);
+		// 	/* we iterate through the valid single course schedule for the class we just added.
+		// 	 * ex: this would be the valid schedule that fits all the constraints for a single course
+		// 	 * called CSCI201 */
+		// 	for (int i = 0; i < validAgainstContraints.size(); i++) {
+		// 		/* this array list will add as the container for the new single schedule developed.
+		// 		 * For example, when one schedule for the single course CS201 is compared and has no
+		// 		 * conflict with a schedule developed for CS103 and CS104, this is the container that
+		// 		 * holds that new resulting schedule. NOTE: this also means that this arraylist has a
+		// 		 * variety of sections from DIFFERENT courses. Some parsing will be required to organize it
+		// 		 * by course again. */
+		// 		ArrayList<Section> validSingleSetInersection = new ArrayList<Section>();
+		//
+		// 		ArrayList<Section> singleCourseSchedule = validAgainstContraints.get(i);
+		// 		boolean stillValid = true;
+		//
+		// 		for (int k = 0; k < prevClassesSet.size(); k++) {
+		// 			/* extracts a single schedule for previous classes. ex: one mixture of lec, lab, quiz for
+		// 			 * CS103 and CS104 that do not conflict with each other. */
+		// 			ArrayList<Section> singlePrevClassSchedule = prevClassesSet.get(k);
+		//
+		// 			/* these for loops breakdown the aforementioned schedules back into comparable sections. */
+		// 			for (int oneSec = 0; oneSec < singleCourseSchedule.size(); oneSec++) {
+		// 				Section singleCourse = singleCourseSchedule.get(oneSec);
+		// 				for (int onePrev = 0; onePrev < singlePrevClassSchedule.size(); onePrev++) {
+		// 					Section singlePrev = singlePrevClassSchedule.get(onePrev);
+		// 					if (singleCourse.doesConflict(singlePrev.getStartTime(), singlePrev.getEndTime(), singlePrev.getDays())) {
+		// 						/* if even one section conflicts, then it would not be a valid schedule */
+		// 						stillValid = false;
+		// 						break;
+		// 					} else {
+		// 						/* otherwise, everything is fine for now and we want to push the section that
+		// 						 * works into the data set */
+		// 						validSingleSetInersection.add(singlePrev);
+		// 					}
+		// 				}
+		// 				if (stillValid) {
+		// 					/* if there were no conflicts at by the end, we can go ahead and push this section too. */
+		// 					validSingleSetInersection.add(singleCourse);
+		// 				} else {
+		// 					break;
+		// 				}
+		// 			}
+		// 			if (stillValid) {
+		// 				/* if all the sections from both schedules are compatabile, then the resulting
+		// 				 * schedule is part of the set intersection. */
+		// 				setIntersection.add(validSingleSetInersection);
+		// 			} else {
+		// 				break;
+		// 			}
+		// 		}
+		// 	}
+		// 	String newIntersectionKey = prevClass + " " + addClassKey;
+		// 	schedules.put(newIntersectionKey, setIntersection);
+		// 	/* this should be the end of the operation. to extract the new schedule, you just need the
+		// 	 * key, which is a combination of the names of all the courses. */
+		// } else {
+		// 	/* Develop this code to handle not finding the previous classes intersection; the problem
+		// 	 * will most likely be that we are not generating the right key for it to begin with. */
+		// 	System.out.println("Schedule for previous classes not found.");
+		// }
 
-		ArrayList<ArrayList<Section>> prevClassesSet = null;
-		ArrayList<ArrayList<Section>> setIntersection = new ArrayList<ArrayList<Section>>();
-
-		/* if prevClass is still an empty string, that means the class we are adding if the first
-		 * class added (there would be no "previous" set of classes to create an intersection of).
-		 * TODO: write code to handle that case. Should be simple enough. */
-		if (schedules.containsKey(prevClass) && prevClass != "") {
-			/* extracts the schedule developed for the previous classes (ex: "103 104")*/
-			prevClassesSet = (ArrayList<ArrayList<Section>>) schedules.get(prevClass);
-			/* we iterate through the valid single course schedule for the class we just added.
-			 * ex: this would be the valid schedule that fits all the constraints for a single course
-			 * called CSCI201 */
-			for (int i = 0; i < validAgainstContraints.size(); i++) {
-				/* this array list will add as the container for the new single schedule developed.
-				 * For example, when one schedule for the single course CS201 is compared and has no
-				 * conflict with a schedule developed for CS103 and CS104, this is the container that
-				 * holds that new resulting schedule. NOTE: this also means that this arraylist has a
-				 * variety of sections from DIFFERENT courses. Some parsing will be required to organize it
-				 * by course again. */
-				ArrayList<Section> validSingleSetInersection = new ArrayList<Section>();
-
-				ArrayList<Section> singleCourseSchedule = validAgainstContraints.get(i);
-				boolean stillValid = true;
-
-				for (int k = 0; k < prevClassesSet.size(); k++) {
-					/* extracts a single schedule for previous classes. ex: one mixture of lec, lab, quiz for
-					 * CS103 and CS104 that do not conflict with each other. */
-					ArrayList<Section> singlePrevClassSchedule = prevClassesSet.get(k);
-
-					/* these for loops breakdown the aforementioned schedules back into comparable sections. */
-					for (int oneSec = 0; oneSec < singleCourseSchedule.size(); oneSec++) {
-						Section singleCourse = singleCourseSchedule.get(oneSec);
-						for (int onePrev = 0; onePrev < singlePrevClassSchedule.size(); onePrev++) {
-							Section singlePrev = singlePrevClassSchedule.get(onePrev);
-							if (singleCourse.doesConflict(singlePrev.getStartTime(), singlePrev.getEndTime(), singlePrev.getDays())) {
-								/* if even one section conflicts, then it would not be a valid schedule */
-								stillValid = false;
-								break;
-							} else {
-								/* otherwise, everything is fine for now and we want to push the section that
-								 * works into the data set */
-								validSingleSetInersection.add(singlePrev);
-							}
-						}
-						if (stillValid) {
-							/* if there were no conflicts at by the end, we can go ahead and push this section too. */
-							validSingleSetInersection.add(singleCourse);
-						} else {
-							break;
-						}
-					}
-					if (stillValid) {
-						/* if all the sections from both schedules are compatabile, then the resulting
-						 * schedule is part of the set intersection. */
-						setIntersection.add(validSingleSetInersection);
-					} else {
-						break;
-					}
-				}
-			}
+		ArrayList<ArrayList<Section>> setIntersection=concatTwoPermutations(schedules.get(prevClass),validAgainstContraints);
+		if(setIntersection!=null){
 			String newIntersectionKey = prevClass + " " + addClassKey;
 			schedules.put(newIntersectionKey, setIntersection);
-			/* this should be the end of the operation. to extract the new schedule, you just need the
-			 * key, which is a combination of the names of all the courses. */
-		} else {
-			/* Develop this code to handle not finding the previous classes intersection; the problem
-			 * will most likely be that we are not generating the right key for it to begin with. */
-			System.out.println("Schedule for previous classes not found.");
 		}
+	}
+
+	public static void test(){
+		ArrayList<AddClass> totalClasses;
+		ArrayList<Constraint> constraints;
+		Hashtable<String, ArrayList<ArrayList<Section>>> schedule;
+		Hashtable<String, ArrayList<ArrayList<Section>>> general;
+		String addClassKey;
+
+
+		AddClass addClass=new AddClass("CSCI", "CSCI103");
+		totalClasses=new ArrayList<AddClass>();
+		totalClasses.add(addClass);
+
+		Constraint constraint=null;
+		constraints=null;
+
+		schedule=new Hashtable<String, ArrayList<ArrayList<Section>>>();
+		general=new Hashtable<String, ArrayList<ArrayList<Section>>> ();
+		addClassKey="CSCI103";
+
+		SchedulingThread test1=new SchedulingThread(totalClasses,constraints,schedule,general,addClassKey);
+		test1.run();
+		System.out.println(general.toString());
+
 	}
 
 
 	public static void main(String[] args) {
 		new SchedulingThread(null, null, null);
-		new SchedulingThread(null, null, null,null, null);
+		new SchedulingThread(null, null, null, null, null);
+		test();
 	}
 
 

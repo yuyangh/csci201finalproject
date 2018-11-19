@@ -14,7 +14,8 @@ public class AddClass {
 
 
 	public AddClass(String deptName, String classCode) {
-		this.className = deptName + classCode;
+		// classCode is deptName+classCode!!!
+		this.className = classCode;
 		this.retriveSections = new RetriveSections(deptName, classCode);
 		this.totalSections = retriveSections.getSections();
 	}
