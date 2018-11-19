@@ -6,14 +6,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jdt.internal.compiler.ast.Statement;
 
 /**
  * Servlet implementation class AddUniqueUserServlet
@@ -50,35 +50,37 @@ public class AddUniqueUserServlet extends HttpServlet {
 		String userID = request.getParameter("userID");
 		String userName = request.getParameter("userName");
 		String userPicURL = request.getParameter("userPicURL");
-		
+
 		Connection conn = null;
 		Statement st = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;		
-	
+		ResultSet rs = null;
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+			conn = DriverManager.getConnection(
+					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			ps = conn.prepareStatement("SELECT * FROM Users WHERE facebookID=? AND email=?");
-			
+
 			ps.setString(1, userID); // set first variable in prepared statement
 			ps.setString(2, userEmail);
 			rs = ps.executeQuery();
-			if(!(rs.next()))
-			{
+			if (!(rs.next())) {
 				ps = conn.prepareStatement("INSERT INTO Users(facebookID,name,email,img,groupCode) VALUES(?,?,?,?,?)");
-				
+
 				ps.setString(1, userID); // set first variable in prepared statement
 				ps.setString(2, userName);
 				ps.setString(3, userEmail);
 				ps.setString(4, userPicURL);
 				ps.setInt(5, -1);
 				ps.executeUpdate();
+			} else {
+				System.out.println("User is already in database.");
 			}
 		} catch (SQLException sqle) {
-			System.out.println ("SQLException: " + sqle.getMessage());
+			System.out.println("SQLException: " + sqle.getMessage());
 		} catch (ClassNotFoundException cnfe) {
-			System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
+			System.out.println("ClassNotFoundException: " + cnfe.getMessage());
 		} finally {
 			try {
 				if (rs != null) {
