@@ -6,158 +6,55 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class SchedulingThread extends Thread {
 
-	// mark's version
+	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
 	private ArrayList<AddClass> totalClasses;
 	private ArrayList<Constraint> constraints;
-	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> concurrentSchedules;
-	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalHashMap = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
-
-	// luz's version
-	private Hashtable<String, ArrayList<ArrayList<Section>>> schedules;
-	private Hashtable<String, ArrayList<ArrayList<Section>>> generalSchedules;
+	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules;
 	private String addClassKey;
 
 	// will have to create a new instance of the thread with each time the algorithm is called
 	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints,
-	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules) {
+	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, String addClassKey) {
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
-		this.concurrentSchedules = schedules;
-
+		this.schedules = schedules;
+		this.addClassKey = addClassKey;
 	}
 
 	// will have to create a new instance of the thread with each time the algorithm is called
 	// key must be passed in w/ constructor, run method cannot take parameters
-	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, Hashtable<String, ArrayList<ArrayList<Section>>> schedules,
-	                        Hashtable<String, ArrayList<ArrayList<Section>>> generalSchedules, String addClassKey) {
+	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules,
+	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules, String addClassKey) {
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
-		this.generalSchedules = generalSchedules;
 	}
 
     /*
-    the process for call from the servlet
+    Process:
+    get call from the servlet
     front end get call for CSCI103
-    we are going to return the schedule Hashtable["csci103"]
+    we are going to return the schedules Hashtable["csci103"], this may stored in the Session
     however, the key does not exists
-    so condition lock,
-    as long as we compute the result,
-    signalAll() or notifyAll()
-    release the lock()
-    */
+    as long as we compute the result, insert into that
+    since ConcurrentHashMap is thread safe, we do not need to consider insertion and iteration fail
 
+    Example
+	suppose we would like to add the class csci 103
+	check if the generalSchedules hashtable has the CSCI103
+	if it does not, do the permutation and add to the generalSchedules hashtable
+	// check permutation code on test.java
+	copy the CSCI103 in the generalSchedules hashmap and check conflicts with the constraints
+	save all non-conflicting result in to the shcedule hashmap
 
-//        suppose we would like to add the class csci 103
-//        check if the generalSchedules hashtable has the CSCI103
-//        if it does not, do the permutation and add to the generalSchedules hashtable
-//        // check permutation code on test.java
-//        copy the CSCI103 in the generalSchedules hashtable and check conflicts with the constraints
-//        save all non-conflicting result in to the shcedule hashtable
-//
-//
-//        suppose we would like to add the class CSCI103&CSCI104
-//        check if the generalSchedules hashtable has the CSCI103&CSCI104
-//        if it does not, do the permutation and add to the generalSchedules hashtable
-//        add all non-conflicting result to the schedules hashtable
-
-
-	public ArrayList<AddClass> getTotalClasses() {
-		return totalClasses;
-	}
-
-	public void setTotalClasses(ArrayList<AddClass> totalClasses) {
-		this.totalClasses = totalClasses;
-	}
-
-	public ArrayList<Constraint> getConstraints() {
-		return constraints;
-	}
-
-	public void setConstraints(ArrayList<Constraint> constraints) {
-		this.constraints = constraints;
-	}
-
-	public ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> getConcurrentSchedules() {
-		return concurrentSchedules;
-	}
-
-	public void setConcurrentSchedules(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> concurrentSchedules) {
-		this.concurrentSchedules = concurrentSchedules;
-	}
-
-	public static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> getGeneralHashMap() {
-		return generalHashMap;
-	}
-
-	public static void setGeneralHashMap(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalHashMap) {
-		SchedulingThread.generalHashMap = generalHashMap;
-	}
-
-	public Hashtable<String, ArrayList<ArrayList<Section>>> getSchedules() {
-		return schedules;
-	}
-
-	public void setSchedules(Hashtable<String, ArrayList<ArrayList<Section>>> schedules) {
-		this.schedules = schedules;
-	}
-
-	public Hashtable<String, ArrayList<ArrayList<Section>>> getGeneralSchedules() {
-		return generalSchedules;
-	}
-
-	public void setGeneralSchedules(Hashtable<String, ArrayList<ArrayList<Section>>> generalSchedules) {
-		this.generalSchedules = generalSchedules;
-	}
-
-	public String getAddClassKey() {
-		return addClassKey;
-	}
-
-	public void setAddClassKey(String addClassKey) {
-		this.addClassKey = addClassKey;
-	}
-
-	// skeleton
-	public void run_2() {
-        /*calculate the permutation
-        get the result set
-        suppose we would like to add the class csci 103
-        check if the generalSchedules hashtable has the CSCI103
-        if it does not, do the permutation and add to the generalSchedules hashtable
-        check permutation code on test.java
-        copy the CSCI103 in the generalSchedules hashtable and check conflicts with the constraints
-        save all non-conflicting result in to the shcedule hashtable
-
-
-        suppose we would like to add the class CSCI103&CSCI104
-        check if the generalSchedules hashtable has the CSCI103&CSCI104
-        if it does not, do the permutation and add to the generalSchedules hashtable
-        add all non-conflicting result to the schedules hashtable*/
-
-		// this step cannot be optimized with executors
-		for (AddClass singleAddClass : totalClasses) {
-			String className = singleAddClass.getClassName();
-			if (!SchedulingThread.generalHashMap.containsKey(className)) {
-				ArrayList<ArrayList<Section>> permutations = singleAddClass.generatePermutations();
-				SchedulingThread.generalHashMap.put(className, permutations);
-			}
-		}
-		for (AddClass singleAddClass : totalClasses) {
-			String className = singleAddClass.getClassName();
-			if (!concurrentSchedules.containsKey(className)) {
-				ArrayList<ArrayList<Section>> validPermutationWithConstrains = getPermutationWithConstraints(SchedulingThread.generalHashMap.get(className), constraints);
-				concurrentSchedules.put(className, validPermutationWithConstrains);
-			}
-
-		}
-		//todo may change somehow about how to update the generalSchedules schedule
-		String intendedClassName = getIntendedClassName(totalClasses);
-		ArrayList<AddClass> subsetClassList = subsetClassList(intendedClassName);
-		concurrentSchedules.put(intendedClassName, concatPermuations(subsetClassList));
-
-	}
+	suppose we already have CSCI103 would like to add the class CSCI104
+	check if the generalSchedules hashmap has the CSCI104
+	if it does not, do the permutation and add to the generalSchedules hashtable
+	add all non-conflicting result to the schedules hashtable
+	cancat permutation of schedule[prevClassName] ("CSCI103") and schedule[CSCI104]
+	insert into schedule with key, value even if value is null
+   */
 
 	/**
 	 * @param validPermutations permutations (ex: lec, lab, quiz) of the class
@@ -321,6 +218,152 @@ public class SchedulingThread extends Thread {
 		return subsetClassNameList;
 	}
 
+	public static void printPrettyPermutations(ArrayList<ArrayList<Section>> permutations) {
+		if (permutations == null) {
+			System.out.println("Empty list");
+			return;
+		}
+		for (ArrayList<Section> permutation : permutations) {
+			for (Section section : permutation) {
+				System.out.print(section.toString() + "\t");
+			}
+			System.out.println();
+		}
+	}
+
+	public static void test() {
+		ArrayList<AddClass> totalClasses;
+		ArrayList<Constraint> constraints;
+		ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedule;
+		ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> general;
+		String addClassKey;
+
+		schedule = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+		general = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+
+		Constraint constraint = null;
+		constraints = null;
+
+		totalClasses = new ArrayList<AddClass>();
+
+
+		// // single class case
+		// String className1 = "CSCI103";
+		// AddClass addClass1 = new AddClass("CSCI", className1);
+		// totalClasses.add(addClass1);
+
+		// addClassKey = "CSCI103";
+		//
+		// SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
+		// test1.run();
+		// System.out.println(concatPrevClassNames(test1.getTotalClasses(), ""));
+		// System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
+		// printPrettyPermutations(test1.schedules.get(className1));
+
+
+		// two classes case
+		System.out.println();
+		String className2 = "CSCI201";
+		AddClass addClass2 = new AddClass("CSCI", className2);
+		totalClasses.add(addClass2);
+		addClassKey = "CSCI201";
+
+		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		test2.run();
+		System.out.println(concatPrevClassNames(test2.getTotalClasses(), ""));
+		System.out.println("Result size: " + test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")).size());
+		printPrettyPermutations(test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")));
+
+
+		// // three classes case
+		System.out.println();
+		String className3 = "CSCI104";
+		AddClass addClass3 = new AddClass("CSCI", className3);
+		totalClasses.add(addClass3);
+		addClassKey = "CSCI104";
+		SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		test3.run();
+		System.out.println(concatPrevClassNames(test3.getTotalClasses(), ""));
+		System.out.println("Result size: " + test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")).size());
+		printPrettyPermutations(test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")));
+
+	}
+
+	public static void main(String[] args) {
+		test();
+	}
+
+	public ArrayList<AddClass> getTotalClasses() {
+		return totalClasses;
+	}
+
+	public void setTotalClasses(ArrayList<AddClass> totalClasses) {
+		this.totalClasses = totalClasses;
+	}
+
+	public ArrayList<Constraint> getConstraints() {
+		return constraints;
+	}
+
+	public void setConstraints(ArrayList<Constraint> constraints) {
+		this.constraints = constraints;
+	}
+
+	public ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> getSchedules() {
+		return schedules;
+	}
+
+	public void setSchedules(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules) {
+		this.schedules = schedules;
+	}
+
+	public String getAddClassKey() {
+		return addClassKey;
+	}
+
+	public void setAddClassKey(String addClassKey) {
+		this.addClassKey = addClassKey;
+	}
+
+	// dummy code, just for scratch process
+	public void run_2() {
+        /*calculate the permutation
+        get the result set
+        suppose we would like to add the class csci 103
+        check if the generalSchedules hashtable has the CSCI103
+        if it does not, do the permutation and add to the generalSchedules hashtable
+        check permutation code on test.java
+        copy the CSCI103 in the generalSchedules hashtable and check conflicts with the constraints
+        save all non-conflicting result in to the shcedule hashtable
+
+
+        suppose we would like to add the class CSCI103&CSCI104
+        check if the generalSchedules hashtable has the CSCI103&CSCI104
+        if it does not, do the permutation and add to the generalSchedules hashtable
+        add all non-conflicting result to the schedules hashtable*/
+
+		// this step cannot be optimized with executors
+		for (AddClass singleAddClass : totalClasses) {
+			String className = singleAddClass.getClassName();
+			if (!SchedulingThread.generalSchedules.containsKey(className)) {
+				ArrayList<ArrayList<Section>> permutations = singleAddClass.generatePermutations();
+				SchedulingThread.generalSchedules.put(className, permutations);
+			}
+		}
+		for (AddClass singleAddClass : totalClasses) {
+			String className = singleAddClass.getClassName();
+			if (!schedules.containsKey(className)) {
+				ArrayList<ArrayList<Section>> validPermutationWithConstrains = getPermutationWithConstraints(SchedulingThread.generalSchedules.get(className), constraints);
+				schedules.put(className, validPermutationWithConstrains);
+			}
+
+		}
+		//todo may change somehow about how to update the generalSchedules schedule
+		String intendedClassName = getIntendedClassName(totalClasses);
+		ArrayList<AddClass> subsetClassList = subsetClassList(intendedClassName);
+		schedules.put(intendedClassName, concatPermuations(subsetClassList));
+
+	}
 
 	/* TODO: get rid of this line and investigate these warnings */
 	// @SuppressWarnings("unchecked")
@@ -328,8 +371,6 @@ public class SchedulingThread extends Thread {
 
         /* Check if the class is in our generalSchedules hash table; if not, create all valid permutations,
         where a valid permutation is defined as a set of classes (ex: lecture, lab, quiz) that do not conflict with each other. */
-
-
 		if (!generalSchedules.containsKey(addClassKey)) {
 			for (AddClass totalClass : totalClasses) {
 				if (totalClass.getClassName().equals(addClassKey)) {
@@ -379,90 +420,12 @@ public class SchedulingThread extends Thread {
 
 
 		ArrayList<ArrayList<Section>> setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validAgainstContraints);
-		if (setIntersection != null) {
-			String newIntersectionKey = prevClass + " " + addClassKey;
-			schedules.put(newIntersectionKey.trim(), setIntersection);
-		}
-	}
 
-	public static void printPrettyPermutations(ArrayList<ArrayList<Section>> permutations) {
-		if (permutations == null) {
-			System.out.println("Empty list");
-			return;
-		}
-		for (ArrayList<Section> permutation : permutations) {
-			for (Section section : permutation) {
-				System.out.print(section.toString() + "\t");
-			}
-			System.out.println();
-		}
-	}
-
-	public static void test() {
-		ArrayList<AddClass> totalClasses;
-		ArrayList<Constraint> constraints;
-		Hashtable<String, ArrayList<ArrayList<Section>>> schedule;
-		Hashtable<String, ArrayList<ArrayList<Section>>> general;
-		String addClassKey;
-
-		schedule = new Hashtable<String, ArrayList<ArrayList<Section>>>();
-		general = new Hashtable<String, ArrayList<ArrayList<Section>>>();
-
-		Constraint constraint = null;
-		constraints = null;
-
-		totalClasses = new ArrayList<AddClass>();
-
-
-		// // single class case
-		// String className1 = "CSCI103";
-		// AddClass addClass1 = new AddClass("CSCI", className1);
-		// totalClasses.add(addClass1);
-
-		// addClassKey = "CSCI103";
-		//
-		// SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
-		// test1.run();
-		// System.out.println(concatPrevClassNames(test1.getTotalClasses(), ""));
-		// System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
-		// printPrettyPermutations(test1.schedules.get(className1));
-
-
-		// two classes case
-		System.out.println();
-		String className2 = "CSCI201";
-		AddClass addClass2 = new AddClass("CSCI", className2);
-		totalClasses.add(addClass2);
-		addClassKey = "CSCI201";
-
-		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
-		test2.run();
-		System.out.println(concatPrevClassNames(test2.getTotalClasses(), ""));
-		System.out.println("Result size: " + test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")).size());
-		printPrettyPermutations(test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")));
-
-
-		// // three classes case
-		System.out.println();
-		String className3="CSCI104";
-		AddClass addClass3=new AddClass("CSCI", className3);
-		totalClasses.add(addClass3);
-		addClassKey="CSCI104";
-		SchedulingThread test3=new SchedulingThread(totalClasses,constraints,schedule,general,addClassKey);
-		test3.run();
-		System.out.println(concatPrevClassNames(test3.getTotalClasses(),""));
-		System.out.println("Result size: "+test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(),"")).size());
-		printPrettyPermutations(test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(),"")));
+		// even it is null, we need to insert that
+		String newIntersectionKey = prevClass + " " + addClassKey;
+		schedules.put(newIntersectionKey.trim(), setIntersection);
 
 	}
-
-
-	public static void main(String[] args) {
-		new SchedulingThread(null, null, null);
-		new SchedulingThread(null, null, null, null, null);
-		test();
-	}
-
 
 
 }
