@@ -14,7 +14,8 @@ CREATE TABLE Users (
 	userID int(11) primary key auto_increment not null,
     facebookID varchar(50),
     name varchar(50) not null,
-    email varchar(50), 
+    email varchar(50),
+    img varchar(150), 
     groupCode int(11),
     FOREIGN KEY fkgroupCode(groupCode) REFERENCES ActiveGroups(groupCode)
 );

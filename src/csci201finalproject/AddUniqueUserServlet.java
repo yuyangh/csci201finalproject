@@ -1,7 +1,14 @@
 package csci201finalproject;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,9 +50,52 @@ public class AddUniqueUserServlet extends HttpServlet {
 		String userID = request.getParameter("userID");
 		String userName = request.getParameter("userName");
 		String userPicURL = request.getParameter("userPicURL");
-		// AccessDatabase adb = new AccessDatabase();
-		// check if userID is unique... if yes, add all info to database, else just
-		// return ... no response is needed in any case
-
+		
+		Connection conn = null;
+		Statement st = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;		
+	
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+			ps = conn.prepareStatement("SELECT * FROM Users WHERE facebookID=? AND email=?");
+			
+			ps.setString(1, userID); // set first variable in prepared statement
+			ps.setString(2, userEmail);
+			rs = ps.executeQuery();
+			if(!(rs.next()))
+			{
+				ps = conn.prepareStatement("INSERT INTO Users(facebookID,name,email,img,groupCode) VALUES(?,?,?,?,?)");
+				
+				ps.setString(1, userID); // set first variable in prepared statement
+				ps.setString(2, userName);
+				ps.setString(3, userEmail);
+				ps.setString(4, userPicURL);
+				ps.setInt(5, -1);
+				ps.executeUpdate();
+			}
+		} catch (SQLException sqle) {
+			System.out.println ("SQLException: " + sqle.getMessage());
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println ("ClassNotFoundException: " + cnfe.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (st != null) {
+					st.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException sqle) {
+				System.out.println("sqle: " + sqle.getMessage());
+			}
+		}
 	}
 }
