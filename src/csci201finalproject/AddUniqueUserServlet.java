@@ -1,9 +1,7 @@
 package csci201finalproject;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -14,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jdt.internal.compiler.ast.Statement;
+
+import com.mysql.jdbc.Connection;
+import com.mysql.jdbc.PreparedStatement;
 
 /**
  * Servlet implementation class AddUniqueUserServlet
@@ -59,7 +60,7 @@ public class AddUniqueUserServlet extends HttpServlet {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+					"jdbc:mysql://localhost/ScheduleMe?user=root&password=cs201pw&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			ps = conn.prepareStatement("SELECT * FROM Users WHERE facebookID=? AND email=?");
 
 			ps.setString(1, userID); // set first variable in prepared statement
