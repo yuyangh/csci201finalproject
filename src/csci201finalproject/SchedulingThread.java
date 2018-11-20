@@ -34,7 +34,7 @@ public class SchedulingThread extends Thread {
 		//start();
 	}
 
-	// todo add a method to return the result automatically
+	//todo small problem here. if we still need to use a boolean as an indicator to show we update complete or not
     /*
     Process:
     get call from the servlet
@@ -228,6 +228,10 @@ public class SchedulingThread extends Thread {
 		return subsetClassNameList;
 	}
 
+	/**
+	 * print out list of list of Section's contents
+	 * @param permutations
+	 */
 	public static void printPrettyPermutations(ArrayList<ArrayList<Section>> permutations) {
 		if (permutations == null) {
 			System.out.println("Empty list");
@@ -272,7 +276,7 @@ public class SchedulingThread extends Thread {
 
 		addClassKey = "CSCI103";
 
-		SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
+		SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
 		test1.run();
 		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
@@ -286,7 +290,7 @@ public class SchedulingThread extends Thread {
 		totalClasses.add(addClass2);
 		addClassKey = className2;
 
-		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
 		test2.run();
 		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")).size());
@@ -299,7 +303,7 @@ public class SchedulingThread extends Thread {
 		// AddClass addClass3 = new AddClass("WRIT", className3);
 		// totalClasses.add(addClass3);
 		// addClassKey = className3;
-		// SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		// SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
 		// test3.run();
 		// System.out.println(concatPrevClassNames(test3.getTotalClasses(), ""));
 		// System.out.println("Result size: " + test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")).size());
@@ -310,7 +314,7 @@ public class SchedulingThread extends Thread {
 		AddClass addClass4 = new AddClass("ITP", className4);
 		totalClasses.add(addClass4);
 		addClassKey = className4;
-		SchedulingThread test4 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		SchedulingThread test4 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
 		test4.run();
 		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")).size());
@@ -358,9 +362,8 @@ public class SchedulingThread extends Thread {
 
 	public static void addClassToGeneralSchedule(ArrayList<AddClass> totalClasses, String addClassKey) {
 		for (AddClass totalClass : totalClasses) {
-			if (totalClass.getClassName().equals(addClassKey)) {
+			if (!generalSchedules.containsKey(addClassKey)) {
 				generalSchedules.put(addClassKey, totalClass.generatePermutations());
-				break;
 			}
 		}
 	}
@@ -429,41 +432,39 @@ public class SchedulingThread extends Thread {
 	public void run() {
 		String allClassNames = getAllClassNames(totalClasses);
 
-		// this is the case for deletion
+		// case for user delete one class
 		if (addClassKey == null || addClassKey.equals("")) {
+			// the hashmap does not delete anything actually
 			deleteClass(schedules, totalClasses);
 			return;
 		}
 
-        /* Check if the class is in our generalSchedules hash table; if not, create all valid permutations,
-        where a valid permutation is defined as a set of classes (ex: lecture, lab, quiz) that do not conflict with each other. */
-		// needs to use containsKey() rather than contains()!
-		if (!generalSchedules.containsKey(addClassKey)) {
-			addClassToGeneralSchedule(totalClasses, addClassKey);
-		}
-		ArrayList<ArrayList<Section>> validPermutations = generalSchedules.get(addClassKey);
-
-		/* validAgainstContraints will be the things inserted into our schedule hashtable. This is defined as a
-		 * list of permutations that do not conflict with any constraint. Thus, they are considered a valid
-		 * schedule for that particular class.  */
-		ArrayList<ArrayList<Section>> validAgainstContraints = new ArrayList<ArrayList<Section>>();
-
-		// todo if schedules already contains the key we want, then update such key's contents by:
-		// this is a case for constraint update
+		// case for constraint update
 		if (schedules.containsKey(allClassNames)) {
 			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
 			schedules.put(allClassNames, updatedPermuations);
 			return;
 		}
-		validAgainstContraints = getPermutationWithConstraints(validPermutations, constraints);
 
-		schedules.put(addClassKey, validAgainstContraints);
+		// Check if the class is in our generalSchedules hashmap; if not, create permutations,
+		if (!generalSchedules.containsKey(addClassKey)) {
+			addClassToGeneralSchedule(totalClasses, addClassKey);
+		}
+		ArrayList<ArrayList<Section>> validPermutations = generalSchedules.get(addClassKey);
+
+		/* validPermutationUnderContraints will be the things inserted into our schedule hashtable. This is defined as a
+		 * list of permutations that do not conflict with any constraint. Thus, they are considered a valid
+		 * schedule for that particular class.  */
+		ArrayList<ArrayList<Section>> validPermutationUnderContraints = new ArrayList<ArrayList<Section>>();
+		validPermutationUnderContraints = getPermutationWithConstraints(validPermutations, constraints);
+
+		schedules.put(addClassKey, validPermutationUnderContraints);
 
 		/* Code to generate the key to find the set which we are finding the intersection of */
 		String prevClass = "";
 		prevClass = concatPrevClassNames(totalClasses, addClassKey);
 
-		ArrayList<ArrayList<Section>> setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validAgainstContraints);
+		ArrayList<ArrayList<Section>> setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validPermutationUnderContraints);
 
 		// even it is null, we need to insert that
 		String newIntersectionKey = prevClass + " " + addClassKey;
