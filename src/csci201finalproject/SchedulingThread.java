@@ -167,7 +167,6 @@ public class SchedulingThread extends Thread {
 					 * by course again. */
 					ArrayList<Section> validSingleSetInersection = new ArrayList<Section>();
 
-					boolean stillValid = true;
 
 					for (ArrayList<Section> secondSinglePermutation : secondPermutations) {
 						/* extracts a single schedule for previous classes. ex: one mixture of lec, lab, quiz for
@@ -192,11 +191,12 @@ public class SchedulingThread extends Thread {
 		return result;
 	}
 
-	public static String concatClassNames(String firstGroup, String secondGroup) {
-		// e.g. first group= "CSCI103 CSCI270", secondGroup="CSCI104"
-		// intended result= "CSCI103 CSCI104 CSCI 270" in alphabetical order
-		String result = null;
-		return result;
+	/**
+	 * @param totalClasses a list of AddClass
+	 * @return all class names with " " in between
+	 */
+	public static String concatAllClassNames(ArrayList<AddClass> totalClasses) {
+		return concatPrevClassNames(totalClasses, "");
 	}
 
 	/**
@@ -214,10 +214,6 @@ public class SchedulingThread extends Thread {
 		return prevClass.toString().trim();
 	}
 
-	public static String getIntendedClassName(ArrayList<AddClass> totalClasses) {
-		String intendedClassName = null;
-		return intendedClassName;
-	}
 
 	/**
 	 * @param intendedClassName the class name I would like to have ,such as "CSCI103 CSCI104 CSCI 270"
@@ -254,14 +250,14 @@ public class SchedulingThread extends Thread {
 		general = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
 
 		Constraint constraint = null;
-		ArrayList<Integer> days=new ArrayList<Integer>();
+		ArrayList<Integer> days = new ArrayList<Integer>();
 		days.add(1);
 		days.add(2);
 		days.add(3);
 		days.add(4);
 		days.add(5);
 		constraints = new ArrayList<Constraint>();
-		constraint=new Constraint("08:00:00","14:00:00","test",days);
+		constraint = new Constraint("08:00:00", "14:00:00", "test", days);
 		constraints.add(constraint);
 
 		totalClasses = new ArrayList<AddClass>();
@@ -276,7 +272,7 @@ public class SchedulingThread extends Thread {
 
 		SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
 		test1.run();
-		System.out.println(concatPrevClassNames(test1.getTotalClasses(), ""));
+		System.out.println(concatAllClassNames(totalClasses));
 		System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
 		printPrettyPermutations(test1.schedules.get(className1));
 
@@ -290,7 +286,7 @@ public class SchedulingThread extends Thread {
 
 		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
 		test2.run();
-		System.out.println(concatPrevClassNames(test2.getTotalClasses(), ""));
+		System.out.println(concatAllClassNames(totalClasses));
 		System.out.println("Result size: " + test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")).size());
 		printPrettyPermutations(test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")));
 
@@ -314,10 +310,12 @@ public class SchedulingThread extends Thread {
 		addClassKey = className4;
 		SchedulingThread test4 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
 		test4.run();
-		System.out.println(concatPrevClassNames(test4.getTotalClasses(), ""));
+		System.out.println(concatAllClassNames(totalClasses));
 		System.out.println("Result size: " + test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")).size());
 		printPrettyPermutations(test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")));
 
+
+		// todo empty classname test
 	}
 
 	public static void main(String[] args) {
@@ -356,6 +354,26 @@ public class SchedulingThread extends Thread {
 		this.addClassKey = addClassKey;
 	}
 
+	public static void deleteClass(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, ArrayList<AddClass> totalClasses){
+		if(schedules.containsKey(concatAllClassNames(totalClasses))){
+			// since we already have the value stored in the hashtable, nothing need to do;
+			System.out.println("DELETING CLASS. CURRENT totalClasses: "+totalClassesToString(totalClasses));
+		}else {
+			System.out.println("Error in deletion, current "+totalClassesToString(totalClasses)+" not in hashmap");
+		}
+	}
+
+	public static String totalClassesToString(ArrayList<AddClass> totalClasses){
+		StringBuilder result=new StringBuilder("");
+		result.append("[");
+		for (int i = 0; i < totalClasses.size(); i++) {
+			result.append(totalClasses.get(i).getClassName());
+			result.append(" ");
+		}
+		result.append("]");
+		return result.toString();
+	}
+
 	// dummy code, just for scratch process
 	public void run_2() {
         /*calculate the permutation
@@ -390,7 +408,7 @@ public class SchedulingThread extends Thread {
 
 		}
 		//todo may change somehow about how to update the generalSchedules schedule
-		String intendedClassName = getIntendedClassName(totalClasses);
+		String intendedClassName = concatAllClassNames(totalClasses);
 		ArrayList<AddClass> subsetClassList = subsetClassList(intendedClassName);
 		schedules.put(intendedClassName, concatPermuations(subsetClassList));
 
@@ -398,6 +416,11 @@ public class SchedulingThread extends Thread {
 
 	// @SuppressWarnings("unchecked")
 	public void run() {
+		// this is the case for deletion
+		if(addClassKey==null||addClassKey.equals("")){
+			deleteClass(schedules,totalClasses);
+			return;
+		}
 
         /* Check if the class is in our generalSchedules hash table; if not, create all valid permutations,
         where a valid permutation is defined as a set of classes (ex: lecture, lab, quiz) that do not conflict with each other. */
