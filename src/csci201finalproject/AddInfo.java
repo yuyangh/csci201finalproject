@@ -33,10 +33,9 @@ public class AddInfo extends HttpServlet {
 			ArrayList<String> constraint = new ArrayList<String>();
 
 
-			// start of Mark's code
+			// todo start of Mark's code
 
 			// create a session to store the schedule ConcurrentHashmap
-			HttpSession mySession = request.getSession();
 			// store data to variables below
 			ArrayList<AddClass> totalClasses = null;
 			ArrayList<Constraint> constraintArrayList = null;
@@ -44,25 +43,25 @@ public class AddInfo extends HttpServlet {
 			ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules = null;
 
 			// only instantiate the schedules when session is created
-			if (mySession.isNew()) {
+			if (session.isNew()) {
 				schedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
-				mySession.setAttribute("schedules", schedules);
+				session.setAttribute("schedules", schedules);
 			} else {
 
 			}
 
 			// with constructor, it will start to compute
 			SchedulingThread schedulingThread = new SchedulingThread(totalClasses, constraintArrayList,
-					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) mySession.getAttribute("schedules"), addClassKey);
+					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
 			// we may optimize the code below to make it easier to access
 			while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
-					mySession.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames(totalClasses, ""))) {
+					session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames(totalClasses, ""))) {
 				Thread.yield();
 			}
 			// result is stored in the result
 			ArrayList<ArrayList<Section>> result;
 			result = schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames(totalClasses, ""));
-			mySession.setAttribute("schedules", schedulingThread.getSchedules());
+			session.setAttribute("schedules", schedulingThread.getSchedules());
 
 			// end of Mark's code
 
