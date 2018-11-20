@@ -1,5 +1,7 @@
 package csci201finalproject;
 
+import java.util.ArrayList;
+
 public class ClassEnrollment {
 	public ArrayList<Student> students;
 

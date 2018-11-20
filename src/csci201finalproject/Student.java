@@ -13,20 +13,19 @@ public class Student {
 		this.userEmail = userEmail;
 	}
 
-	public setUserID(String userID) {
+	public void setUserID(String userID) {
 		this.userID = userID;
 	}
 
-	public setUsername(String username) {
+	public void setUsername(String username) {
 		this.username = username;
-
 	}
 
-	public setUserPicURL(String userPicURL) {
+	public void setUserPicURL(String userPicURL) {
 		this.userPicURL = userPicURL;
 	}
 
-	public setUserEmail(String userEmail) {
+	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
 	}
 }
