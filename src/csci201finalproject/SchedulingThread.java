@@ -18,19 +18,23 @@ public class SchedulingThread extends Thread {
 		this.constraints = constraints;
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
+		//start();
 	}
 
 	// will have to create a new instance of the thread with each time the algorithm is called
 	// key must be passed in w/ constructor, run method cannot take parameters
-	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints, ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules,
+	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints,
+	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules,
 	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules, String addClassKey) {
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
 		// dummy generalSchedules
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
+		//start();
 	}
 
+	// todo add a method to return the result automatically
     /*
     Process:
     get call from the servlet
@@ -103,6 +107,14 @@ public class SchedulingThread extends Thread {
 				// if conflict, break entire loop
 				if (singlefirstSection.doesConflict(singleSecondSection.getStartTime(), singleSecondSection.getEndTime(), singleSecondSection.getDays())) {
 					/* if even one section conflicts, then it would not be a valid schedule */
+					System.out.print("Conflict in: ");
+					for (Section section : firstSinglePermutation) {
+						System.out.print(section.toString() + " ");
+					}
+					for (Section section : secondSinglePermutation) {
+						System.out.print(section.toString() + " ");
+					}
+					System.out.println();
 					return null;
 				}
 			}
@@ -242,31 +254,39 @@ public class SchedulingThread extends Thread {
 		general = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
 
 		Constraint constraint = null;
-		constraints = null;
+		ArrayList<Integer> days=new ArrayList<Integer>();
+		days.add(1);
+		days.add(2);
+		days.add(3);
+		days.add(4);
+		days.add(5);
+		constraints = new ArrayList<Constraint>();
+		constraint=new Constraint("08:00:00","14:00:00","test",days);
+		constraints.add(constraint);
 
 		totalClasses = new ArrayList<AddClass>();
 
 
-		// // single class case
-		// String className1 = "CSCI103";
-		// AddClass addClass1 = new AddClass("CSCI", className1);
-		// totalClasses.add(addClass1);
+		// single class case
+		String className1 = "CSCI103";
+		AddClass addClass1 = new AddClass("CSCI", className1);
+		totalClasses.add(addClass1);
 
-		// addClassKey = "CSCI103";
-		//
-		// SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
-		// test1.run();
-		// System.out.println(concatPrevClassNames(test1.getTotalClasses(), ""));
-		// System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
-		// printPrettyPermutations(test1.schedules.get(className1));
+		addClassKey = "CSCI103";
+
+		SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
+		test1.run();
+		System.out.println(concatPrevClassNames(test1.getTotalClasses(), ""));
+		System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
+		printPrettyPermutations(test1.schedules.get(className1));
 
 
 		// two classes case
 		System.out.println();
-		String className2 = "CSCI201";
-		AddClass addClass2 = new AddClass("CSCI", className2);
+		String className2 = "EE109";
+		AddClass addClass2 = new AddClass("EE", className2);
 		totalClasses.add(addClass2);
-		addClassKey = "CSCI201";
+		addClassKey = className2;
 
 		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
 		test2.run();
@@ -276,16 +296,27 @@ public class SchedulingThread extends Thread {
 
 
 		// // three classes case
+		// System.out.println();
+		// String className3 = "WRIT150";
+		// AddClass addClass3 = new AddClass("WRIT", className3);
+		// totalClasses.add(addClass3);
+		// addClassKey = className3;
+		// SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		// test3.run();
+		// System.out.println(concatPrevClassNames(test3.getTotalClasses(), ""));
+		// System.out.println("Result size: " + test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")).size());
+		// printPrettyPermutations(test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")));
+
 		System.out.println();
-		String className3 = "CSCI104";
-		AddClass addClass3 = new AddClass("CSCI", className3);
-		totalClasses.add(addClass3);
-		addClassKey = "CSCI104";
-		SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
-		test3.run();
-		System.out.println(concatPrevClassNames(test3.getTotalClasses(), ""));
-		System.out.println("Result size: " + test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")).size());
-		printPrettyPermutations(test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")));
+		String className4 = "ITP115";
+		AddClass addClass4 = new AddClass("ITP", className4);
+		totalClasses.add(addClass4);
+		addClassKey = className4;
+		SchedulingThread test4 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
+		test4.run();
+		System.out.println(concatPrevClassNames(test4.getTotalClasses(), ""));
+		System.out.println("Result size: " + test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")).size());
+		printPrettyPermutations(test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")));
 
 	}
 
