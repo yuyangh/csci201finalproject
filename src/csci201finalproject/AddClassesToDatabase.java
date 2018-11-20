@@ -24,18 +24,18 @@ public class AddClassesToDatabase {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String jsonFileName = "WebScrapping/result_entire.json";
 		File jsonFile = Paths.get(jsonFileName).toFile();
-		
+
 		Schools jsonSchools = new Schools();
 		ArrayList<School> schools = new ArrayList<School>();
 		jsonSchools.setSchools(schools);
-		
+
 		Connection conn = null;
 		Statement st = null;
 		ResultSet rsSchools = null;
 		ResultSet rsDepartments = null;
 		ResultSet rsCourses = null;
 		ResultSet rsSections = null;
-		
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(jsonFile));
 			JsonObject jsonObject = gson.fromJson(br, JsonObject.class);
@@ -44,7 +44,7 @@ public class AddClassesToDatabase {
 				School school = gson.fromJson(jsonSchool, School.class);
 				schools.add(school);
 			}
-			
+
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(
 					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True");
@@ -57,31 +57,39 @@ public class AddClassesToDatabase {
 				} else {
 					st.executeUpdate("INSERT INTO schools (schoolName) VALUES ('" + schoolName + "')");
 					System.out.println("Inserted " + schoolName + " into database");
-					ResultSet rsSchoolID = st.executeQuery("SELECT s.schoolID FROM Schools s WHERE schoolName = '" + schoolName + "'");
+					ResultSet rsSchoolID = st
+							.executeQuery("SELECT s.schoolID FROM Schools s WHERE schoolName = '" + schoolName + "'");
 					rsSchoolID.next();
 					int schoolID = rsSchoolID.getInt(1);
 					ArrayList<Department> departments = school.getDepartments();
 					for (Department department : departments) {
 						String departmentName = department.getName();
-						rsDepartments = st.executeQuery("SELECT * from Departments where departmentName='" + departmentName + "'");
+						rsDepartments = st.executeQuery(
+								"SELECT * from Departments where departmentName='" + departmentName + "'");
 						if (rsDepartments.next()) {
 							System.out.println("Department " + departmentName + " already in database");
 						} else {
-							st.executeUpdate("INSERT INTO departments (departmentName, schoolID) VALUES ('" + departmentName + "', '" + schoolID + "')");
+							st.executeUpdate("INSERT INTO departments (departmentName, schoolID) VALUES ('"
+									+ departmentName + "', '" + schoolID + "')");
 							System.out.println("Inserted " + departmentName + " into database");
-							ResultSet rsDepartmentID = st.executeQuery("SELECT d.departmentID FROM Departments d WHERE departmentName = '" + departmentName + "'");
+							ResultSet rsDepartmentID = st
+									.executeQuery("SELECT d.departmentID FROM Departments d WHERE departmentName = '"
+											+ departmentName + "'");
 							rsDepartmentID.next();
 							int departmentID = rsDepartmentID.getInt(1);
 							ArrayList<Course> courses = department.getCourses();
 							for (Course course : courses) {
 								String courseName = course.getCourseID();
-								rsCourses = st.executeQuery("SELECT * from Courses where courseName='" + courseName + "'");
+								rsCourses = st
+										.executeQuery("SELECT * from Courses where courseName='" + courseName + "'");
 								if (rsCourses.next()) {
 									System.out.println("Course " + courseName + " already in database");
 								} else {
-									st.executeUpdate("INSERT INTO courses (courseName, departmentID) VALUES ('" + courseName + "', '" + departmentID + "')");
+									st.executeUpdate("INSERT INTO courses (courseName, departmentID) VALUES ('"
+											+ courseName + "', '" + departmentID + "')");
 									System.out.println("Inserted " + courseName + " into database");
-									ResultSet rsCourseID = st.executeQuery("SELECT c.courseID FROM Courses c WHERE courseName = '" + courseName + "'");
+									ResultSet rsCourseID = st.executeQuery(
+											"SELECT c.courseID FROM Courses c WHERE courseName = '" + courseName + "'");
 									rsCourseID.next();
 									int courseID = rsCourseID.getInt(1);
 									ArrayList<Section> sections = course.getSections();
@@ -95,12 +103,16 @@ public class AddClassesToDatabase {
 										for (Integer sectionDay : sectionDays) {
 											sectionDaysStr += Integer.toString(sectionDay) + " ";
 										}
-										rsSections = st.executeQuery("SELECT * from Sections where sectionName='" + sectionName + "'");
+										rsSections = st.executeQuery(
+												"SELECT * from Sections where sectionName='" + sectionName + "'");
 										if (rsSections.next()) {
 											System.out.println("Section " + sectionName + " already in database");
 										} else {
-											st.executeUpdate("INSERT INTO sections (sectionName, courseID, type, startTime, endTime, days) VALUES "
-													+ "('" + sectionName + "', '" + courseID + "', '" + sectionType + "', '" + sectionStartTime + "', '" + sectionEndTime + "', '" + sectionDaysStr + "')");
+											st.executeUpdate(
+													"INSERT INTO sections (sectionName, courseID, type, startTime, endTime, days) VALUES "
+															+ "('" + sectionName + "', '" + courseID + "', '"
+															+ sectionType + "', '" + sectionStartTime + "', '"
+															+ sectionEndTime + "', '" + sectionDaysStr + "')");
 											System.out.println("Inserted " + sectionName + " into database");
 										}
 									}
