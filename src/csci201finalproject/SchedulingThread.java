@@ -109,14 +109,6 @@ public class SchedulingThread extends Thread {
 				// if conflict, break entire loop
 				if (singlefirstSection.doesConflict(singleSecondSection.getStartTime(), singleSecondSection.getEndTime(), singleSecondSection.getDays())) {
 					/* if even one section conflicts, then it would not be a valid schedule */
-					System.out.print("Conflict in: ");
-					for (Section section : firstSinglePermutation) {
-						System.out.print(section.toString() + " ");
-					}
-					for (Section section : secondSinglePermutation) {
-						System.out.print(section.toString() + " ");
-					}
-					System.out.println();
 					return null;
 				}
 			}
@@ -127,7 +119,35 @@ public class SchedulingThread extends Thread {
 		singlePermutationCombination.addAll(firstSinglePermutation);
 		singlePermutationCombination.addAll(secondSinglePermutation);
 		return singlePermutationCombination;
+	}
 
+	/**
+	 * besides concatTwoSinglePermutation, print out conflict permutations
+	 *
+	 * @param firstSinglePermutation  a list of Section Object
+	 * @param secondSinglePermutation a list of Section Object
+	 * @param dummy                   dummy variable to do overloading
+	 * @return if two lists' Section Object has time overlap return null, else a concat of two list
+	 */
+	public static ArrayList<Section> concatTwoSinglePermutation(ArrayList<Section> firstSinglePermutation,
+	                                                            ArrayList<Section> secondSinglePermutation,
+	                                                            boolean dummy) {
+		ArrayList<Section> result = concatTwoSinglePermutation(firstSinglePermutation, secondSinglePermutation);
+		if (result == null) {
+			printConflictPermutations(firstSinglePermutation, secondSinglePermutation);
+		}
+		return result;
+	}
+
+	public static void printConflictPermutations(ArrayList<Section> firstSinglePermutation, ArrayList<Section> secondSinglePermutation) {
+		System.out.print("Conflict in: ");
+		for (Section section : firstSinglePermutation) {
+			System.out.print(section.toString() + " ");
+		}
+		for (Section section : secondSinglePermutation) {
+			System.out.print(section.toString() + " ");
+		}
+		System.out.println();
 	}
 
 	/**
@@ -266,6 +286,7 @@ public class SchedulingThread extends Thread {
 		constraints = new ArrayList<Constraint>();
 		constraint = new Constraint("08:00:00", "14:00:00", "test", days);
 		constraints.add(constraint);
+		// constraints = null;
 
 		totalClasses = new ArrayList<AddClass>();
 
@@ -281,7 +302,7 @@ public class SchedulingThread extends Thread {
 		test1.run();
 		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
-		printPrettyPermutations(test1.schedules.get(className1));
+		// printPrettyPermutations(test1.schedules.get(className1));
 
 
 		// two classes case
@@ -295,19 +316,19 @@ public class SchedulingThread extends Thread {
 		test2.run();
 		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")).size());
-		printPrettyPermutations(test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")));
+		// printPrettyPermutations(test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")));
 
 
 		// // three classes case
-		// System.out.println();
-		// String className3 = "WRIT150";
-		// AddClass addClass3 = new AddClass("WRIT", className3);
-		// totalClasses.add(addClass3);
-		// addClassKey = className3;
-		// SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
-		// test3.run();
-		// System.out.println(concatPrevClassNames(test3.getTotalClasses(), ""));
-		// System.out.println("Result size: " + test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")).size());
+		System.out.println();
+		String className3 = "WRIT150";
+		AddClass addClass3 = new AddClass("WRIT", className3);
+		totalClasses.add(addClass3);
+		addClassKey = className3;
+		SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
+		test3.run();
+		System.out.println(concatPrevClassNames(test3.getTotalClasses(), ""));
+		System.out.println("Result size: " + test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")).size());
 		// printPrettyPermutations(test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")));
 
 		System.out.println();
@@ -319,11 +340,29 @@ public class SchedulingThread extends Thread {
 		test4.run();
 		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")).size());
-		printPrettyPermutations(test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")));
+		// printPrettyPermutations(test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")));
 
+		addTest(totalClasses, constraints, schedule, "PHYS151", "PHYS151");
 
 		// todo empty classname test
 	}
+
+	public static void addTest(ArrayList<AddClass> totalClasses,
+	                           ArrayList<Constraint> constraints,
+	                           ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedule,
+	                           String className,
+	                           String addClassKey) {
+		System.out.println();
+		AddClass addClass3 = new AddClass(className);
+		totalClasses.add(addClass3);
+		addClassKey = className;
+		SchedulingThread test3 = new SchedulingThread(totalClasses, constraints, schedule, addClassKey);
+		test3.run();
+		System.out.println(getAllClassNames(totalClasses));
+		System.out.println("Result size: " + test3.schedules.get(getAllClassNames(totalClasses)).size());
+		// printPrettyPermutations(test3.schedules.get(concatPrevClassNames(test3.getTotalClasses(), "")));
+	}
+
 
 	public static void main(String[] args) {
 		test();
@@ -363,7 +402,7 @@ public class SchedulingThread extends Thread {
 
 	public static void addClassToGeneralSchedule(ArrayList<AddClass> totalClasses, String addClassKey) {
 		for (AddClass totalClass : totalClasses) {
-			if (!generalSchedules.containsKey(addClassKey)) {
+			if (!generalSchedules.containsKey(totalClass.getClassName())) {
 				generalSchedules.put(addClassKey, totalClass.generatePermutations());
 			}
 		}

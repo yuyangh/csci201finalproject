@@ -15,8 +15,34 @@ public class AddClass {
 
 	public AddClass(String deptName, String className) {
 		this.className = className;
-		this.retriveSections = new RetriveSections(deptName, className);
+		this.retriveSections = new RetriveSections(getDeptPartName(className), className);
 		this.totalSections = retriveSections.getSections();
+	}
+
+	public AddClass(String className) {
+		this.className = className;
+		this.retriveSections = new RetriveSections(getDeptPartName(className), className);
+		this.totalSections = retriveSections.getSections();
+	}
+
+	public String getDeptPartName(String className){
+		StringBuilder result=new StringBuilder();
+		for (int i = 0; i <className.length() ; i++) {
+			if(className.charAt(i)>='A' && className.charAt(i)<='Z'){
+				result.append(className.charAt(i));
+			}
+		}
+		return result.toString();
+	}
+
+	public String getDeptPartName(){
+		StringBuilder result=new StringBuilder();
+		for (int i = 0; i <className.length() ; i++) {
+			if(className.charAt(i)>='A' && className.charAt(i)<='Z'){
+				result.append(className.charAt(i));
+			}
+		}
+		return result.toString();
 	}
 
 	public ArrayList<ArrayList<Section>> getTotalSections() {
