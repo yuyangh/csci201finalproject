@@ -44,10 +44,10 @@ public class AddClassesToDatabase {
 				School school = gson.fromJson(jsonSchool, School.class);
 				schools.add(school);
 			}
-
+			//Class.forName("com.mysql.jdbc.Driver");
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True");
+					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			st = conn.createStatement();
 			for (School school : schools) {
 				String schoolName = school.getName();
@@ -130,6 +130,7 @@ public class AddClassesToDatabase {
 		} catch (SQLException sqle) {
 			System.out.println(sqle.getMessage());
 		} catch (ClassNotFoundException cnfe) {
+			System.out.println("Class was not found.cl");
 			System.out.print(cnfe.getMessage());
 		}
 	}

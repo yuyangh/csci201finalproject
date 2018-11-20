@@ -101,6 +101,13 @@
 					document.getElementById("classes_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				var xhttp2 = new XMLHttpRequest();
+				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
+				xhttp2.onreadystatechange = function() {
+					document.getElementById("schedules_table").innerHTML = this.responseText;
+				}
+				xhttp.send();
 			}
 			
 			function removeClass(group_num, class_num){
@@ -108,6 +115,13 @@
 				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
 				xhttp.onreadystatechange = function() {
 					document.getElementById("classes_table").innerHTML = this.responseText;
+				}
+				xhttp.send();
+				
+				var xhttp2 = new XMLHttpRequest();
+				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
+				xhttp2.onreadystatechange = function() {
+					document.getElementById("schedules_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
 			}
