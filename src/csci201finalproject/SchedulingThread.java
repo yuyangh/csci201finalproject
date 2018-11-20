@@ -61,9 +61,11 @@ public class SchedulingThread extends Thread {
    */
 
 	/**
+	 * get list of list of Sections not-conflicting With Constrains
+	 *
 	 * @param validPermutations permutations (ex: lec, lab, quiz) of the class
 	 * @param constraints       list of Constraint object
-	 * @return valid Permutation With Constrains
+	 * @return a list of list of Sections e.g. (lec, dis,quiz)
 	 */
 	public static ArrayList<ArrayList<Section>> getPermutationWithConstraints
 	(ArrayList<ArrayList<Section>> validPermutations, ArrayList<Constraint> constraints) {
@@ -195,7 +197,7 @@ public class SchedulingThread extends Thread {
 	 * @param totalClasses a list of AddClass
 	 * @return all class names with " " in between
 	 */
-	public static String concatAllClassNames(ArrayList<AddClass> totalClasses) {
+	public static String getAllClassNames(ArrayList<AddClass> totalClasses) {
 		return concatPrevClassNames(totalClasses, "");
 	}
 
@@ -272,7 +274,7 @@ public class SchedulingThread extends Thread {
 
 		SchedulingThread test1 = new SchedulingThread(totalClasses, constraints, schedule, generalSchedules, addClassKey);
 		test1.run();
-		System.out.println(concatAllClassNames(totalClasses));
+		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test1.schedules.get(concatPrevClassNames(test1.getTotalClasses(), "")).size());
 		printPrettyPermutations(test1.schedules.get(className1));
 
@@ -286,7 +288,7 @@ public class SchedulingThread extends Thread {
 
 		SchedulingThread test2 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
 		test2.run();
-		System.out.println(concatAllClassNames(totalClasses));
+		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")).size());
 		printPrettyPermutations(test2.schedules.get(concatPrevClassNames(test2.getTotalClasses(), "")));
 
@@ -310,7 +312,7 @@ public class SchedulingThread extends Thread {
 		addClassKey = className4;
 		SchedulingThread test4 = new SchedulingThread(totalClasses, constraints, schedule, general, addClassKey);
 		test4.run();
-		System.out.println(concatAllClassNames(totalClasses));
+		System.out.println(getAllClassNames(totalClasses));
 		System.out.println("Result size: " + test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")).size());
 		printPrettyPermutations(test4.schedules.get(concatPrevClassNames(test4.getTotalClasses(), "")));
 
@@ -354,17 +356,26 @@ public class SchedulingThread extends Thread {
 		this.addClassKey = addClassKey;
 	}
 
-	public static void deleteClass(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, ArrayList<AddClass> totalClasses){
-		if(schedules.containsKey(concatAllClassNames(totalClasses))){
-			// since we already have the value stored in the hashtable, nothing need to do;
-			System.out.println("DELETING CLASS. CURRENT totalClasses: "+totalClassesToString(totalClasses));
-		}else {
-			System.out.println("Error in deletion, current "+totalClassesToString(totalClasses)+" not in hashmap");
+	public static void addClassToGeneralSchedule(ArrayList<AddClass> totalClasses, String addClassKey) {
+		for (AddClass totalClass : totalClasses) {
+			if (totalClass.getClassName().equals(addClassKey)) {
+				generalSchedules.put(addClassKey, totalClass.generatePermutations());
+				break;
+			}
 		}
 	}
 
-	public static String totalClassesToString(ArrayList<AddClass> totalClasses){
-		StringBuilder result=new StringBuilder("");
+	public static void deleteClass(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, ArrayList<AddClass> totalClasses) {
+		if (schedules.containsKey(getAllClassNames(totalClasses))) {
+			// since we already have the value stored in the hashtable, nothing need to do;
+			System.out.println("DELETING CLASS. CURRENT totalClasses: " + totalClassesToString(totalClasses));
+		} else {
+			System.out.println("Error in deletion, current " + totalClassesToString(totalClasses) + " not in hashmap");
+		}
+	}
+
+	public static String totalClassesToString(ArrayList<AddClass> totalClasses) {
+		StringBuilder result = new StringBuilder("");
 		result.append("[");
 		for (int i = 0; i < totalClasses.size(); i++) {
 			result.append(totalClasses.get(i).getClassName());
@@ -408,7 +419,7 @@ public class SchedulingThread extends Thread {
 
 		}
 		//todo may change somehow about how to update the generalSchedules schedule
-		String intendedClassName = concatAllClassNames(totalClasses);
+		String intendedClassName = getAllClassNames(totalClasses);
 		ArrayList<AddClass> subsetClassList = subsetClassList(intendedClassName);
 		schedules.put(intendedClassName, concatPermuations(subsetClassList));
 
@@ -416,9 +427,11 @@ public class SchedulingThread extends Thread {
 
 	// @SuppressWarnings("unchecked")
 	public void run() {
+		String allClassNames = getAllClassNames(totalClasses);
+
 		// this is the case for deletion
-		if(addClassKey==null||addClassKey.equals("")){
-			deleteClass(schedules,totalClasses);
+		if (addClassKey == null || addClassKey.equals("")) {
+			deleteClass(schedules, totalClasses);
 			return;
 		}
 
@@ -426,16 +439,10 @@ public class SchedulingThread extends Thread {
         where a valid permutation is defined as a set of classes (ex: lecture, lab, quiz) that do not conflict with each other. */
 		// needs to use containsKey() rather than contains()!
 		if (!generalSchedules.containsKey(addClassKey)) {
-			for (AddClass totalClass : totalClasses) {
-				if (totalClass.getClassName().equals(addClassKey)) {
-					generalSchedules.put(addClassKey, totalClass.generatePermutations());
-					break;
-				}
-			}
+			addClassToGeneralSchedule(totalClasses, addClassKey);
 		}
-
-
 		ArrayList<ArrayList<Section>> validPermutations = generalSchedules.get(addClassKey);
+
 		/* validAgainstContraints will be the things inserted into our schedule hashtable. This is defined as a
 		 * list of permutations that do not conflict with any constraint. Thus, they are considered a valid
 		 * schedule for that particular class.  */
@@ -443,11 +450,10 @@ public class SchedulingThread extends Thread {
 
 		// todo if schedules already contains the key we want, then update such key's contents by:
 		// this is a case for constraint update
-		if (schedules.containsKey(concatPrevClassNames(totalClasses, ""))) {
-			// temp= generalSchedules' key intersect constrainsts
-			// result = generalSchedules' key-{temp}
-			// push result into schedules
-			// return
+		if (schedules.containsKey(allClassNames)) {
+			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
+			schedules.put(allClassNames, updatedPermuations);
+			return;
 		}
 		validAgainstContraints = getPermutationWithConstraints(validPermutations, constraints);
 
