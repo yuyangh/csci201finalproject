@@ -11,24 +11,23 @@ public class SchedulingThread extends Thread {
 	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules;
 	private String addClassKey;
 
-	// will have to create a new instance of the thread with each time the algorithm is called
-	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints,
-	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, String addClassKey) {
-		this.totalClasses = totalClasses;
-		this.constraints = constraints;
-		this.schedules = schedules;
-		this.addClassKey = addClassKey;
-		//start();
-	}
+	// need to create a new instance of the thread with each time the algorithm is called
 
-	// will have to create a new instance of the thread with each time the algorithm is called
-	// key must be passed in w/ constructor, run method cannot take parameters
-	public SchedulingThread(ArrayList<AddClass> totalClasses, ArrayList<Constraint> constraints,
+	/**
+	 * @param totalClasses a list of Section objects, which are users' chosen Section
+	 * @param constraints  a list of Constraint objects
+	 * @param schedules    ConcurrentHashMap unique to every Session
+	 * @param addClassKey  the newest operation the user does. those are following cases:
+	 *                     Section name for add a Section,
+	 *                     null for delete a class,
+	 *                     "" for update constraints
+	 */
+	public SchedulingThread(ArrayList<AddClass> totalClasses,
+	                        ArrayList<Constraint> constraints,
 	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules,
-	                        ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules, String addClassKey) {
+	                        String addClassKey) {
 		this.totalClasses = totalClasses;
 		this.constraints = constraints;
-		// dummy generalSchedules
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
 		//start();
@@ -69,6 +68,7 @@ public class SchedulingThread extends Thread {
 	 */
 	public static ArrayList<ArrayList<Section>> getPermutationWithConstraints
 	(ArrayList<ArrayList<Section>> validPermutations, ArrayList<Constraint> constraints) {
+
 		ArrayList<ArrayList<Section>> validPermutationWithConstrains = new ArrayList<ArrayList<Section>>();
 
 		for (ArrayList<Section> singleValidPermutation : validPermutations) {
@@ -230,6 +230,7 @@ public class SchedulingThread extends Thread {
 
 	/**
 	 * print out list of list of Section's contents
+	 *
 	 * @param permutations
 	 */
 	public static void printPrettyPermutations(ArrayList<ArrayList<Section>> permutations) {
@@ -433,12 +434,13 @@ public class SchedulingThread extends Thread {
 		String allClassNames = getAllClassNames(totalClasses);
 
 		// case for user delete one class
-		if (addClassKey == null || addClassKey.equals("")) {
+		if (addClassKey == null) {
 			// the hashmap does not delete anything actually
 			deleteClass(schedules, totalClasses);
 			return;
 		}
 
+		// in default, we deem generalSchedules always have more elements than schedules
 		// case for constraint update
 		if (schedules.containsKey(allClassNames)) {
 			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
