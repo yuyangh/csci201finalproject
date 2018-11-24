@@ -5,12 +5,14 @@ public class User {
 	private String name;
 	private String img;
 	private String email;
+	private int userDatabaseID;
 	
 	public User(String facebookID, String name, String img, String email) {
 		this.facebookID = facebookID;
 		this.name = name;
 		this.img = img;
 		this.email = email;
+		this.userDatabaseID = -1;
 	}
 
 	public String getFacebookID() {
@@ -44,4 +46,12 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-}
+	
+	public void setUserDatabaseID(int id) {
+		this.userDatabaseID = id;
+	}
+	
+	public int getUserDatabaseID() {
+		return userDatabaseID;
+	}
+ }
