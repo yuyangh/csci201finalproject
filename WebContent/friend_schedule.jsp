@@ -7,7 +7,7 @@
 		<title>Friend Scheduling</title>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		<link rel="stylesheet" href="friend_schedule.css">
+		<link rel="stylesheet" href="single_schedule.css">
 	</head>
 	<body>
 		<script>
@@ -55,7 +55,8 @@
 	    	    	sessionStorage.setItem("userID", userID);
 	    	    	//check if sessionUserID == null -> if so -> send to DB
 					//TODO: uncomment line below to add user to database 
-					//addUniqueUser(userID);
+					addUniqueUser(userID);
+	    		    
 		   		});
 		   	}
 		  
@@ -64,6 +65,7 @@
 		          	document.getElementById('fbButton').setAttribute("onclick","fbLogin()");
 		          	document.getElementById('fbButton').innerHTML = '<img src="fblogin.png" class="fb-button" />';
 		          	//document.getElementById('userData').innerHTML = '';
+		          	window.location.href = 'login.jsp';
 		      	});
 		   	}
 		  	
@@ -83,20 +85,56 @@
 					document.getElementById("classes_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
 			}
 			
 			function removeGroup(group_num){
-				var xhttp = new XMLHttpRequest();
-				xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
-				xhttp.onreadystatechange = function() {
-					document.getElementById("classes_table").innerHTML = this.responseText;
+				if(group_num >= 0){
+					//for-loop to remove classes from group one-by-one in reverse order
+					var nodelist = document.getElementsByClassName("row h-100 class-row" + group_num);
+					var numClassesInGroup = nodelist.length;
+					var i;
+					for (i = numClassesInGroup - 1; i >= 0; i--) { 
+					    justRemoveClass(group_num, i);
+					}
+					
+					// remove the group from the display
+					var xhttp = new XMLHttpRequest();
+					xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
+					xhttp.onreadystatechange = function() {
+						document.getElementById("classes_table").innerHTML = this.responseText;
+					}
+					xhttp.send();
+					
+					// update the schedules
+					updateGeneratedSchedulesOnUI();
 				}
-				xhttp.send();
+				else{
+					// remove the group from the display
+					var xhttp = new XMLHttpRequest();
+					xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
+					xhttp.onreadystatechange = function() {
+						document.getElementById("classes_table").innerHTML = this.responseText;
+					}
+					xhttp.send();
+				}
 			}
 			
 			function addClass(group_num){
 				var xhttp = new XMLHttpRequest();
 				xhttp.open("GET", "AddInfo?action=class&department=" + document.getElementById("department_input" + group_num).value + "&number=" + document.getElementById("number_input" + group_num).value + "&group_num=" + group_num, true);
+				xhttp.onreadystatechange = function() {
+					document.getElementById("classes_table").innerHTML = this.responseText;
+				}
+				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
+			}
+			
+			function justRemoveClass(group_num, class_num){
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
 				xhttp.onreadystatechange = function() {
 					document.getElementById("classes_table").innerHTML = this.responseText;
 				}
@@ -110,6 +148,8 @@
 					document.getElementById("classes_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
 			}
 			
 			function addConstraint(){
@@ -134,6 +174,8 @@
 					document.getElementById("constraints_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
 			}
 			
 			function removeConstraint(constraint_num){
@@ -143,6 +185,17 @@
 					document.getElementById("constraints_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
+			}
+			
+			function updateGeneratedSchedulesOnUI(){
+				var xhttp2 = new XMLHttpRequest();
+				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
+				xhttp2.onreadystatechange = function() {
+					document.getElementById("schedules_table").innerHTML = this.responseText;
+				}
+				xhttp2.send();
 			}
 			
 			removeGroup(-1);
@@ -157,36 +210,17 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-primary btn-block fake-button" href="single_schedule.jsp">
-										<i class="fas fa-arrow-left"></i> Schedule Solo
+									<a class="btn btn-primary btn-block fake-button" href="registerCourses()">
+										Register My Courses <i class="fas fa-lock"></i>
 									</a>
 								</div>
 								<div class="col-3">
-									<button type="button" class="btn btn-info btn-block schedule-button">
-										Lock My Classes & Constraints <i class="fas fa-lock"></i>
-									</button>
 								</div>
-								<div class="col-6">
+								<div class="col-4">
 								</div>
-							</div>
-							<div class="row button-bar">
-								<div class="col-3">
-									<button type="button" class="btn btn-info btn-block schedule-button">
-										Generate Friend Group Code <i class="fas fa-sync-alt"></i>
-									</button>
-								</div>
-								<div class="col-3">
-									<input type="text" class="group-code-input" id="friend-group-code-input" placeholder="Enter Friend Group Code">
-								</div>
-								<div class="col-3">
-									<button type="button" class="btn btn-info btn-block schedule-button">
-										Join Friend Group <i class="fas fa-running"></i>
-									</button>
-								</div>
-								<div class="col-3">
-									<button type="button" class="btn btn-info btn-block schedule-button">
-										Lock Friend Group <i class="fas fa-lock"></i>
-									</button>
+								<div class="col-2">
+									<!-- facebook button -->
+									<a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png" class="fb-button" /></a>
 								</div>
 							</div>
 							<div class="row flex-grow-1 h-100">
@@ -218,59 +252,7 @@
 									<div class="d-flex flex-column h-100">
 										<div class="row justify-content-center panel-header">Generated Schedules</div>
 										<div class="row flex-grow-1">
-											<div class="col-12 panel-content">
-												next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
+											<div class="col-12 panel-content" id="schedules_table">
 											</div>
 										</div>
 									</div>
