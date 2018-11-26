@@ -83,15 +83,42 @@
 					document.getElementById("classes_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
 			}
 			
 			function removeGroup(group_num){
-				var xhttp = new XMLHttpRequest();
-				xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
-				xhttp.onreadystatechange = function() {
-					document.getElementById("classes_table").innerHTML = this.responseText;
+				if(group_num >= 0){
+					//for-loop to remove classes from group one-by-one in reverse order
+					var nodelist = document.getElementById(group_num.toString()).getElementsByClassName("row h-100 class-row");
+					var numClassesInGroup = nodelist.length;
+					console.log("hi");
+					console.log(numClassesInGroup);
+					var i;
+					for (i = numClassesInGroup - 1; i >= 0; i--) { 
+					    justRemoveClass(group_num, i);
+					}
+					
+					// remove the group from the display
+					var xhttp = new XMLHttpRequest();
+					xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
+					xhttp.onreadystatechange = function() {
+						document.getElementById("classes_table").innerHTML = this.responseText;
+					}
+					xhttp.send();
+					
+					// update the schedules
+					updateGeneratedSchedulesOnUI();
 				}
-				xhttp.send();
+				else{
+					// remove the group from the display
+					var xhttp = new XMLHttpRequest();
+					xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
+					xhttp.onreadystatechange = function() {
+						document.getElementById("classes_table").innerHTML = this.responseText;
+					}
+					xhttp.send();
+				}
 			}
 			
 			function addClass(group_num){
@@ -102,10 +129,14 @@
 				}
 				xhttp.send();
 				
-				var xhttp2 = new XMLHttpRequest();
-				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
-				xhttp2.onreadystatechange = function() {
-					document.getElementById("schedules_table").innerHTML = this.responseText;
+				updateGeneratedSchedulesOnUI();
+			}
+			
+			function justRemoveClass(group_num, class_num){
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
+				xhttp.onreadystatechange = function() {
+					document.getElementById("classes_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
 			}
@@ -118,12 +149,7 @@
 				}
 				xhttp.send();
 				
-				var xhttp2 = new XMLHttpRequest();
-				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
-				xhttp2.onreadystatechange = function() {
-					document.getElementById("schedules_table").innerHTML = this.responseText;
-				}
-				xhttp.send();
+				updateGeneratedSchedulesOnUI();
 			}
 			
 			function addConstraint(){
@@ -148,6 +174,8 @@
 					document.getElementById("constraints_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
 			}
 			
 			function removeConstraint(constraint_num){
@@ -155,6 +183,17 @@
 				xhttp.open("GET", "RemoveInfo?action=constraint&constraint_num=" + constraint_num, true);
 				xhttp.onreadystatechange = function() {
 					document.getElementById("constraints_table").innerHTML = this.responseText;
+				}
+				xhttp.send();
+				
+				updateGeneratedSchedulesOnUI();
+			}
+			
+			function updateGeneratedSchedulesOnUI(){
+				var xhttp2 = new XMLHttpRequest();
+				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
+				xhttp2.onreadystatechange = function() {
+					document.getElementById("schedules_table").innerHTML = this.responseText;
 				}
 				xhttp.send();
 			}
@@ -171,13 +210,13 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<button type="button" class="btn btn-info btn-block schedule-button">
+									<a class="btn btn-info btn-block schedule-button" onclick="registerCourses()">
 										Generate Schedules <i class="fas fa-cogs"></i>
-									</button>
+									</a>
 								</div>
 								<div class="col-3">
-									<a class="btn btn-primary btn-block fake-button" href="friend_schedule.jsp">
-										Schedule with Friends <i class="fas fa-arrow-right"></i>
+									<a class="btn btn-primary btn-block fake-button" onclick="registerCourses()">
+										Register My Courses <i class="fas fa-lock"></i>
 									</a>
 								</div>
 								<div class="col-4">

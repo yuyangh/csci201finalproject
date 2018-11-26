@@ -122,6 +122,7 @@ public class RemoveInfo extends HttpServlet {
 			}
 			// Re-print UI
 	        for(int i = 0; i < groups.size(); i++) {
+	        	
 	        	out.println("<div class=\"row h-100 header-row\">");
 	        	out.println("<div class=\"col-4 h-100 group-header\">");
 	        	out.println("Group " + (i+1));
@@ -130,6 +131,7 @@ public class RemoveInfo extends HttpServlet {
 	        	out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
 	        	out.println("</div>");
 	        	out.println("</div>");
+	        	out.println("<div id=\"" + i + "\">");
 	        	for(int j = 0; j < groups.get(i).size(); j++) {
 	        		out.println("<div class=\"row h-100 class-row\">");
 	        		out.println("<div class=\"col-4 h-100 class-entry\">");
@@ -143,6 +145,7 @@ public class RemoveInfo extends HttpServlet {
 	        		out.println("</div>");
 	        		out.println("</div>");
 	        	}
+	        	out.println("</div>");
         		out.println("<div class=\"row class-row\">");
         		out.println("<div class=\"col-4 no-padding\">");
         		out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
@@ -154,6 +157,7 @@ public class RemoveInfo extends HttpServlet {
         		out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
         		out.println("</div>");
         		out.println("</div>");
+        		
 	        }
         	out.println("<div class=\"row group-add-row\">");
         	out.println("<div class=\"col-4 no-padding\">");
