@@ -205,12 +205,51 @@ public class AddInfo extends HttpServlet {
 			out.println("</div>");
 			out.println("</div>");
 		}
-		/*
+		
 		// Update the generated schedules
 		
-		// todo start of Mark's code
+		/*
+		 
+		 // todo start of Mark's code
 
-		// only instantiate the schedules when session is created
+			// create a session to store the schedule ConcurrentHashmap
+			// store data to variables below
+			ArrayList<AddClass> totalClasses = null;
+			ArrayList<Constraint> constraintArrayList = null;
+			String addClassKey = null;
+			ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules = null;
+
+			// only instantiate the schedules when session is created
+			if (session.isNew()) {
+				schedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+				session.setAttribute("schedules", schedules);
+			} else {
+
+			}
+
+			// with constructor, it will start to compute
+			SchedulingThread schedulingThread = new SchedulingThread(totalClasses, constraintArrayList,
+					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
+			// we may optimize the code below to make it easier to access
+			while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
+					session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames(totalClasses, ""))) {
+				Thread.yield();
+			}
+			// result is stored in the result
+			ArrayList<ArrayList<Section>> result;
+			result = schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames(totalClasses, ""));
+			session.setAttribute("schedules", schedulingThread.getSchedules());
+
+			// end of Mark's code
+		 
+		 
+		 
+		 */
+		
+		
+		
+		// todo start of Tristan's code
+
 		if (session.getAttribute("schedules") == null) {
 			ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
 			session.setAttribute("schedules", schedules);
@@ -248,7 +287,7 @@ public class AddInfo extends HttpServlet {
 		// we may optimize the code below to make it easier to access
 		while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
 				session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
-			Thread.yield();
+			schedulingThread.yield();
 		}
 		System.out.println("hi");
 		// result is stored in the result
@@ -256,8 +295,8 @@ public class AddInfo extends HttpServlet {
 		
 		session.setAttribute("schedules", schedulingThread.getSchedules());
 
-		// end of Mark's code
-		*/
+		// end of Tristan's code
+		
 	}
 
 	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {

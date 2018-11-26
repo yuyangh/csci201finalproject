@@ -30,7 +30,7 @@ public class SchedulingThread extends Thread {
 		this.constraints = constraints;
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
-		//start();
+		start();
 	}
 
 	//todo small problem here. if we still need to use a boolean as an indicator to show we update complete or not

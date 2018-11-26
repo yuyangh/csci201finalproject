@@ -35,7 +35,6 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			ArrayList<AddClass> totalClasses = new ArrayList<AddClass>();
 			session.setAttribute("totalClasses", totalClasses);
 		}
-		
 		if (session.getAttribute("result") == null) {
 			ArrayList<ArrayList<Section>> result = new ArrayList<ArrayList<Section>>();
 			session.setAttribute("result", result);
@@ -79,6 +78,9 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			out.println("</div>");
 			out.println("<div class=\"row h-100 header-row\">");
 			out.println("<div class=\"col-2 h-100 group-header\">");
+			out.println("Section #");
+			out.println("</div>");
+			out.println("<div class=\"col-2 h-100 group-header\">");
 			out.println("Name");
 			out.println("</div>");
 			out.println("<div class=\"col-2 h-100 group-header\">");
@@ -92,9 +94,6 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			out.println("</div>");
 			out.println("<div class=\"col-2 h-100 group-header\">");
 			out.println("Days");
-			out.println("</div>");
-			out.println("<div class=\"col-2 h-100 group-header\">");
-			out.println("Section #");
 			out.println("</div>");
 			out.println("</div>");
 			for(Section section : schedule) {

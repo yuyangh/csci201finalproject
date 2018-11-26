@@ -208,14 +208,11 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-info btn-block fake-button" onclick="registerCourses()">
-										Generate Schedules <i class="fas fa-cogs"></i>
-									</a>
-								</div>
-								<div class="col-3">
 									<a class="btn btn-primary btn-block fake-button" onclick="registerCourses()">
 										Register My Courses <i class="fas fa-lock"></i>
 									</a>
+								</div>
+								<div class="col-3">
 								</div>
 								<div class="col-4">
 								</div>
