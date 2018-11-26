@@ -24,6 +24,7 @@ public class AddInfo extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		PrintWriter out = response.getWriter();
+		String dayString = "";
 		if (request.getParameter("action").equals("constraint")) {
 			// Update 'constraints' session variable
 			if (session.getAttribute("constraints") == null) {
@@ -31,41 +32,6 @@ public class AddInfo extends HttpServlet {
 			}
 			ArrayList<ArrayList<String>> constraints = (ArrayList<ArrayList<String>>) session.getAttribute("constraints");
 			ArrayList<String> constraint = new ArrayList<String>();
-
-
-			// todo start of Mark's code
-
-			// create a session to store the schedule ConcurrentHashmap
-			// store data to variables below
-			ArrayList<AddClass> totalClasses = null;
-			ArrayList<Constraint> constraintArrayList = null;
-			String addClassKey = null;
-			ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules = null;
-
-			// only instantiate the schedules when session is created
-			if (session.isNew()) {
-				schedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
-				session.setAttribute("schedules", schedules);
-			} else {
-
-			}
-
-			// with constructor, it will start to compute
-			SchedulingThread schedulingThread = new SchedulingThread(totalClasses, constraintArrayList,
-					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
-			// we may optimize the code below to make it easier to access
-			while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
-					session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames(totalClasses, ""))) {
-				Thread.yield();
-			}
-			// result is stored in the result
-			ArrayList<ArrayList<Section>> result;
-			result = schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames(totalClasses, ""));
-			session.setAttribute("schedules", schedulingThread.getSchedules());
-
-			// end of Mark's code
-
-
 			constraint.add(request.getParameter("monday"));
 			constraint.add(request.getParameter("tuesday"));
 			constraint.add(request.getParameter("wednesday"));
@@ -73,6 +39,7 @@ public class AddInfo extends HttpServlet {
 			constraint.add(request.getParameter("friday"));
 			constraint.add(request.getParameter("start_time"));
 			constraint.add(request.getParameter("end_time"));
+			dayString = buildDayString(constraint.get(0), constraint.get(1), constraint.get(2), constraint.get(3), constraint.get(4));
 			constraints.add(constraint);
 			// Re-print UI
 			for (int j = 0; j < constraints.size(); j++) {
@@ -154,9 +121,8 @@ public class AddInfo extends HttpServlet {
 				//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
 				out.println("</div>");
 				out.println("</div>");
-				out.println("<div id=\"" + i + "\">");
 				for (int j = 0; j < groups.get(i).size(); j++) {
-					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
 					out.println("<div class=\"col-4 h-100 class-entry\">");
 					out.println(groups.get(i).get(j).get(0));
 					out.println("</div>");
@@ -168,7 +134,6 @@ public class AddInfo extends HttpServlet {
 					out.println("</div>");
 					out.println("</div>");
 				}
-				out.println("</div>");
 				/*
 				out.println("<div class=\"row class-row\">");
 				out.println("<div class=\"col-4 no-padding\">");
@@ -193,9 +158,8 @@ public class AddInfo extends HttpServlet {
 				out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
 				out.println("</div>");
 				out.println("</div>");
-				out.println("<div id=\"" + i + "\">");
 				for (int j = 0; j < groups.get(i).size() - 1; j++) {
-					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
 					out.println("<div class=\"col-4 h-100 class-entry\">");
 					out.println(groups.get(i).get(j).get(0));
 					out.println("</div>");
@@ -209,7 +173,7 @@ public class AddInfo extends HttpServlet {
 				}
 				if(groups.get(i).size() > 0) {
 					int j = groups.get(i).size() - 1;
-					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
 					out.println("<div class=\"col-4 h-100 class-entry\">");
 					out.println(groups.get(i).get(j).get(0));
 					out.println("</div>");
@@ -221,7 +185,6 @@ public class AddInfo extends HttpServlet {
 					out.println("</div>");
 					out.println("</div>");
 				}
-				out.println("</div>");
 				out.println("<div class=\"row class-row\">");
 				out.println("<div class=\"col-4 no-padding\">");
 				out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
@@ -242,6 +205,59 @@ public class AddInfo extends HttpServlet {
 			out.println("</div>");
 			out.println("</div>");
 		}
+		/*
+		// Update the generated schedules
+		
+		// todo start of Mark's code
+
+		// only instantiate the schedules when session is created
+		if (session.getAttribute("schedules") == null) {
+			ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+			session.setAttribute("schedules", schedules);
+		}
+		if(session.getAttribute("totalClasses") == null) {
+			ArrayList<AddClass> totalClasses = new ArrayList<AddClass>();
+			session.setAttribute("totalClasses", totalClasses);
+		}
+		if(session.getAttribute("constraintArrayList") == null) {
+			ArrayList<Constraint> constraintArrayList = new ArrayList<Constraint>();
+			session.setAttribute("constraintArrayList", constraintArrayList);
+		}
+		if(session.getAttribute("result") == null) {
+			ArrayList<ArrayList<Section>> result = new ArrayList<ArrayList<Section>>();
+			session.setAttribute("result", result);
+		}
+		
+		String addClassKey = null;
+		
+		if (request.getParameter("action").equals("constraint")) {
+			ArrayList<Constraint> constraintArrayList = (ArrayList<Constraint>) session.getAttribute("constraintArrayList");
+			String[] days = dayString.split("/");
+			Constraint myConstraint = new Constraint(request.getParameter("start_time"), request.getParameter("end_time"), "", days);
+			constraintArrayList.add(myConstraint);
+			session.setAttribute("constraintArrayList", constraintArrayList);
+		}
+		else {
+			addClassKey = request.getParameter("department") + request.getParameter("number");
+		}
+
+		// with constructor, it will start to compute
+		SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
+				(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
+		System.out.println("hey");
+		// we may optimize the code below to make it easier to access
+		while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
+				session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
+			Thread.yield();
+		}
+		System.out.println("hi");
+		// result is stored in the result
+		session.setAttribute("result", schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), "")));
+		
+		session.setAttribute("schedules", schedulingThread.getSchedules());
+
+		// end of Mark's code
+		*/
 	}
 
 	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {

@@ -117,7 +117,9 @@ public class RemoveInfo extends HttpServlet {
 		        }
 				else if(request.getParameter("action").equals("class")) {
 		        	// Remove class from 'groups' session variable
-					groups.get(Integer.parseInt(request.getParameter("group_num"))).remove(Integer.parseInt(request.getParameter("class_num")));
+					if(Integer.parseInt(request.getParameter("class_num")) < groups.get(Integer.parseInt(request.getParameter("group_num"))).size()) {
+						groups.get(Integer.parseInt(request.getParameter("group_num"))).remove(Integer.parseInt(request.getParameter("class_num")));
+					}
 		        }
 			}
 			// Re-print UI
@@ -130,9 +132,8 @@ public class RemoveInfo extends HttpServlet {
 				//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
 				out.println("</div>");
 				out.println("</div>");
-				out.println("<div id=\"" + i + "\">");
 				for (int j = 0; j < groups.get(i).size(); j++) {
-					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
 					out.println("<div class=\"col-4 h-100 class-entry\">");
 					out.println(groups.get(i).get(j).get(0));
 					out.println("</div>");
@@ -144,7 +145,6 @@ public class RemoveInfo extends HttpServlet {
 					out.println("</div>");
 					out.println("</div>");
 				}
-				out.println("</div>");
 				/*
 				out.println("<div class=\"row class-row\">");
 				out.println("<div class=\"col-4 no-padding\">");
@@ -169,9 +169,8 @@ public class RemoveInfo extends HttpServlet {
 				out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
 				out.println("</div>");
 				out.println("</div>");
-				out.println("<div id=\"" + i + "\">");
 				for (int j = 0; j < groups.get(i).size() - 1; j++) {
-					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
 					out.println("<div class=\"col-4 h-100 class-entry\">");
 					out.println(groups.get(i).get(j).get(0));
 					out.println("</div>");
@@ -185,7 +184,7 @@ public class RemoveInfo extends HttpServlet {
 				}
 				if(groups.get(i).size() > 0) {
 					int j = groups.get(i).size() - 1;
-					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
 					out.println("<div class=\"col-4 h-100 class-entry\">");
 					out.println(groups.get(i).get(j).get(0));
 					out.println("</div>");
@@ -197,7 +196,6 @@ public class RemoveInfo extends HttpServlet {
 					out.println("</div>");
 					out.println("</div>");
 				}
-				out.println("</div>");
 				out.println("<div class=\"row class-row\">");
 				out.println("<div class=\"col-4 no-padding\">");
 				out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");

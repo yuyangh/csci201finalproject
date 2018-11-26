@@ -90,7 +90,7 @@
 			function removeGroup(group_num){
 				if(group_num >= 0){
 					//for-loop to remove classes from group one-by-one in reverse order
-					var nodelist = document.getElementById(group_num.toString()).getElementsByClassName("row h-100 class-row");
+					var nodelist = document.getElementsByClassName("row h-100 class-row" + group_num);
 					var numClassesInGroup = nodelist.length;
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
@@ -208,7 +208,7 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-info btn-block schedule-button" onclick="registerCourses()">
+									<a class="btn btn-info btn-block fake-button" onclick="registerCourses()">
 										Generate Schedules <i class="fas fa-cogs"></i>
 									</a>
 								</div>
@@ -253,59 +253,7 @@
 									<div class="d-flex flex-column h-100">
 										<div class="row justify-content-center panel-header">Generated Schedules</div>
 										<div class="row flex-grow-1">
-											<div class="col-12 panel-content">
-												next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
-														next row <br />
-														next row
+											<div class="col-12 panel-content" id="schedules_table">
 											</div>
 										</div>
 									</div>
