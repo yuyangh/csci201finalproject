@@ -92,8 +92,6 @@
 					//for-loop to remove classes from group one-by-one in reverse order
 					var nodelist = document.getElementById(group_num.toString()).getElementsByClassName("row h-100 class-row");
 					var numClassesInGroup = nodelist.length;
-					console.log("hi");
-					console.log(numClassesInGroup);
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
 					    justRemoveClass(group_num, i);
@@ -195,7 +193,7 @@
 				xhttp2.onreadystatechange = function() {
 					document.getElementById("schedules_table").innerHTML = this.responseText;
 				}
-				xhttp.send();
+				xhttp2.send();
 			}
 			
 			removeGroup(-1);

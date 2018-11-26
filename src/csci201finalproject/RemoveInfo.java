@@ -121,51 +121,102 @@ public class RemoveInfo extends HttpServlet {
 		        }
 			}
 			// Re-print UI
-	        for(int i = 0; i < groups.size(); i++) {
-	        	
-	        	out.println("<div class=\"row h-100 header-row\">");
-	        	out.println("<div class=\"col-4 h-100 group-header\">");
-	        	out.println("Group " + (i+1));
-	        	out.println("</div>");
-	        	out.println("<div class=\"col-4 no-padding\">");
-	        	out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
-	        	out.println("</div>");
-	        	out.println("</div>");
-	        	out.println("<div id=\"" + i + "\">");
-	        	for(int j = 0; j < groups.get(i).size(); j++) {
-	        		out.println("<div class=\"row h-100 class-row\">");
-	        		out.println("<div class=\"col-4 h-100 class-entry\">");
-	        		out.println(groups.get(i).get(j).get(0));
-	        		out.println("</div>");
-	        		out.println("<div class=\"col-4 h-100 class-entry\">");
-	        		out.println(groups.get(i).get(j).get(1));
-	        		out.println("</div>");
-	        		out.println("<div class=\"col-4 no-padding\">");
-	        		out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
-	        		out.println("</div>");
-	        		out.println("</div>");
-	        	}
-	        	out.println("</div>");
-        		out.println("<div class=\"row class-row\">");
-        		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
-        		out.println("</div>");
-        		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
-        		out.println("</div>");
-        		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
-        		out.println("</div>");
-        		out.println("</div>");
-        		
-	        }
-        	out.println("<div class=\"row group-add-row\">");
-        	out.println("<div class=\"col-4 no-padding\">");
-        	out.println("<button type=\"button\" class=\"btn btn-success button-add-group\" onclick=\"addGroup()\">Add Group</button>");
-        	out.println("</div>");
-        	out.println("<div class=\"col-8 no-padding\">");
-        	out.println("</div>");
-        	out.println("</div>");
+			for (int i = 0; i < groups.size() - 1; i++) {
+				out.println("<div class=\"row h-100 header-row\">");
+				out.println("<div class=\"col-4 h-100 group-header\">");
+				out.println("Group " + (i + 1));
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
+				out.println("</div>");
+				out.println("</div>");
+				out.println("<div id=\"" + i + "\">");
+				for (int j = 0; j < groups.get(i).size(); j++) {
+					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(0));
+					out.println("</div>");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(1));
+					out.println("</div>");
+					out.println("<div class=\"col-4 no-padding\">");
+					//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+					out.println("</div>");
+					out.println("</div>");
+				}
+				out.println("</div>");
+				/*
+				out.println("<div class=\"row class-row\">");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
+				out.println("</div>");
+				*/
+				out.println("</div>");
+			}
+			if(groups.size() > 0) {
+				int i = groups.size() - 1;
+				out.println("<div class=\"row h-100 header-row\">");
+				out.println("<div class=\"col-4 h-100 group-header\">");
+				out.println("Group " + (i + 1));
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
+				out.println("</div>");
+				out.println("</div>");
+				out.println("<div id=\"" + i + "\">");
+				for (int j = 0; j < groups.get(i).size() - 1; j++) {
+					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(0));
+					out.println("</div>");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(1));
+					out.println("</div>");
+					out.println("<div class=\"col-4 no-padding\">");
+					//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+					out.println("</div>");
+					out.println("</div>");
+				}
+				if(groups.get(i).size() > 0) {
+					int j = groups.get(i).size() - 1;
+					out.println("<div class=\"row h-100 class-row\">");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(0));
+					out.println("</div>");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(1));
+					out.println("</div>");
+					out.println("<div class=\"col-4 no-padding\">");
+					out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+					out.println("</div>");
+					out.println("</div>");
+				}
+				out.println("</div>");
+				out.println("<div class=\"row class-row\">");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
+				out.println("</div>");
+				out.println("</div>");
+			}
+			out.println("<div class=\"row group-add-row\">");
+			out.println("<div class=\"col-4 no-padding\">");
+			out.println("<button type=\"button\" class=\"btn btn-success button-add-group\" onclick=\"addGroup()\">Add Group</button>");
+			out.println("</div>");
+			out.println("<div class=\"col-8 no-padding\">");
+			out.println("</div>");
+			out.println("</div>");
 		}
 	}
 	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {
