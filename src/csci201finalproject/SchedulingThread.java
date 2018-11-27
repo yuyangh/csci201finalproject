@@ -37,7 +37,6 @@ public class SchedulingThread extends Thread {
 		this.constraints = constraints;
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
-		schedules.put("", new ArrayList<ArrayList<Section>>());
 		start();
 	}
 
@@ -455,6 +454,9 @@ public class SchedulingThread extends Thread {
 	}
 
 	public static void deleteClass(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, ArrayList<AddClass> totalClasses) {
+		if(getAllClassNames(totalClasses).equals("")){
+			schedules.put("",new ArrayList<ArrayList<Section>>());
+		}
 		if (schedules.containsKey(getAllClassNames(totalClasses))) {
 			// since we already have the value stored in the hashtable, nothing need to do;
 			System.out.println("DELETING CLASS. CURRENT totalClasses: " + totalClassesToString(totalClasses));
