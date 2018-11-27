@@ -1,5 +1,6 @@
 package csci201finalproject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -279,6 +280,13 @@ public class SchedulingThread extends Thread {
 	public static void printPrettyConstraints(ArrayList<Constraint> constraints){
 		for (Constraint constraint:constraints		     ) {
 			System.out.print(constraint+"\t");
+		}
+		System.out.println();
+	}
+
+	public static void printPrettyTotalClasses(ArrayList<AddClass> totalClasses){
+		for (AddClass addClass:totalClasses		     ) {
+			System.out.print(addClass.getClassName()+"\t");
 		}
 		System.out.println();
 	}
