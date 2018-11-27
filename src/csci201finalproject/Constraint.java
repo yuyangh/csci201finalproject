@@ -47,4 +47,14 @@ public class Constraint {
 	public ArrayList<Integer> getDays() {
 		return this.daysInt;
 	}
+
+	@Override
+	public String toString() {
+		return "Constraint{" +
+				"startTime='" + startTime + '\'' +
+				", endTime='" + endTime + '\'' +
+				", name='" + name + '\'' +
+				", daysInt=" + daysInt +
+				'}';
+	}
 }

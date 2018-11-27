@@ -32,7 +32,7 @@ public class SchedulingThread extends Thread {
 		this.constraints = constraints;
 		this.schedules = schedules;
 		this.addClassKey = addClassKey;
-		//start();
+		start();
 	}
 
 	//todo small problem here. if we still need to use a boolean as an indicator to show we update complete or not
@@ -274,6 +274,13 @@ public class SchedulingThread extends Thread {
 			}
 			System.out.println();
 		}
+	}
+
+	public static void printPrettyConstraints(ArrayList<Constraint> constraints){
+		for (Constraint constraint:constraints		     ) {
+			System.out.print(constraint+"\t");
+		}
+		System.out.println();
 	}
 
 	public static void test() {
