@@ -114,7 +114,6 @@
 		  	// - no response needed
 		    function addUniqueUser(userID, userName, userEmail, userPicURL) { 
 				var xhttp = new XMLHttpRequest();
-				console.log(userName);
 			   	xhttp.open("POST", "AddUniqueUserServlet?userID="+userID + "&userName="+userName + "&userEmail="+userEmail + "&userPicURL="+userPicURL, true);
 			   	xhttp.onreadystatechange = function() { 
 			   		console.log(this.responseText);

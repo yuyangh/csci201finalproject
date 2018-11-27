@@ -57,7 +57,7 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 				out.println(addClass.getClassName());
 				out.println("</div>");
 				out.println("<div class=\"col-4 h-100 no-padding\">");
-				out.println("<button type=\"button\" class=\"btn btn-default\" >Num</button>");
+				out.println("<button id=\"" + addClass.getClassName() + "\" type=\"button\" class=\"btn btn-default\" onclick=\"modalClicked(this.id);\">See Friends</button>");
 				out.println("</div>");
 				out.println("</div>");
 			}

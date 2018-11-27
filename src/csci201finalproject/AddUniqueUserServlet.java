@@ -49,6 +49,8 @@ public class AddUniqueUserServlet extends HttpServlet {
 		String userID = request.getParameter("userID");
 		String userName = request.getParameter("userName");
 		String userPicURL = request.getParameter("userPicURL");
+		
+		System.out.println("URL: " + userPicURL);
 
 		Connection conn = null;
 		Statement st = null;

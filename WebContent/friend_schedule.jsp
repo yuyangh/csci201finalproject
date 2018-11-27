@@ -11,7 +11,8 @@
 	</head>
 	<body>
 		<script>
-		
+		var friendsListGlobalVar = [];
+
 			(function(d, s, id){
 				var js, fjs = d.getElementsByTagName(s)[0];
 			    if (d.getElementById(id)) {return;}
@@ -60,6 +61,13 @@
 					console.log(sessionStorage.getItem("userName")); 
 					console.log(sessionStorage.getItem("userEmail")); 
 					console.log(sessionStorage.getItem("userPicURL"));  */
+					FB.api("/me/friends", function (response) {
+	    	    		if (response && !response.error) { //on success
+	    	    			storeFriendsInStorage(response);
+	    	    			friendsListGlobalVar = response;
+	    	    		} else { // on error 
+	    	    		}
+					});
 		   		});
 		   	}
 		  
@@ -71,6 +79,30 @@
 		          	window.location.href = 'login.jsp';
 		      	});
 		   	}
+		  	
+		    var fl = []
+			function getFriendListIntoArrayVar(fl) {
+    			var tfl = JSON.parse(sessionStorage.getItem("friendList"));
+    			for(i = 0; i < tfl.length; i++) {
+    				fl.push(JSON.parse(tfl[i]));
+    			}
+			}
+			
+			function storeFriendsInStorage(response) {
+				var fl = [];
+ 				for(i = 0; i < response.data.length; i++) {
+ 					fl.push(JSON.stringify(response.data[i]));
+ 				}
+    			sessionStorage.setItem("friendList", JSON.stringify(fl));
+			}
+			
+			function printObjectKeyValPairs(obj) {
+				Object.getOwnPropertyNames(obj).forEach(
+  					  function (val, idx, array) {
+  					  	console.log(val + ' -> ' + obj[val]);
+  					  }
+  				);
+			}
 		  	
 		    function addUniqueUser(userID) { 
 				var xhttp = new XMLHttpRequest();
@@ -234,6 +266,83 @@
 			
 			removeGroup(-1);
 			removeConstraint(-1);
+			
+			
+			//js code for modal
+		  	function deleteTableRows() {
+		  		var table = document.getElementById("tableFriendsList");
+		  		while(table.rows.length > 0) {
+		  		  table.deleteRow(0);
+		  		}
+		  	}
+		  	
+		  	function fillHeaderForTable() {
+		  		var headerNode = document.getElementById("headerFriendsListTable");
+		  		var text = sessionStorage.getItem("userName") + "'s friends in this class:";
+		  		headerNode.innerHTML = text;
+		  	}
+		  	
+		  	function populateFriendsListTable(classID) {
+				var xhttp = new XMLHttpRequest();
+			   	xhttp.open("POST", "GetUsersTakingClassServlet?classID="+classID, true);
+			   	xhttp.onreadystatechange = function() { 
+			   		//console.log(this.responseText);
+			   		//iterate through response (for loop)...nested our friends list...if they match...add to table
+			   		if(this.readyState == 4 && this.status == 200) {
+			   			var classEnrollmentList = JSON.parse(this.responseText);
+			   			var length = classEnrollmentList.length;
+			   			if(length == 0 || classEnrollmentList == '[ ]' || classEnrollmentList == null) {
+			   				//TODO: have table display no friends in class
+				   			return;
+			   			}
+			   			
+			   			//if users in response match our current friends then add them to the table
+			   			for (var i = 0; i < length; i++) {
+		    				var usernameStudent = classEnrollmentList[i].username;
+		    				var userPicURLStudent = classEnrollmentList[i].userPicURL;
+		    				for(var j = 0; j < friendsListGlobalVar.data.length; j++) {
+		    					var friendName = friendsListGlobalVar.data[j].name;
+		    					if(friendName == usernameStudent) {
+		    						console.log(friendName + " and " + usernameStudent);
+		    				  		var table = document.getElementById("tableFriendsList");
+		    						var row = table.insertRow(0);
+		    						var imageCell = row.insertCell(0);
+		    						var nameCell = row.insertCell(1);
+		    						var img = document.createElement('img');
+		    					    img.src = 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=724855971220792&height=50&width=50&ext=1545905095&hash=AeR03A09EVzAE71Q'; 
+		    						imageCell.appendChild(img);
+		    						nameCell.innerHTML = friendName;
+		    					}
+		    				} //end of inner for loop
+						} // end of outer for loop
+			   		}
+			   	} //end of async call
+			   	xhttp.send();		  		
+			} //end of function call
+		  	
+			function modalClicked(id) {
+				var modal = document.getElementById('myModal');
+			    modal.style.display = "block";
+			    fillHeaderForTable();
+			    populateFriendsListTable(id); //TODO: need to pass in classID into this function...
+			    // get it from the dynamic button that was created...when creating that button - give it an id
+			    
+		    	window.addEventListener("click", function(event){
+					var modal = document.getElementById('myModal');
+				    if (event.target == modal) {
+				        modal.style.display = "none";
+				        deleteTableRows();
+				    }
+		    	});
+			}
+			
+			function spanClicked() {
+				var modal = document.getElementById('myModal');
+				modal.style.display = "none";
+				deleteTableRows();
+			}
+			//end of js code for modal
+	
 		</script>
 		
 
@@ -297,5 +406,28 @@
 				</div>
 			</div>
 		</div>
+		
+		
+		<!-- html code for modal -->
+	 	<!-- The Modal -->
+		<div id="myModal" class="modal">
+		  <!-- Modal content -->
+		  <div class="modal-content">
+		  
+		    <div class="modal-header">
+		      <span class="close" onclick="spanClicked();">&times;</span>
+		      <h2 id="headerFriendsListTable"></h2>
+		    </div>
+		    
+		    <div class="modal-body">
+		      <table id="tableFriendsList"></table>
+		    </div>
+		    
+		  </div> <!-- end of modal content -->
+		  
+		</div> <!-- end of modal -->
+	 	<!-- end of html code for modal -->
+		
+		
 	</body>
 </html>
