@@ -78,18 +78,7 @@
 			   	xhttp.send();
 		     }
 		    
-			function addGroup(){
-				var xhttp = new XMLHttpRequest();
-				xhttp.open("GET", "AddInfo?action=group", true);
-				xhttp.onreadystatechange = function() {
-					if(this.readyState == 4 && this.status == 200){
-						document.getElementById("classes_table").innerHTML = this.responseText;
-					}
-				}
-				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
-			}
+			
 			
 			function removeGroup(group_num){
 				if(group_num >= 0){
@@ -107,12 +96,10 @@
 					xhttp.onreadystatechange = function() {
 						if(this.readyState == 4 && this.status == 200){
 							document.getElementById("classes_table").innerHTML = this.responseText;
+							updateGeneratedSchedulesOnUI();
 						}
 					}
 					xhttp.send();
-					
-					// update the schedules
-					updateGeneratedSchedulesOnUI();
 				}
 				else{
 					// remove the group from the display
@@ -127,20 +114,28 @@
 				}
 			}
 			
+			function addGroup(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("GET", "AddInfo?action=group", true);
+				xhttp.onreadystatechange = function() {
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("classes_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI();
+					}
+				}
+				xhttp.send();
+			}
+			
 			function addClass(group_num){
 				var xhttp = new XMLHttpRequest();
 				xhttp.open("GET", "AddInfo?action=class&department=" + document.getElementById("department_input" + group_num).value + "&number=" + document.getElementById("number_input" + group_num).value + "&group_num=" + group_num, true);
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI();
 					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
-				
-				addGroup();
-				removeGroup();
 			}
 			
 			function justRemoveClass(group_num, class_num){
@@ -160,11 +155,10 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI();
 					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
 			function addConstraint(){
@@ -188,11 +182,10 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("constraints_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI();
 					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
 			function removeConstraint(constraint_num){
@@ -201,11 +194,10 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("constraints_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI();
 					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
 			function updateGeneratedSchedulesOnUI(){
@@ -214,6 +206,21 @@
 				xhttp2.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("schedules_table").innerHTML = this.responseText;
+					}
+				}
+				xhttp2.send();
+			}
+			
+			function RegisterCoursesJS(){
+				var userID = sessionStorage.getItem("userID");
+				var userName = sessionStorage.getItem("userName"); 
+				var userEmail = sessionStorage.getItem("userEmail"); 
+				var userPicURL = sessionStorage.getItem("userPicURL");
+				console.log("email: " + userEmail);
+				var xhttp2 = new XMLHttpRequest();
+				xhttp2.open("GET", "RegisterCourses?userID=" + userID + "&userName=" + userName + "&userEmail=" + userEmail + "&userPicURL=" + userPicURL, true);
+				xhttp2.onreadystatechange = function() {
+					if(this.readyState == 4 && this.status == 200){
 					}
 				}
 				xhttp2.send();
@@ -231,7 +238,7 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-primary btn-block fake-button" href="registerCourses()">
+									<a class="btn btn-primary btn-block fake-button" onclick="RegisterCoursesJS()">
 										Register My Courses <i class="fas fa-lock"></i>
 									</a>
 								</div>

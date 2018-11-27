@@ -297,7 +297,7 @@ public class AddInfo extends HttpServlet {
 			// with constructor, it will start to compute
 			SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
 					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
-			System.out.println("Constraints in schedulingThread");
+			System.out.println("Constraints in schedulingThread: ");
 			SchedulingThread.printPrettyConstraints(schedulingThread.getConstraints());
 			
 			// we may optimize the code below to make it easier to access
@@ -313,9 +313,6 @@ public class AddInfo extends HttpServlet {
 	//			schedulingThread.yield();
 				Thread.yield();
 			}
-			System.out.println("isReady"+schedulingThread.isReady());
-			System.out.println("Result"+schedulingThread.getResult());
-			
 			
 			// result is stored in the result
 			System.out.println("Constraint array: " + schedulingThread.getConstraints());
@@ -328,7 +325,6 @@ public class AddInfo extends HttpServlet {
 	
 			// end of Tristan's code
 		}
-		System.out.println("out");
 	}
 
 	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {

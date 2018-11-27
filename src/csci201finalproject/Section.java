@@ -34,6 +34,10 @@ public class Section {
 	public void setSectionID(String sectionID) {
 		this.SectionID = sectionID;
 	}
+	
+	public String getName() {
+		return SectionName;
+	}
 
 	public String getType() {
 		return Type;

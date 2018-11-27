@@ -6,11 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SchedulingThread extends Thread {
 
 	static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+
+	static {
+		generalSchedules.put("", new ArrayList<ArrayList<Section>>());
+	}
+
 	private ArrayList<AddClass> totalClasses;
 	private ArrayList<Constraint> constraints;
 	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules;
 	private String addClassKey;
-	boolean ready=false;
+	boolean ready = false;
 	ArrayList<ArrayList<Section>> result;
 
 	// need to create a new instance of the thread with each time the algorithm is called
@@ -274,9 +279,16 @@ public class SchedulingThread extends Thread {
 		}
 	}
 
-	public static void printPrettyConstraints(ArrayList<Constraint> constraints){
-		for (Constraint constraint:constraints		     ) {
-			System.out.print(constraint+"\t");
+	public static void printPrettyConstraints(ArrayList<Constraint> constraints) {
+		for (Constraint constraint : constraints) {
+			System.out.print(constraint + "\t");
+		}
+		System.out.println();
+	}
+
+	public static void printPrettyTotalClasses(ArrayList<AddClass> totalClasses) {
+		for (AddClass addClass : totalClasses) {
+			System.out.print(addClass.getClassName() + "\t");
 		}
 		System.out.println();
 	}
@@ -440,12 +452,23 @@ public class SchedulingThread extends Thread {
 	}
 
 	public static void deleteClass(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules, ArrayList<AddClass> totalClasses) {
+		if(getAllClassNames(totalClasses).equals("")){
+			schedules.put("",new ArrayList<ArrayList<Section>>());
+		}
 		if (schedules.containsKey(getAllClassNames(totalClasses))) {
 			// since we already have the value stored in the hashtable, nothing need to do;
 			System.out.println("DELETING CLASS. CURRENT totalClasses: " + totalClassesToString(totalClasses));
 		} else {
 			System.out.println("Error in deletion, current " + totalClassesToString(totalClasses) + " not in hashmap");
 		}
+	}
+
+	public static ArrayList<AddClass> deleteLastClass(ArrayList<AddClass> totalClasses) {
+		if (totalClasses.isEmpty()) {
+			return totalClasses;
+		}
+		totalClasses.remove(totalClasses.size() - 1);
+		return totalClasses;
 	}
 
 	public static String totalClassesToString(ArrayList<AddClass> totalClasses) {
@@ -505,8 +528,8 @@ public class SchedulingThread extends Thread {
 		if (addClassKey == null) {
 			// the hashmap does not delete anything actually
 			deleteClass(schedules, totalClasses);
-			result=schedules.get(allClassNames);
-			ready=true;
+			result = schedules.get(allClassNames);
+			ready = true;
 			return;
 		}
 
@@ -515,8 +538,8 @@ public class SchedulingThread extends Thread {
 		if (schedules.containsKey(allClassNames)) {
 			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
 			schedules.put(allClassNames, updatedPermuations);
-			result=schedules.get(allClassNames);
-			ready=true;
+			result = schedules.get(allClassNames);
+			ready = true;
 			return;
 		}
 
@@ -544,8 +567,8 @@ public class SchedulingThread extends Thread {
 		String newIntersectionKey = prevClass + " " + addClassKey;
 		schedules.put(newIntersectionKey.trim(), setIntersection);
 
-		result=schedules.get(allClassNames);
-		ready=true;
+		result = schedules.get(allClassNames);
+		ready = true;
 	}
 
 

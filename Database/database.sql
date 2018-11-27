@@ -4,20 +4,13 @@ CREATE DATABASE ScheduleMe;
 
 USE ScheduleMe;
 
-CREATE TABLE ActiveGroups (
-    groupCode int(11) primary key not null, 
-    # 0 = not locked, 1 = locked
-    locked int(1) not null 
-);
-
 CREATE TABLE Users (
 	userID int(11) primary key auto_increment not null,
     facebookID varchar(50),
     name varchar(50) not null,
     email varchar(50),
     img varchar(150), 
-    groupCode int(11),
-    FOREIGN KEY fkGroupCode(groupCode) REFERENCES ActiveGroups(groupCode)
+    groupCode int(11)
 );
 
 CREATE TABLE Schools (

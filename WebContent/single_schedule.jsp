@@ -153,9 +153,6 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-primary btn-block fake-button" href="registerCourses()">
-										Register My Courses <i class="fas fa-lock"></i>
-									</a>
 								</div>
 								<div class="col-3">
 								</div>

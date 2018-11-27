@@ -27,7 +27,7 @@
 
 			window.fbAsyncInit = function() {
 			    FB.init({
-			      appId: '562234917553248',
+			      appId: '2169604589968142',
 			      cookie: true,
 			      xfbml: true,
 			      version: 'v3.2'
@@ -52,7 +52,7 @@
 		  
 			// Fetch the user profile data from facebook
 		  	function successfulLogin(){
-		    	FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'}, function (response) {
+		    	FB.api('/me', {locale: 'en_US', fields: 'id, name, first_name,last_name,email,link,gender,locale,picture'}, function (response) {
 		        	document.getElementById('fbButton').setAttribute("onclick","fbLogout()");
 		        	document.getElementById('fbButton').innerHTML = '<img src="fblogout.png"/>';
 	    	    	sessionStorage.setItem("userID", response.id); 
@@ -114,9 +114,10 @@
 		  	// - no response needed
 		    function addUniqueUser(userID, userName, userEmail, userPicURL) { 
 				var xhttp = new XMLHttpRequest();
+				console.log(userName);
 			   	xhttp.open("POST", "AddUniqueUserServlet?userID="+userID + "&userName="+userName + "&userEmail="+userEmail + "&userPicURL="+userPicURL, true);
 			   	xhttp.onreadystatechange = function() { 
-			   		//console.log(this.responseText);
+			   		console.log(this.responseText);
 			   	}
 			   	xhttp.send();
 		     }
