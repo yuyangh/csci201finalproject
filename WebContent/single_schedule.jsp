@@ -21,21 +21,10 @@
 			   	xhttp.send();
 		     }
 		    
-			function addGroup(){
-				var xhttp = new XMLHttpRequest();
-				xhttp.open("GET", "AddInfo?action=group", true);
-				xhttp.onreadystatechange = function() {
-					document.getElementById("classes_table").innerHTML = this.responseText;
-				}
-				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
-			}
-			
-			function removeGroup(group_num){
-				if(group_num >= 0){
+		    function removeGroup(group_num){
+				if(group_num != -1){
 					//for-loop to remove classes from group one-by-one in reverse order
-					var nodelist = document.getElementsByClassName("row h-100 class-row" + group_num);
+					var nodelist = document.getElementsByClassName("row h-100 class-row " + group_num);
 					var numClassesInGroup = nodelist.length;
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
@@ -46,40 +35,57 @@
 					var xhttp = new XMLHttpRequest();
 					xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
 					xhttp.onreadystatechange = function() {
-						document.getElementById("classes_table").innerHTML = this.responseText;
+						if(this.readyState == 4 && this.status == 200){
+							document.getElementById("classes_table").innerHTML = this.responseText;
+							updateGeneratedSchedulesOnUI("single");
+						}
 					}
 					xhttp.send();
-					
-					// update the schedules
-					updateGeneratedSchedulesOnUI();
 				}
 				else{
 					// remove the group from the display
 					var xhttp = new XMLHttpRequest();
 					xhttp.open("GET", "RemoveInfo?action=group&group_num=" + group_num, true);
 					xhttp.onreadystatechange = function() {
-						document.getElementById("classes_table").innerHTML = this.responseText;
+						if(this.readyState == 4 && this.status == 200){
+							document.getElementById("classes_table").innerHTML = this.responseText;
+						}
 					}
 					xhttp.send();
 				}
+			}
+			
+			function addGroup(){
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("GET", "AddInfo?action=group", true);
+				xhttp.onreadystatechange = function() {
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("classes_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI("single");
+					}
+				}
+				xhttp.send();
 			}
 			
 			function addClass(group_num){
 				var xhttp = new XMLHttpRequest();
 				xhttp.open("GET", "AddInfo?action=class&department=" + document.getElementById("department_input" + group_num).value + "&number=" + document.getElementById("number_input" + group_num).value + "&group_num=" + group_num, true);
 				xhttp.onreadystatechange = function() {
-					document.getElementById("classes_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("classes_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI("single");
+					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
 			function justRemoveClass(group_num, class_num){
 				var xhttp = new XMLHttpRequest();
 				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
 				xhttp.onreadystatechange = function() {
-					document.getElementById("classes_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("classes_table").innerHTML = this.responseText;
+					}
 				}
 				xhttp.send();
 			}
@@ -88,11 +94,12 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
 				xhttp.onreadystatechange = function() {
-					document.getElementById("classes_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("classes_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI("single");
+					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
 			function addConstraint(){
@@ -114,27 +121,29 @@
 				if(friday.checked == true) friday_bit = "1";
 				xhttp.open("GET", "AddInfo?action=constraint&monday=" + monday_bit + "&tuesday=" + tuesday_bit + "&wednesday=" + wednesday_bit + "&thursday=" + thursday_bit + "&friday=" + friday_bit + "&start_time=" + document.getElementById("start_time").value + "&end_time=" + document.getElementById("end_time").value, true);
 				xhttp.onreadystatechange = function() {
-					document.getElementById("constraints_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("constraints_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI("single");
+					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
 			function removeConstraint(constraint_num){
 				var xhttp = new XMLHttpRequest();
 				xhttp.open("GET", "RemoveInfo?action=constraint&constraint_num=" + constraint_num, true);
 				xhttp.onreadystatechange = function() {
-					document.getElementById("constraints_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("constraints_table").innerHTML = this.responseText;
+						updateGeneratedSchedulesOnUI("single");
+					}
 				}
 				xhttp.send();
-				
-				updateGeneratedSchedulesOnUI();
 			}
 			
-			function updateGeneratedSchedulesOnUI(){
+			function updateGeneratedSchedulesOnUI(mode){
 				var xhttp2 = new XMLHttpRequest();
-				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
+				xhttp2.open("GET", "UpdateSchedulesOnUI?mode=" + mode, true);
 				xhttp2.onreadystatechange = function() {
 					document.getElementById("schedules_table").innerHTML = this.responseText;
 				}

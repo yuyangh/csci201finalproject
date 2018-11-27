@@ -51,6 +51,7 @@
 		  	function successfulLogin(){
 		    	FB.api('/me', {locale: 'en_US', fields: 'id,first_name,last_name,email,link,gender,locale,picture'}, function (response) {
 		        	document.getElementById('fbButton').setAttribute("onclick","fbLogout()");
+		        	document.getElementById('fbButton').setAttribute("href","login.jsp");
 		        	document.getElementById('fbButton').innerHTML = '<img src="fblogout.png" class="fb-button" />';
 		        	var userID = response.id;
 	    	    	sessionStorage.setItem("userID", userID);
@@ -116,9 +117,9 @@
 			
 			
 			function removeGroup(group_num){
-				if(group_num >= 0){
+				if(group_num != -1){
 					//for-loop to remove classes from group one-by-one in reverse order
-					var nodelist = document.getElementsByClassName("row h-100 class-row" + group_num);
+					var nodelist = document.getElementsByClassName("row h-100 class-row " + group_num);
 					var numClassesInGroup = nodelist.length;
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
@@ -131,7 +132,7 @@
 					xhttp.onreadystatechange = function() {
 						if(this.readyState == 4 && this.status == 200){
 							document.getElementById("classes_table").innerHTML = this.responseText;
-							updateGeneratedSchedulesOnUI();
+							updateGeneratedSchedulesOnUI("friend");
 						}
 					}
 					xhttp.send();
@@ -155,7 +156,7 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI();
+						updateGeneratedSchedulesOnUI("friend");
 					}
 				}
 				xhttp.send();
@@ -167,7 +168,7 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI();
+						updateGeneratedSchedulesOnUI("friend");
 					}
 				}
 				xhttp.send();
@@ -190,7 +191,7 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI();
+						updateGeneratedSchedulesOnUI("friend");
 					}
 				}
 				xhttp.send();
@@ -217,7 +218,7 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("constraints_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI();
+						updateGeneratedSchedulesOnUI("friend");
 					}
 				}
 				xhttp.send();
@@ -229,19 +230,17 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("constraints_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI();
+						updateGeneratedSchedulesOnUI("friend");
 					}
 				}
 				xhttp.send();
 			}
 			
-			function updateGeneratedSchedulesOnUI(){
+			function updateGeneratedSchedulesOnUI(mode){
 				var xhttp2 = new XMLHttpRequest();
-				xhttp2.open("GET", "UpdateSchedulesOnUI", true);
+				xhttp2.open("GET", "UpdateSchedulesOnUI?mode=" + mode, true);
 				xhttp2.onreadystatechange = function() {
-					if(this.readyState == 4 && this.status == 200){
-						document.getElementById("schedules_table").innerHTML = this.responseText;
-					}
+					document.getElementById("schedules_table").innerHTML = this.responseText;
 				}
 				xhttp2.send();
 			}
@@ -347,6 +346,29 @@
 		
 
 		<div style="height: 100vh">
+		
+			<!-- html code for modal -->
+	 	<!-- The Modal -->
+		<div id="myModal" class="modal">
+		  <!-- Modal content -->
+		  <div class="modal-content">
+		  
+		    <div class="modal-header">
+		      <span class="close" onclick="spanClicked();">&times;</span>
+		      <h2 id="headerFriendsListTable"></h2>
+		    </div>
+		    
+		    <div class="modal-body">
+		      <table id="tableFriendsList"></table>
+		    </div>
+		    
+		  </div> <!-- end of modal content -->
+		  
+		</div> <!-- end of modal -->
+	 	<!-- end of html code for modal -->
+		
+		
+		
 			<div class="container-fluid h-100">
 				<div class="row h-100">
 					<div class="col-12">
@@ -406,28 +428,5 @@
 				</div>
 			</div>
 		</div>
-		
-		
-		<!-- html code for modal -->
-	 	<!-- The Modal -->
-		<div id="myModal" class="modal">
-		  <!-- Modal content -->
-		  <div class="modal-content">
-		  
-		    <div class="modal-header">
-		      <span class="close" onclick="spanClicked();">&times;</span>
-		      <h2 id="headerFriendsListTable"></h2>
-		    </div>
-		    
-		    <div class="modal-body">
-		      <table id="tableFriendsList"></table>
-		    </div>
-		    
-		  </div> <!-- end of modal content -->
-		  
-		</div> <!-- end of modal -->
-	 	<!-- end of html code for modal -->
-		
-		
 	</body>
 </html>
