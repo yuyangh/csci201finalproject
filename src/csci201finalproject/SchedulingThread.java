@@ -127,7 +127,6 @@ public class SchedulingThread extends Thread {
 		singlePermutationCombination.addAll(firstSinglePermutation);
 		singlePermutationCombination.addAll(secondSinglePermutation);
 		return singlePermutationCombination;
-
 	}
 
 	/**
