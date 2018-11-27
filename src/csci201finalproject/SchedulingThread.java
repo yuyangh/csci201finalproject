@@ -10,6 +10,8 @@ public class SchedulingThread extends Thread {
 	private ArrayList<Constraint> constraints;
 	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules;
 	private String addClassKey;
+	boolean ready=false;
+	ArrayList<ArrayList<Section>> result;
 
 	// need to create a new instance of the thread with each time the algorithm is called
 
@@ -392,6 +394,22 @@ public class SchedulingThread extends Thread {
 		this.schedules = schedules;
 	}
 
+	public static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> getGeneralSchedules() {
+		return generalSchedules;
+	}
+
+	public static void setGeneralSchedules(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules) {
+		SchedulingThread.generalSchedules = generalSchedules;
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+
 	public String getAddClassKey() {
 		return addClassKey;
 	}
@@ -476,14 +494,18 @@ public class SchedulingThread extends Thread {
 		if (addClassKey == null) {
 			// the hashmap does not delete anything actually
 			deleteClass(schedules, totalClasses);
+			result=schedules.get(allClassNames);
+			ready=true;
 			return;
 		}
 
-		// in default, we deem generalSchedules always have more elements than schedules
 		// case for constraint update
+		// in default, we deem generalSchedules always have more elements than schedules
 		if (schedules.containsKey(allClassNames)) {
 			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
 			schedules.put(allClassNames, updatedPermuations);
+			result=schedules.get(allClassNames);
+			ready=true;
 			return;
 		}
 
@@ -511,6 +533,8 @@ public class SchedulingThread extends Thread {
 		String newIntersectionKey = prevClass + " " + addClassKey;
 		schedules.put(newIntersectionKey.trim(), setIntersection);
 
+		result=schedules.get(allClassNames);
+		ready=true;
 	}
 
 
