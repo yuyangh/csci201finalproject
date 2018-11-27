@@ -83,6 +83,9 @@ public class RegisterCourses extends HttpServlet {
 			System.out.println("Class: " + totalClasses.get(i).getClassName());
 			strClasses.add(totalClasses.get(i).getClassName());
 		}
+		
+		ScheduleToDatabase push = new ScheduleToDatabase(currentUser, strClasses);
+		push.pushToDatabase();
 
 	}
 

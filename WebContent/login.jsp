@@ -59,7 +59,7 @@
 	    	    	sessionStorage.setItem("userName", response.name);
 	    	    	sessionStorage.setItem("userEmail", response.email);
 	    	    	sessionStorage.setItem("userPicURL", response.picture.data.url);
-	    	    	
+	    	    	console.log("login  check: " + response.id + " " + response.name + " " + response.email + " " + response.picture.data.url);
 					//TODO: uncomment line below to add user to database 
 					addUniqueUser(response.id, response.name, response.email, response.picture.data.url);
 	    	    	

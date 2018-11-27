@@ -56,7 +56,10 @@
 	    	    	//check if sessionUserID == null -> if so -> send to DB
 					//TODO: uncomment line below to add user to database 
 					addUniqueUser(userID);
-	    		    
+					/* console.log(sessionStorage.getItem("userID"));
+					console.log(sessionStorage.getItem("userName")); 
+					console.log(sessionStorage.getItem("userEmail")); 
+					console.log(sessionStorage.getItem("userPicURL"));  */
 		   		});
 		   	}
 		  
@@ -216,7 +219,10 @@
 				var userName = sessionStorage.getItem("userName"); 
 				var userEmail = sessionStorage.getItem("userEmail"); 
 				var userPicURL = sessionStorage.getItem("userPicURL");
-				console.log("email: " + userEmail);
+				console.log(userID);
+				console.log(userName); 
+				console.log(userEmail); 
+				console.log(userPicURL);  
 				var xhttp2 = new XMLHttpRequest();
 				xhttp2.open("GET", "RegisterCourses?userID=" + userID + "&userName=" + userName + "&userEmail=" + userEmail + "&userPicURL=" + userPicURL, true);
 				xhttp2.onreadystatechange = function() {
