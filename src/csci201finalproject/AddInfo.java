@@ -269,33 +269,59 @@ public class AddInfo extends HttpServlet {
 		
 		String addClassKey = null;
 		
-		if (request.getParameter("action").equals("constraint")) {
-			ArrayList<Constraint> constraintArrayList = (ArrayList<Constraint>) session.getAttribute("constraintArrayList");
-			String[] days = dayString.split("/");
-			Constraint myConstraint = new Constraint(request.getParameter("start_time"), request.getParameter("end_time"), "", days);
-			constraintArrayList.add(myConstraint);
-			session.setAttribute("constraintArrayList", constraintArrayList);
+		if(!request.getParameter("action").equals("group")) {
+			// CASE FOR CONSTRAINT
+			if (request.getParameter("action").equals("constraint")) {
+				addClassKey = "";
+				ArrayList<Constraint> constraintArrayList = (ArrayList<Constraint>) session.getAttribute("constraintArrayList");
+				String[] days = dayString.split("/");
+				Constraint myConstraint = new Constraint(request.getParameter("start_time"), request.getParameter("end_time"), "", days);
+				constraintArrayList.add(myConstraint);
+				
+				session.setAttribute("constraintArrayList", constraintArrayList);
+			}
+			// CASE FOR CLASSES
+			else if(request.getParameter("action").equals("class")){
+				System.out.print("dept: " + request.getParameter("department") + " num: " + request.getParameter("number"));
+				addClassKey = request.getParameter("department") + request.getParameter("number");
+				ArrayList<AddClass> totalClasses = ((ArrayList<AddClass>)session.getAttribute("totalClasses"));
+				totalClasses.add(new AddClass(addClassKey));
+				session.setAttribute("totalClasses", totalClasses);
+			}
+			
+			// with constructor, it will start to compute
+			SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
+					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
+			
+			
+			// we may optimize the code below to make it easier to access
+			System.out.println("total classes before calling thread"+(ArrayList<AddClass>)session.getAttribute("totalClasses"));
+			System.out.println("Key: " + schedulingThread.getAllClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses")));
+			
+//			while(!schedulingThread.isReady()) {
+//				Thread.yield();
+//			}
+			
+			while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
+					session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
+	//			schedulingThread.yield();
+				Thread.yield();
+			}
+			System.out.println("isReady"+schedulingThread.isReady());
+			System.out.println("Result"+schedulingThread.getResult());
+			
+			
+			// result is stored in the result
+			System.out.println("Constraint array size: " + schedulingThread.getConstraints());
+			ArrayList<ArrayList<Section>> ourResults = schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""));
+			System.out.println("Result set size: " + ourResults.size());
+			SchedulingThread.printPrettyPermutations(ourResults);
+			session.setAttribute("result", schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), "")));
+			
+			session.setAttribute("schedules", schedulingThread.getSchedules());
+	
+			// end of Tristan's code
 		}
-		else {
-			addClassKey = request.getParameter("department") + request.getParameter("number");
-		}
-
-		// with constructor, it will start to compute
-		SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
-				(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
-		System.out.println("hey");
-		// we may optimize the code below to make it easier to access
-		while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
-				session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
-			schedulingThread.yield();
-		}
-		System.out.println("hi");
-		// result is stored in the result
-		session.setAttribute("result", schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), "")));
-		
-		session.setAttribute("schedules", schedulingThread.getSchedules());
-
-		// end of Tristan's code
 		
 	}
 

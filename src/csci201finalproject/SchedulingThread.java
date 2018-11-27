@@ -10,6 +10,8 @@ public class SchedulingThread extends Thread {
 	private ArrayList<Constraint> constraints;
 	private ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules;
 	private String addClassKey;
+	boolean ready=false;
+	ArrayList<ArrayList<Section>> result;
 
 	// need to create a new instance of the thread with each time the algorithm is called
 
@@ -42,7 +44,6 @@ public class SchedulingThread extends Thread {
     however, the key does not exists
     as long as we compute the result, insert into that
     since ConcurrentHashMap is thread safe, we do not need to consider insertion and iteration fail
-
     Example
 	suppose we would like to add the class csci 103
 	check if the generalSchedules hashtable has the CSCI103
@@ -50,7 +51,6 @@ public class SchedulingThread extends Thread {
 	// check permutation code on test.java
 	copy the CSCI103 in the generalSchedules hashmap and check conflicts with the constraints
 	save all non-conflicting result in to the shcedule hashmap
-
 	suppose we already have CSCI103 would like to add the class CSCI104
 	check if the generalSchedules hashmap has the CSCI104
 	if it does not, do the permutation and add to the generalSchedules hashtable
@@ -248,6 +248,14 @@ public class SchedulingThread extends Thread {
 		return subsetClassNameList;
 	}
 
+	public ArrayList<ArrayList<Section>> getResult() {
+		return result;
+	}
+
+	public void setResult(ArrayList<ArrayList<Section>> result) {
+		this.result = result;
+	}
+
 	/**
 	 * print out list of list of Section's contents
 	 *
@@ -392,6 +400,22 @@ public class SchedulingThread extends Thread {
 		this.schedules = schedules;
 	}
 
+	public static ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> getGeneralSchedules() {
+		return generalSchedules;
+	}
+
+	public static void setGeneralSchedules(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> generalSchedules) {
+		SchedulingThread.generalSchedules = generalSchedules;
+	}
+
+	public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+
 	public String getAddClassKey() {
 		return addClassKey;
 	}
@@ -438,8 +462,6 @@ public class SchedulingThread extends Thread {
         check permutation code on test.java
         copy the CSCI103 in the generalSchedules hashtable and check conflicts with the constraints
         save all non-conflicting result in to the shcedule hashtable
-
-
         suppose we would like to add the class CSCI103&CSCI104
         check if the generalSchedules hashtable has the CSCI103&CSCI104
         if it does not, do the permutation and add to the generalSchedules hashtable
@@ -476,14 +498,18 @@ public class SchedulingThread extends Thread {
 		if (addClassKey == null) {
 			// the hashmap does not delete anything actually
 			deleteClass(schedules, totalClasses);
+			result=schedules.get(allClassNames);
+			ready=true;
 			return;
 		}
 
-		// in default, we deem generalSchedules always have more elements than schedules
 		// case for constraint update
+		// in default, we deem generalSchedules always have more elements than schedules
 		if (schedules.containsKey(allClassNames)) {
 			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
 			schedules.put(allClassNames, updatedPermuations);
+			result=schedules.get(allClassNames);
+			ready=true;
 			return;
 		}
 
@@ -511,6 +537,8 @@ public class SchedulingThread extends Thread {
 		String newIntersectionKey = prevClass + " " + addClassKey;
 		schedules.put(newIntersectionKey.trim(), setIntersection);
 
+		result=schedules.get(allClassNames);
+		ready=true;
 	}
 
 
