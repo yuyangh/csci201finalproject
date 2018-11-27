@@ -250,6 +250,14 @@ public class SchedulingThread extends Thread {
 		return subsetClassNameList;
 	}
 
+	public ArrayList<ArrayList<Section>> getResult() {
+		return result;
+	}
+
+	public void setResult(ArrayList<ArrayList<Section>> result) {
+		this.result = result;
+	}
+
 	/**
 	 * print out list of list of Section's contents
 	 *
