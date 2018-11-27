@@ -450,6 +450,11 @@ public class SchedulingThread extends Thread {
 		}
 	}
 
+	public static ArrayList<AddClass> deleteLastClass(ArrayList<AddClass> totalClasses){
+		totalClasses.remove(totalClasses.size()-1);
+		return totalClasses;
+	}
+
 	public static String totalClassesToString(ArrayList<AddClass> totalClasses) {
 		StringBuilder result = new StringBuilder("");
 		result.append("[");
