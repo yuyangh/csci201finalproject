@@ -274,6 +274,13 @@ public class SchedulingThread extends Thread {
 		}
 	}
 
+	public static void printPrettyConstraints(ArrayList<Constraint> constraints){
+		for (Constraint constraint:constraints		     ) {
+			System.out.print(constraint+"\t");
+		}
+		System.out.println();
+	}
+
 	public static void test() {
 		ArrayList<AddClass> totalClasses;
 		ArrayList<Constraint> constraints;

@@ -15,7 +15,7 @@
 		    function addUniqueUser(userID) { 
 				var xhttp = new XMLHttpRequest();
 			   	xhttp.open("POST", "AddUniqueUserServlet?userID="+userID, true);
-			   	xhttp.onreadystatechange = function() { 
+			   	xhttp.onreadystatechange = function() {
 			   		//console.log(this.responseText);
 			   	}
 			   	xhttp.send();

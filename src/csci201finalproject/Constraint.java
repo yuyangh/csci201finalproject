@@ -15,11 +15,11 @@ public class Constraint {
 		this.daysInt = new ArrayList<Integer>();
 		// init our daysInt arraylist
 		for (int i = 0; i < days.length; i++) {
-			if (days[i] == "M") daysInt.add(1);
-			if (days[i] == "T") daysInt.add(2);
-			if (days[i] == "W") daysInt.add(3);
-			if (days[i] == "Th") daysInt.add(4);
-			if (days[i] == "F") daysInt.add(5);
+			if (days[i].equals("M")) daysInt.add(1);
+			if (days[i].equals("T")) daysInt.add(2);
+			if (days[i].equals("W")) daysInt.add(3);
+			if (days[i].equals("Th")) daysInt.add(4);
+			if (days[i].equals("F")) daysInt.add(5);
 		}
 	}
 
@@ -46,5 +46,15 @@ public class Constraint {
 
 	public ArrayList<Integer> getDays() {
 		return this.daysInt;
+	}
+
+	@Override
+	public String toString() {
+		return "Constraint{" +
+				"startTime='" + startTime + '\'' +
+				", endTime='" + endTime + '\'' +
+				", name='" + name + '\'' +
+				", daysInt=" + daysInt +
+				'}';
 	}
 }

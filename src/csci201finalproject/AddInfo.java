@@ -270,17 +270,22 @@ public class AddInfo extends HttpServlet {
 		String addClassKey = null;
 		
 		if(!request.getParameter("action").equals("group")) {
+			
 			// CASE FOR CONSTRAINT
 			if (request.getParameter("action").equals("constraint")) {
 				addClassKey = "";
 				ArrayList<Constraint> constraintArrayList = (ArrayList<Constraint>) session.getAttribute("constraintArrayList");
 				String[] days = dayString.split("/");
+
+				// todo Problem here, the dayString is an empty array
 				Constraint myConstraint = new Constraint(request.getParameter("start_time"), request.getParameter("end_time"), "", days);
 				constraintArrayList.add(myConstraint);
+				SchedulingThread.printPrettyConstraints(constraintArrayList);
 				
 				session.setAttribute("constraintArrayList", constraintArrayList);
 			}
-			// CASE FOR CLASSES
+			
+			// CASE FOR ADD CLASSES
 			else if(request.getParameter("action").equals("class")){
 				System.out.print("dept: " + request.getParameter("department") + " num: " + request.getParameter("number"));
 				addClassKey = request.getParameter("department") + request.getParameter("number");
@@ -292,7 +297,8 @@ public class AddInfo extends HttpServlet {
 			// with constructor, it will start to compute
 			SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
 					(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
-			
+			System.out.println("Constraints in schedulingThread");
+			SchedulingThread.printPrettyConstraints(schedulingThread.getConstraints());
 			
 			// we may optimize the code below to make it easier to access
 			System.out.println("total classes before calling thread"+(ArrayList<AddClass>)session.getAttribute("totalClasses"));
@@ -312,7 +318,7 @@ public class AddInfo extends HttpServlet {
 			
 			
 			// result is stored in the result
-			System.out.println("Constraint array size: " + schedulingThread.getConstraints());
+			System.out.println("Constraint array: " + schedulingThread.getConstraints());
 			ArrayList<ArrayList<Section>> ourResults = schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""));
 			System.out.println("Result set size: " + ourResults.size());
 			SchedulingThread.printPrettyPermutations(ourResults);
@@ -322,7 +328,7 @@ public class AddInfo extends HttpServlet {
 	
 			// end of Tristan's code
 		}
-		
+		System.out.println("out");
 	}
 
 	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {
