@@ -74,7 +74,8 @@
 		  
 		  	function fbLogout() {
 		    	FB.logout(function() {
-		          	document.getElementById('fbButton').setAttribute("onclick","fbLogin()");
+		    		FB.Auth.setAuthResponse(null, 'unknown');
+		    		document.getElementById('fbButton').setAttribute("onclick","fbLogin()");
 		          	document.getElementById('fbButton').innerHTML = '<img src="fblogin.png" class="fb-button" />';
 		          	//document.getElementById('userData').innerHTML = '';
 		          	window.location.href = 'login.jsp';
@@ -114,9 +115,11 @@
 			   	xhttp.send();
 		     }
 		    
+		    function sleep(ms) {
+		    	  return new Promise(resolve => setTimeout(resolve, ms));
+		    }
 			
-			
-			function removeGroup(group_num){
+			async function removeGroup(group_num){
 				if(group_num != -1){
 					//for-loop to remove classes from group one-by-one in reverse order
 					var nodelist = document.getElementsByClassName("row h-100 class-row " + group_num);
@@ -124,6 +127,7 @@
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
 					    justRemoveClass(group_num, i);
+					    await sleep(70);
 					}
 					
 					// remove the group from the display
@@ -179,7 +183,7 @@
 				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
-						document.getElementById("classes_table").innerHTML = this.responseText;
+						//document.getElementById("classes_table").innerHTML = this.responseText;
 					}
 				}
 				xhttp.send();

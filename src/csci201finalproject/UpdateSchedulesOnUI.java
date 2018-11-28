@@ -65,9 +65,12 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			}
 		}
 		
+		int numSchedulesGenerated = 0;
+		numSchedulesGenerated = result.size();
+		
 		out.println("<div class=\"row h-100 header-row\">");
 		out.println("<div class=\"col-12 h-100 group-header\">");
-		out.println("Schedules");
+		out.println(numSchedulesGenerated + " possible schedules fit your requirements.");
 		out.println("</div>");
 		out.println("</div>");
 		// Output the returned schedules to the UI
@@ -75,7 +78,7 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 		for(ArrayList<Section> schedule : result) {
 			out.println("<div class=\"row h-100 header-row\">");
 			out.println("<div class=\"col-4 h-100 schedule-number\">");
-			out.println(counter);
+			out.println("Schedule " + counter);
 			out.println("</div>");
 			out.println("</div>");
 			out.println("<div class=\"row h-100 header-row\">");
