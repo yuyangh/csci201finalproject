@@ -27,8 +27,8 @@ public class ScheduleToDatabase {
 		
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			//Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+			//Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/ScheduleMe?user=root&password=elma201&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			
 			String fbID = user.getFacebookID();
 			String email = user.getEmail();

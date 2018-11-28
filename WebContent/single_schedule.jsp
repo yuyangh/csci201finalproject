@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link rel="stylesheet" href="single_schedule.css">
+		<link href='https://fonts.googleapis.com/css?family=Euphoria Script' rel='stylesheet'>
 	</head>
 	<body>
 		<script>
@@ -175,12 +176,8 @@
 					<div class="col-12">
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
-								<div class="col-3">
-								</div>
-								<div class="col-3">
+								<div class="col-10">
 									<h3 class = "title">ScheduleMe</h3>
-								</div>
-								<div class="col-4">
 								</div>
 								<div class="col-2">
 									<a class="btn btn-info btn-block fake-button" href="login.jsp">
@@ -217,7 +214,7 @@
 									<div class="d-flex flex-column h-100">
 										<div class="row justify-content-center panel-header">Generated Schedules</div>
 										<div class="row flex-grow-1">
-											<div class="col-11 panel-content" id="schedules_table">
+											<div class="col-12 panel-content" id="schedules_table">
 											</div>
 										</div>
 									</div>

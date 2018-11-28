@@ -8,8 +8,90 @@
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 		<link rel="stylesheet" href="single_schedule.css">
+		<link href='https://fonts.googleapis.com/css?family=Euphoria Script' rel='stylesheet'>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+		
+		<script>
+			var socket;
+			function connectToServer() {
+				socket = new WebSocket("ws://localhost:8080/csci201finalproject/ws");
+				socket.onmessage = function(event) {
+					var table = document.getElementById("tableFriendsList");
+					var row = table.insertRow(0);
+					var imageCell = row.insertCell(0);
+					var nameCell = row.insertCell(1);
+					var img = document.createElement('img');
+					if (event.data == "James Orme-Rogers") {
+						img.src = "James.jpg";
+					}
+					if (event.data == "Tristan Elma") {
+						img.src = "Tristan.jpg";
+					}
+					if (event.data == "Joel Gutierrez") {
+						img.src = "Joel.jpg";
+					}
+					if (event.data == "Yuyang Huang") {
+						img.src = "Yuyang.jpg";
+					}
+					if (event.data == "Luz Camacho") {
+						img.src = "Luz.jpg";
+					}
+					if (event.data == "Kaushik Tandon") {
+						img.src = "Kaushik.jpg";
+					}
+					imageCell.appendChild(img);
+					nameCell.innerHTML = event.data;
+				}
+			}
+			
+			function RegisterCoursesJS(){
+				var userID = sessionStorage.getItem("userID");
+				var userName = sessionStorage.getItem("userName"); 
+				var userEmail = sessionStorage.getItem("userEmail"); 
+				var userPicURL = sessionStorage.getItem("userPicURL");
+				console.log(userID);
+				console.log(userName); 
+				console.log(userEmail); 
+				console.log(userPicURL);
+				
+				socket.send(userName);
+				
+				var xhttp2 = new XMLHttpRequest();
+				xhttp2.open("GET", "RegisterCourses?userID=" + userID + "&userName=" + userName + "&userEmail=" + userEmail + "&userPicURL=" + userPicURL, true);
+				xhttp2.onreadystatechange = function() {
+					if(this.readyState == 4 && this.status == 200){
+					}
+				}
+				xhttp2.send();
+			}
+			
+		</script>
 	</head>
-	<body>
+		<!-- html code for modal -->
+	 	<!-- The Modal -->
+		<div id="myModal" class="modal">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+		  <!-- Modal content -->
+		  <div class="modal-content">
+		  
+		    <div class="modal-header">
+		      <span class="close" onclick="spanClicked();">&times;</span>
+		      <h2 id="headerFriendsListTable"></h2>
+		    </div>
+		    
+		    <div class="modal-body">
+		      <table id="tableFriendsList"></table>
+		    </div>
+		    
+		  </div> <!-- end of modal content -->
+		  </div>
+		</div> <!-- end of modal -->
+	 	<!-- end of html code for modal -->
+		
+		
+	<body onload="connectToServer()">
 		<script>
 		var friendsListGlobalVar = [];
 
@@ -256,24 +338,6 @@
 				xhttp2.send();
 			}
 			
-			function RegisterCoursesJS(){
-				var userID = sessionStorage.getItem("userID");
-				var userName = sessionStorage.getItem("userName"); 
-				var userEmail = sessionStorage.getItem("userEmail"); 
-				var userPicURL = sessionStorage.getItem("userPicURL");
-				console.log(userID);
-				console.log(userName); 
-				console.log(userEmail); 
-				console.log(userPicURL);  
-				var xhttp2 = new XMLHttpRequest();
-				xhttp2.open("GET", "RegisterCourses?userID=" + userID + "&userName=" + userName + "&userEmail=" + userEmail + "&userPicURL=" + userPicURL, true);
-				xhttp2.onreadystatechange = function() {
-					if(this.readyState == 4 && this.status == 200){
-					}
-				}
-				xhttp2.send();
-			}
-			
 			removeGroup(-1);
 			removeConstraint(-1);
 			
@@ -357,41 +421,18 @@
 		
 
 		<div style="height: 100vh">
-		
-			<!-- html code for modal -->
-	 	<!-- The Modal -->
-		<div id="myModal" class="modal">
-		  <!-- Modal content -->
-		  <div class="modal-content">
-		  
-		    <div class="modal-header">
-		      <span class="close" onclick="spanClicked();">&times;</span>
-		      <h2 id="headerFriendsListTable"></h2>
-		    </div>
-		    
-		    <div class="modal-body">
-		      <table id="tableFriendsList"></table>
-		    </div>
-		    
-		  </div> <!-- end of modal content -->
-		  
-		</div> <!-- end of modal -->
-	 	<!-- end of html code for modal -->
-		
-		
-		
 			<div class="container-fluid h-100">
 				<div class="row h-100">
 					<div class="col-12">
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
+								<div class="col-7">
+									<h3 class = "title">ScheduleMe</h3>
+								</div>
 								<div class="col-3">
 									<a class="btn btn-primary btn-block fake-button" onclick="RegisterCoursesJS()" href="">
 										Register My Courses <i class="fas fa-lock"></i>
 									</a>
-								</div>
-								<div class="col-7">
-									<h3 class = "title">ScheduleMe</h3>
 								</div>
 								<div class="col-2">
 									<!-- facebook button -->

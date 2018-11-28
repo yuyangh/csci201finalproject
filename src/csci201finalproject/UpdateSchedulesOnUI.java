@@ -46,19 +46,19 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 		
 		if(request.getParameter("mode").equals("friend")) {
 			out.println("<div class=\"row h-100 header-row\">");
-			out.println("<div class=\"col-12 h-100 group-header\">");
-			out.println("Friends in my classes");
+			out.println("<div class=\"col-12 h-100 no-padding\">");
+			out.println("<u class=\"section-header\"> My Courses</u>");
 			out.println("</div>");
 			out.println("</div>");
 			// Output the number of friends in each class
 			if(totalClasses.size() > 0) {
 				for(AddClass addClass : totalClasses) {
-					out.println("<div class=\"row h-100 header-row\">");
-					out.println("<div class=\"col-8 h-100 group-header\">");
-					out.println(addClass.getClassName());
+					out.println("<div class=\"row h-100 schedule-key-row\">");
+					out.println("<div class=\"col-8 h-100 no-padding\">");
+					out.println("<button type=\"button\" class=\"schedule-class\">" + addClass.getClassName() + "</button>");
 					out.println("</div>");
 					out.println("<div class=\"col-4 h-100 no-padding\">");
-					out.println("<button id=\"" + addClass.getClassName() + "\" type=\"button\" class=\"btn btn-default\" onclick=\"modalClicked(this.id);\">See Friends</button>");
+					out.println("<button id=\"" + addClass.getClassName() + "\" type=\"button\" data-toggle=\"modal\" data-target=\"myModal\" class=\"btn btn-info schedule-class-button\" onclick=\"modalClicked(this.id);\">See Friends</button>");
 					out.println("</div>");
 					out.println("</div>");
 				}
@@ -69,8 +69,9 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 		numSchedulesGenerated = result.size();
 		
 		out.println("<div class=\"row h-100 header-row\">");
-		out.println("<div class=\"col-12 h-100 group-header\">");
-		out.println(numSchedulesGenerated + " possible schedules fit your requirements.");
+		out.println("<div class=\"col-12 h-100 no-padding\">");
+		out.println("<u class=\"section-header\"> My Schedules</u>");
+		out.println("<p class=\"schedule-header\">" + numSchedulesGenerated + " possible schedules fit your requirements.</p>");
 		out.println("</div>");
 		out.println("</div>");
 		// Output the returned schedules to the UI
@@ -82,44 +83,44 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			out.println("</div>");
 			out.println("</div>");
 			out.println("<div class=\"row h-100 schedule-key-row\">");
-			out.println("<div class=\"col-2 h-100 schedule-key\">");
-			out.println("Section #");
+			out.println("<div class=\"col-2 h-100 no-padding\">");
+			out.println("<button type=\"button\" class=\"schedule-key\">Section #</button>");
 			out.println("</div>");
-			out.println("<div class=\"col-2 h-100 schedule-key\">");
-			out.println("Name");
+			out.println("<div class=\"col-2 h-100 no-padding\">");
+			out.println("<button type=\"button\" class=\"schedule-key\">Name</button>");
 			out.println("</div>");
-			out.println("<div class=\"col-2 h-100 schedule-key\">");
-			out.println("Type");
+			out.println("<div class=\"col-2 h-100 no-padding\">");
+			out.println("<button type=\"button\" class=\"schedule-key\">Type</button>");
 			out.println("</div>");
-			out.println("<div class=\"col-2 h-100 schedule-key\">");
-			out.println("Start Time");
+			out.println("<div class=\"col-2 h-100 no-padding\">");
+			out.println("<button type=\"button\" class=\"schedule-key\">Start Time</button>");
 			out.println("</div>");
-			out.println("<div class=\"col-2 h-100 schedule-key\">");
-			out.println("End Time");
+			out.println("<div class=\"col-2 h-100 no-padding\">");
+			out.println("<button type=\"button\" class=\"schedule-key\">End Time</button>");
 			out.println("</div>");
-			out.println("<div class=\"col-2 h-100 schedule-key\">");
-			out.println("Days");
+			out.println("<div class=\"col-2 h-100 no-padding\">");
+			out.println("<button type=\"button\" class=\"schedule-key-last\">Days</button>");
 			out.println("</div>");
 			out.println("</div>");
 			for(Section section : schedule) {
 				out.println("<div class=\"row h-100 schedule-body-row\">");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getName());
+				out.println("<div class=\"col-2 h-100 no-padding\">");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getName() + "</button>");
 				out.println("</div>");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getClassCode());
+				out.println("<div class=\"col-2 h-100 no-padding\">");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getClassCode() + "</button>");
 				out.println("</div>");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getType());
+				out.println("<div class=\"col-2 h-100 no-padding\">");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getType() + "</button>");
 				out.println("</div>");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getStartTime());
+				out.println("<div class=\"col-2 h-100 no-padding\">");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getStartTime() + "</button>");
 				out.println("</div>");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getEndTime());
+				out.println("<div class=\"col-2 h-100 no-padding\">");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getEndTime() + "</button>");
 				out.println("</div>");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getDays());
+				out.println("<div class=\"col-2 h-100 no-padding\">");
+				out.println("<button type=\"button\" class=\"schedule-body-last\">" + section.getDays() + "</button>");
 				out.println("</div>");
 				out.println("</div>");
 			}

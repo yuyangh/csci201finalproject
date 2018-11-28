@@ -60,7 +60,7 @@ public class AddUniqueUserServlet extends HttpServlet {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+					"jdbc:mysql://localhost/ScheduleMe?user=root&password=elma201&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			ps = conn.prepareStatement("SELECT * FROM Users WHERE facebookID=? AND email=?");
 
 			ps.setString(1, userID); // set first variable in prepared statement

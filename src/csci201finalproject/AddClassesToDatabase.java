@@ -44,10 +44,10 @@ public class AddClassesToDatabase {
 				School school = gson.fromJson(jsonSchool, School.class);
 				schools.add(school);
 			}
-			//Class.forName("com.mysql.jdbc.Driver");
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
+			//Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+					"jdbc:mysql://localhost/ScheduleMe?user=root&password=elma201&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			st = conn.createStatement();
 			for (School school : schools) {
 				String schoolName = school.getName();

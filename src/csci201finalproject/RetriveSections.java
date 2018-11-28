@@ -29,8 +29,8 @@ public class RetriveSections {
 
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			//Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+			//Class.forName("com.mysql.cj.jdbc.Driver");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost/ScheduleMe?user=root&password=elma201&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			checkParams = conn.prepareStatement("SELECT d.departmentName, c.courseName, c.courseID FROM Departments d, Courses c WHERE d.departmentName=? AND d.departmentID=c.departmentID AND c.courseName=?");;
 			checkParams.setString(1, this.dept);
 			checkParams.setString(2, this.classCode);
