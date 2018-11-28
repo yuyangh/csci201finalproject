@@ -27,6 +27,49 @@ public class UpdateSchedulesOnUI extends HttpServlet {
         super();
     }
     
+    private String formatTime(String raw) {
+    	String result = raw;
+    	if(!raw.equals("None")) {
+    		result = result.substring(0, 5);
+    		String am_pm = "AM";
+			int hour = Integer.parseInt(result.substring(0,2));
+			if(hour > 12){
+				hour-=12;
+				am_pm = "PM";
+			}
+			result = Integer.toString(hour) + ":" + result.substring(3,5) + " " + am_pm;
+    	}
+    	return result;
+    }
+    
+    private String formatDays(ArrayList<Integer> list) {
+    	String result = "";
+    	if(list.contains(1)) {
+    		result += "M";
+    	}
+    	if(list.contains(2)) {
+    		if(!result.equals("")) result += "/";
+    		result += "T";
+    	}
+    	if(list.contains(3)) {
+    		if(!result.equals("")) result += "/";
+    		result += "W";
+    	}
+    	if(list.contains(4)) {
+    		if(!result.equals("")) result += "/";
+    		result += "Th";
+    	}
+    	if(list.contains(5)) {
+    		if(!result.equals("")) result += "/";
+    		result += "F";
+    	}
+    	return result;
+    }
+    
+    private String formatCode(String raw) {
+    	return (raw.substring(0, raw.length()-3) + " " + raw.substring(raw.length()-3));
+    }
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		PrintWriter out = response.getWriter();
@@ -103,7 +146,7 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			out.println("<button type=\"button\" class=\"schedule-key\">Section #</button>");
 			out.println("</div>");
 			out.println("<div class=\"col-2 h-100 no-padding\">");
-			out.println("<button type=\"button\" class=\"schedule-key\">Name</button>");
+			out.println("<button type=\"button\" class=\"schedule-key\">Code</button>");
 			out.println("</div>");
 			out.println("<div class=\"col-2 h-100 no-padding\">");
 			out.println("<button type=\"button\" class=\"schedule-key\">Type</button>");
@@ -124,19 +167,19 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getName() + "</button>");
 				out.println("</div>");
 				out.println("<div class=\"col-2 h-100 no-padding\">");
-				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getClassCode() + "</button>");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + formatCode(section.getClassCode()) + "</button>");
 				out.println("</div>");
 				out.println("<div class=\"col-2 h-100 no-padding\">");
 				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getType() + "</button>");
 				out.println("</div>");
 				out.println("<div class=\"col-2 h-100 no-padding\">");
-				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getStartTime() + "</button>");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + formatTime(section.getStartTime()) + "</button>");
 				out.println("</div>");
 				out.println("<div class=\"col-2 h-100 no-padding\">");
-				out.println("<button type=\"button\" class=\"schedule-body\">" + section.getEndTime() + "</button>");
+				out.println("<button type=\"button\" class=\"schedule-body\">" + formatTime(section.getEndTime()) + "</button>");
 				out.println("</div>");
 				out.println("<div class=\"col-2 h-100 no-padding\">");
-				out.println("<button type=\"button\" class=\"schedule-body-last\">" + section.getDays() + "</button>");
+				out.println("<button type=\"button\" class=\"schedule-body-last\">" + formatDays(section.getDays()) + "</button>");
 				out.println("</div>");
 				out.println("</div>");
 			}

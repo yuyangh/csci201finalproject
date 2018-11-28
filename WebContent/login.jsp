@@ -126,14 +126,13 @@
 	
 	 	<p class="headerBar"></p>
 	 	<div class="middle">
+	 		<img src="usc.png" id="sc"></img>
 		 	<div id="title">ScheduleMe</div>
-		 	
 		 	<div id="buttons">
 		 		<div><button type="button" onclick="goToNextPage();" id="guestButton">Enter as guest</button></div>
 		 		<div><a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png" class="fb-button" /></a></div> 
 		 	</div>
 		 </div>
-	 	
 	 	<p class="footer"></p>
 	</body>
 </html>
