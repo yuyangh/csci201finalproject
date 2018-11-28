@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+.title{
+	font: 20px arial, sans-serif;
+	align: center;
+}
+
 .panel-classes {
 	border: solid #c2c2c2 1px;
 }
@@ -84,10 +89,23 @@
 	padding-top: 7px;
 }
 
+.schedule-number-row{
+	margin-top: 15px;
+	max-height: 10%;
+}
+
 .schedule-key{
 	height: 100%;
 	width: 100%;
 	background-color: #55bde3;
+	border: solid #727272 1px;
+	text-align: center;
+	font:12px arial, sans-serif;
+	padding-top: 7px;
+}
+
+.schedule-key-row{
+	max-height: 10%;
 }
 
 .schedule-body{
@@ -98,6 +116,10 @@
 	text-align: center;
 	font:12px arial, sans-serif;
 	padding-top: 7px;
+}
+
+.schedule-body-row{
+	max-height: 10%;
 }
 
 .header-row{

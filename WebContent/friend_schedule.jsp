@@ -390,9 +390,8 @@
 										Register My Courses <i class="fas fa-lock"></i>
 									</a>
 								</div>
-								<div class="col-3">
-								</div>
-								<div class="col-4">
+								<div class="col-7">
+									<h3 class = "title">ScheduleMe</h3>
 								</div>
 								<div class="col-2">
 									<!-- facebook button -->

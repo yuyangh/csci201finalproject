@@ -178,6 +178,7 @@
 								<div class="col-3">
 								</div>
 								<div class="col-3">
+									<h3 class = "title">ScheduleMe</h3>
 								</div>
 								<div class="col-4">
 								</div>
@@ -216,7 +217,7 @@
 									<div class="d-flex flex-column h-100">
 										<div class="row justify-content-center panel-header">Generated Schedules</div>
 										<div class="row flex-grow-1">
-											<div class="col-12 panel-content" id="schedules_table">
+											<div class="col-11 panel-content" id="schedules_table">
 											</div>
 										</div>
 									</div>

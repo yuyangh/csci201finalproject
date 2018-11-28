@@ -76,12 +76,12 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 		// Output the returned schedules to the UI
 		int counter = 1;
 		for(ArrayList<Section> schedule : result) {
-			out.println("<div class=\"row h-100 header-row\">");
+			out.println("<div class=\"row h-100 schedule-number-row\">");
 			out.println("<div class=\"col-4 h-100 schedule-number\">");
 			out.println("Schedule " + counter);
 			out.println("</div>");
 			out.println("</div>");
-			out.println("<div class=\"row h-100 header-row\">");
+			out.println("<div class=\"row h-100 schedule-key-row\">");
 			out.println("<div class=\"col-2 h-100 schedule-key\">");
 			out.println("Section #");
 			out.println("</div>");
@@ -102,12 +102,12 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 			out.println("</div>");
 			out.println("</div>");
 			for(Section section : schedule) {
-				out.println("<div class=\"row h-100 header-row\">");
-				out.println("<div class=\"col-2 h-100 schedule-body\">");
-				out.println(section.getSectionID());
-				out.println("</div>");
+				out.println("<div class=\"row h-100 schedule-body-row\">");
 				out.println("<div class=\"col-2 h-100 schedule-body\">");
 				out.println(section.getName());
+				out.println("</div>");
+				out.println("<div class=\"col-2 h-100 schedule-body\">");
+				out.println(section.getClassCode());
 				out.println("</div>");
 				out.println("<div class=\"col-2 h-100 schedule-body\">");
 				out.println(section.getType());

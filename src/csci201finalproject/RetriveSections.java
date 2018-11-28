@@ -57,7 +57,7 @@ public class RetriveSections {
 					for(int i  = 0; i < daysParsed.length; i++) {
 						daysInts.add(Integer.parseInt(daysParsed[i]));
 					}
-					totalSections.add(new Section(sectionID,sectionName, type, startTime, endTime, daysInts));
+					totalSections.add(new Section(sectionID,sectionName, type, startTime, endTime, daysInts, this.dept, this.classCode));
 				}
 
 				java.sql.PreparedStatement getTypes = conn.prepareStatement("SELECT DISTINCT type FROM Sections WHERE courseID=?");
