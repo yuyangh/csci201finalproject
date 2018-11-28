@@ -5,6 +5,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Login</title>
 		<link rel="stylesheet" type="text/css" href="login.css" />
+		<link href='https://fonts.googleapis.com/css?family=Euphoria Script' rel='stylesheet'>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	</head>
 	
 	<body>
@@ -54,7 +56,7 @@
 		  	function successfulLogin(){
 		    	FB.api('/me', {locale: 'en_US', fields: 'id, name, first_name,last_name,email,link,gender,locale,picture'}, function (response) {
 		        	document.getElementById('fbButton').setAttribute("onclick","fbLogout()");
-		        	document.getElementById('fbButton').innerHTML = '<img src="fblogout.png"/>';
+		        	document.getElementById('fbButton').innerHTML = '<img src="fblogout.png" class="fb-button"/>';
 	    	    	sessionStorage.setItem("userID", response.id); 
 	    	    	sessionStorage.setItem("userName", response.name);
 	    	    	sessionStorage.setItem("userEmail", response.email);
@@ -101,7 +103,7 @@
 		  	function fbLogout() {
 		    	FB.logout(function() {
 		          	document.getElementById('fbButton').setAttribute("onclick","fbLogin()");
-		          	document.getElementById('fbButton').innerHTML = '<img src="fblogin.png"/>';
+		          	document.getElementById('fbButton').innerHTML = '<img src="fblogin.png" class="fb-button"/>';
 		      	});
 		   	}
 		  	
@@ -122,15 +124,16 @@
 		     }
 		</script>
 	
-	 	<div class="headerBar"></div>
+	 	<p class="headerBar"></p>
+	 	<div class="middle">
+		 	<div id="title">ScheduleMe</div>
+		 	
+		 	<div id="buttons">
+		 		<div><button type="button" onclick="goToNextPage();" id="guestButton">Enter as guest</button></div>
+		 		<div><a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png" class="fb-button" /></a></div> 
+		 	</div>
+		 </div>
 	 	
-	 	<div id="title"> ScheduleMe</div>
-	 	
-	 	<div id="buttons">
-	 		<div><button type="button" onclick="goToNextPage();" id="guestButton">Enter as guest!</button></div>
-	 		<div><a href="javascript:void(0);" onclick="fbLogin()" id="fbButton"><img src="fblogin.png"/></a></div> 
-	 	</div>
-	 	
-	 	<div class="footer"></div>
+	 	<p class="footer"></p>
 	</body>
 </html>

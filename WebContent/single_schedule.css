@@ -83,7 +83,7 @@
 .schedule-class{
 	height: 100%;
 	width: 100%;
-	background-color: #55bde3;
+	background-color: #eeeeee;
 	border: solid #727272 1px;
 	text-align: center;
 	font:15px arial, sans-serif;
@@ -111,18 +111,19 @@
 	height: 100%;
 	width: 100%;
 	text-align: center;
-	font:15px arial, sans-serif;
+	font:17px arial, sans-serif;
 	padding-top: 7px;
 }
 
 .schedule-number{
 	height: 100%;
 	width: 100%;
-	background-color: #0fb1e3;
-	border: solid #727272 1px;
+	color: white;
+	background-color: #40aabc;
+	border: solid #1b1b1b 1px;
 	border-radius: 5px 5px 0px 0px;
 	text-align: center;
-	font:15px arial, sans-serif;
+	font:17px arial, sans-serif;
 	padding-top: 10px;
 }
 
@@ -135,19 +136,21 @@
 .schedule-key{
 	height: 100%;
 	width: 100%;
-	background-color: #55bde3;
-	border: solid #727272 1px;
+	color: white;
+	background-color: #40aabc;
+	border: solid #1b1b1b 1px;
 	text-align: center;
-	font:12px arial, sans-serif;
+	font:14px arial, sans-serif;
 }
 
 .schedule-key-last{
 	height: 100%;
 	width: 88%;
-	background-color: #55bde3;
-	border: solid #727272 1px;
+	color: white;
+	background-color: #40aabc;
+	border: solid #1b1b1b 1px;
 	text-align: center;
-	font:12px arial, sans-serif;
+	font:14px arial, sans-serif;
 }
 
 .schedule-key-row{
@@ -157,19 +160,19 @@
 .schedule-body{
 	height: 100%;
 	width: 100%;
-	background-color: #8ad7ec;
+	background-color: #eeeeee;
 	border: solid #727272 1px;
 	text-align: center;
-	font:12px arial, sans-serif;
+	font:14px arial, sans-serif;
 }
 
 .schedule-body-last{
 	height: 100%;
 	width: 88%;
-	background-color: #8ad7ec;
+	background-color: #eeeeee;
 	border: solid #727272 1px;
 	text-align: center;
-	font:12px arial, sans-serif;
+	font:14px arial, sans-serif;
 }
 
 .schedule-body-row{

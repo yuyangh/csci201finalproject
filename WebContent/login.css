@@ -2,26 +2,33 @@
 
 /* header start*/
 .headerBar {
-    background-color: black;
-    overflow: hidden;
-    top: 0px;
-    left: 0px;
-    width: 100%;
+	top: 0px;
+	left: 0px;
+	width: 100%;
 	height: 100px;
 	position: fixed;
+	margin-bottom: 5px;
 }
 /* footer end*/
 
 /* title start*/
 #title {
-    margin-top: 300px;
-    font-size: 80px;
+    margin-top: 10px;
     width: 100%;
     text-align: center;
 	height: 100px;
-	float: left;
+	float: center;
+	font-family: 'Euphoria Script';
+	font-size: 80px;
+	font-weight: bold;
 }
 /* title end*/
+
+.middle{
+	margin-top: 150px;
+	background-color: #E9E9E9;
+	border: solid #c2c2c2 1px;
+}
 
 #buttons {
 	width: 100%;
@@ -29,15 +36,23 @@
 }
 
 #guestButton {
-	width: 353px;
-	height: 73px;
-	font-size: 22px;
+	width: 190px;
+	height: 40px;
+	font-size: 15px;
 	border-radius: 5px;
+}
+
+.fb-button {
+	border-radius: 5px;
+	height: 100%;
+	width: auto;
+	max-height: 40px;
 }
 
 #fbButton img {
 	margin-top: 20px;
 	border-radius: 5px;
+	margin-bottom: 20px;
 }
 
 /* footer start*/
@@ -46,7 +61,7 @@
 	left: 0px;
 	width: 100%;
 	height: 100px;
-	background-color: black;
+	background-color: white;
 	position: fixed;
 }
 /* footer end*/

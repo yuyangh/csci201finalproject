@@ -320,14 +320,15 @@
 						}
 						else{
 							updateGeneratedSchedulesOnUI("friend");
-						}					}
+						}
+					}
 				}
 				xhttp.send();
 			}
 			
 			function updateGeneratedSchedulesOnUI(mode){
 				if(mode != "initialize"){
-					document.getElementById("schedules_table").innerHTML = "<h1 class=\"waiting\">Generating schedules...</h1>";
+					document.getElementById("schedules_table").innerHTML = "<h1 class=\"schedule-header\">Generating schedules...</h1>";
 				}				var xhttp2 = new XMLHttpRequest();
 				xhttp2.open("GET", "UpdateSchedulesOnUI?mode=" + mode, true);
 				xhttp2.onreadystatechange = function() {

@@ -44,10 +44,21 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 		
 		ArrayList<ArrayList<Section>> result = (ArrayList<ArrayList<Section>>) session.getAttribute("result");
 		
-		if(request.getParameter("mode").equals("friend")) {
+		if(!request.getParameter("mode").equals("single")) {
+			int numClasses = 0;
+			numClasses = totalClasses.size();
 			out.println("<div class=\"row h-100 header-row\">");
 			out.println("<div class=\"col-12 h-100 no-padding\">");
 			out.println("<u class=\"section-header\"> My Courses</u>");
+			if(numClasses == 0) {
+				out.println("<p class=\"schedule-header\">Add classes to begin generating schedules!</p>");
+			}
+			else if(numClasses == 1) {
+				out.println("<p class=\"schedule-header\">You have added " + numClasses + " class.</p>");
+			}
+			else{
+				out.println("<p class=\"schedule-header\">You have added " + numClasses + " classes.</p>");
+			}
 			out.println("</div>");
 			out.println("</div>");
 			// Output the number of friends in each class
@@ -71,7 +82,12 @@ public class UpdateSchedulesOnUI extends HttpServlet {
 		out.println("<div class=\"row h-100 header-row\">");
 		out.println("<div class=\"col-12 h-100 no-padding\">");
 		out.println("<u class=\"section-header\"> My Schedules</u>");
-		out.println("<p class=\"schedule-header\">" + numSchedulesGenerated + " possible schedules fit your requirements.</p>");
+		if(numSchedulesGenerated == 1) {
+			out.println("<p class=\"schedule-header\">" + numSchedulesGenerated + " possible schedule fits your requirements.</p>");
+		}
+		else{
+			out.println("<p class=\"schedule-header\">" + numSchedulesGenerated + " possible schedules fit your requirements.</p>");
+		}
 		out.println("</div>");
 		out.println("</div>");
 		// Output the returned schedules to the UI
