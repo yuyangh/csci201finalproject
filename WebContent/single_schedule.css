@@ -73,6 +73,33 @@
 	padding-top: 7px;
 }
 
+.schedule-number{
+	height: 100%;
+	width: 100%;
+	background-color: #0fb1e3;
+	border: solid #727272 1px;
+	border-radius: 5px 5px 0px 0px;
+	text-align: center;
+	font:15px arial, sans-serif;
+	padding-top: 7px;
+}
+
+.schedule-key{
+	height: 100%;
+	width: 100%;
+	background-color: #55bde3;
+}
+
+.schedule-body{
+	height: 100%;
+	width: 100%;
+	background-color: #8ad7ec;
+	border: solid #727272 1px;
+	text-align: center;
+	font:12px arial, sans-serif;
+	padding-top: 7px;
+}
+
 .header-row{
 	margin-top: 20px;
 	max-height: 15%;
