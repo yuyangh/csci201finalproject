@@ -127,7 +127,7 @@
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
 					    justRemoveClass(group_num, i);
-					    await sleep(70);
+					    await sleep(100);
 					}
 					
 					// remove the group from the display
@@ -160,7 +160,6 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI("friend");
 					}
 				}
 				xhttp.send();
@@ -234,17 +233,25 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("constraints_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI("friend");
-					}
+						if(constraint_num == -1){
+							updateGeneratedSchedulesOnUI("initialize");
+						}
+						else{
+							updateGeneratedSchedulesOnUI("friend");
+						}					}
 				}
 				xhttp.send();
 			}
 			
 			function updateGeneratedSchedulesOnUI(mode){
-				var xhttp2 = new XMLHttpRequest();
+				if(mode != "initialize"){
+					document.getElementById("schedules_table").innerHTML = "<h1 class=\"waiting\">Generating schedules...</h1>";
+				}				var xhttp2 = new XMLHttpRequest();
 				xhttp2.open("GET", "UpdateSchedulesOnUI?mode=" + mode, true);
 				xhttp2.onreadystatechange = function() {
-					document.getElementById("schedules_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("schedules_table").innerHTML = this.responseText;
+					}
 				}
 				xhttp2.send();
 			}
@@ -379,7 +386,7 @@
 						<div class="h-100 d-flex flex-column">
 							<div class="row button-bar">
 								<div class="col-3">
-									<a class="btn btn-primary btn-block fake-button" onclick="RegisterCoursesJS()">
+									<a class="btn btn-primary btn-block fake-button" onclick="RegisterCoursesJS()" href="">
 										Register My Courses <i class="fas fa-lock"></i>
 									</a>
 								</div>

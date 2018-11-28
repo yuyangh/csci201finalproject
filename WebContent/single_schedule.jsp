@@ -21,7 +21,11 @@
 			   	xhttp.send();
 		     }
 		    
-		    function removeGroup(group_num){
+		    function sleep(ms) {
+		    	  return new Promise(resolve => setTimeout(resolve, ms));
+		    }
+		    
+		    async function removeGroup(group_num){
 				if(group_num != -1){
 					//for-loop to remove classes from group one-by-one in reverse order
 					var nodelist = document.getElementsByClassName("row h-100 class-row " + group_num);
@@ -29,6 +33,7 @@
 					var i;
 					for (i = numClassesInGroup - 1; i >= 0; i--) { 
 					    justRemoveClass(group_num, i);
+					    await sleep(100);
 					}
 					
 					// remove the group from the display
@@ -61,7 +66,6 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("classes_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI("single");
 					}
 				}
 				xhttp.send();
@@ -84,7 +88,7 @@
 				xhttp.open("GET", "RemoveInfo?action=class&group_num=" + group_num + "&class_num=" + class_num, true);
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
-						document.getElementById("classes_table").innerHTML = this.responseText;
+						//document.getElementById("classes_table").innerHTML = this.responseText;
 					}
 				}
 				xhttp.send();
@@ -135,17 +139,27 @@
 				xhttp.onreadystatechange = function() {
 					if(this.readyState == 4 && this.status == 200){
 						document.getElementById("constraints_table").innerHTML = this.responseText;
-						updateGeneratedSchedulesOnUI("single");
+						if(constraint_num == -1){
+							updateGeneratedSchedulesOnUI("initialize");
+						}
+						else{
+							updateGeneratedSchedulesOnUI("single");
+						}
 					}
 				}
 				xhttp.send();
 			}
 			
 			function updateGeneratedSchedulesOnUI(mode){
+				if(mode != "initialize"){
+					document.getElementById("schedules_table").innerHTML = "<h1 class=\"waiting\">Generating schedules...</h1>";
+				}
 				var xhttp2 = new XMLHttpRequest();
 				xhttp2.open("GET", "UpdateSchedulesOnUI?mode=" + mode, true);
 				xhttp2.onreadystatechange = function() {
-					document.getElementById("schedules_table").innerHTML = this.responseText;
+					if(this.readyState == 4 && this.status == 200){
+						document.getElementById("schedules_table").innerHTML = this.responseText;
+					}
 				}
 				xhttp2.send();
 			}
