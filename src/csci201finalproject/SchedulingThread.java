@@ -83,7 +83,7 @@ public class SchedulingThread extends Thread {
 			 * If even one aspect (a lec, lab, or quiz) does not comply with constraints, we flag that and break
 			 * out of our loops accordingly */
 			for (Section aSinglePermutation : singleValidPermutation) {
-				if (constraints != null) {
+				if (!constraints.isEmpty()) {
 					for (Constraint singleConstraint : constraints) {
 						if (aSinglePermutation.doesConflict(singleConstraint.getStartTime(), singleConstraint.getEndTime(), singleConstraint.getDays())) {
 							stillValid = false;
@@ -91,6 +91,7 @@ public class SchedulingThread extends Thread {
 						}
 					}
 				}
+				// else part, if constraint is empty or null just do nothing, let outer loop to add those permutations
 				if (!stillValid) {
 					break;
 				}
@@ -560,8 +561,13 @@ public class SchedulingThread extends Thread {
 		/* Code to generate the key to find the set which we are finding the intersection of */
 		String prevClass = "";
 		prevClass = concatPrevClassNames(totalClasses, addClassKey);
+		ArrayList<ArrayList<Section>> setIntersection;
+		if(prevClass==null||prevClass.isEmpty()||prevClass.equals("")){
+			setIntersection = concatTwoPermutations(null, validPermutationUnderContraints);
+		}else{
+			setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validPermutationUnderContraints);
+		}
 
-		ArrayList<ArrayList<Section>> setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validPermutationUnderContraints);
 
 		// even it is null, we need to insert that
 		String newIntersectionKey = prevClass + " " + addClassKey;

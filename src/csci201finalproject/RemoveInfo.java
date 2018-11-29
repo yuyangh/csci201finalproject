@@ -286,7 +286,7 @@ public class RemoveInfo extends HttpServlet {
 	//			}
 				
 				// case for constraint update
-				if(addClassKey.equals("")) {
+				if(addClassKey!=null&&addClassKey.equals("")) {
 					// while not ready
 					while (!schedulingThread.isReady()) {
 						Thread.yield();
