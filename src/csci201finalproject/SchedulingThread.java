@@ -565,8 +565,13 @@ public class SchedulingThread extends Thread {
 		/* Code to generate the key to find the set which we are finding the intersection of */
 		String prevClass = "";
 		prevClass = concatPrevClassNames(totalClasses, addClassKey);
+		ArrayList<ArrayList<Section>> setIntersection;
+		if(prevClass==null||prevClass.isEmpty()||prevClass.equals("")){
+			setIntersection = concatTwoPermutations(null, validPermutationUnderContraints);
+		}else{
+			setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validPermutationUnderContraints);
+		}
 
-		ArrayList<ArrayList<Section>> setIntersection = concatTwoPermutations(schedules.get(prevClass.trim()), validPermutationUnderContraints);
 
 		// even it is null, we need to insert that
 		String newIntersectionKey = prevClass + " " + addClassKey;
