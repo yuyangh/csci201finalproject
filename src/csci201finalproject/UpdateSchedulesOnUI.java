@@ -33,8 +33,8 @@ public class UpdateSchedulesOnUI extends HttpServlet {
     		result = result.substring(0, 5);
     		String am_pm = "AM";
 			int hour = Integer.parseInt(result.substring(0,2));
-			if(hour > 12){
-				hour-=12;
+			if(hour > 11){
+				if(hour != 12) hour-=12;
 				am_pm = "PM";
 			}
 			result = Integer.toString(hour) + ":" + result.substring(3,5) + " " + am_pm;

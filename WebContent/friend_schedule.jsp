@@ -22,7 +22,7 @@
 					var table = document.getElementById("tableFriendsList");
 					var checkUser = false;
 					for (var i = 0, row; row = table.rows[i]; i++) {
-						if (event.data = row.cells[1]) {
+						if (event.data == row.cells[1]) {
 							checkUser = true;
 						}
 					}
@@ -381,19 +381,22 @@
 			   				//TODO: have table display no friends in class
 				   			return;
 			   			}
-			   			
+			   			console.log("size: " + friendsListGlobalVar.data.length);
+			   			console.log("size2: " + length);
 			   			//if users in response match our current friends then add them to the table
 			   			for (var i = 0; i < length; i++) {
+			   				
 		    				var usernameStudent = classEnrollmentList[i].username;
 		    				var userPicURLStudent = classEnrollmentList[i].userPicURL;
 		    				for(var j = 0; j < friendsListGlobalVar.data.length; j++) {
+		    					
 		    					var friendName = friendsListGlobalVar.data[j].name;
 		    					if(friendName == usernameStudent) {
 		    						console.log(friendName + " and " + usernameStudent);
 		    						var table = document.getElementById("tableFriendsList");
 		    				  		var checkUser = false;
 		    						for (var i = 0, row; row = table.rows[i]; i++) {
-		    							if (usernameStudent = row.cells[1]) {
+		    							if (usernameStudent == row.cells[1]) {
 		    								checkUser = true;
 		    							}
 		    						}
