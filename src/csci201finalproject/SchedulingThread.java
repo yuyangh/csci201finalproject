@@ -85,7 +85,7 @@ public class SchedulingThread extends Thread {
 			 * If even one aspect (a lec, lab, or quiz) does not comply with constraints, we flag that and break
 			 * out of our loops accordingly */
 			for (Section aSinglePermutation : singleValidPermutation) {
-				if (constraints != null) {
+				if (!constraints.isEmpty()) {
 					for (Constraint singleConstraint : constraints) {
 						if (aSinglePermutation.doesConflict(singleConstraint.getStartTime(), singleConstraint.getEndTime(), singleConstraint.getDays())) {
 							stillValid = false;
@@ -93,6 +93,7 @@ public class SchedulingThread extends Thread {
 						}
 					}
 				}
+				// else part, if constraint is empty or null just do nothing, let outer loop to add those permutations
 				if (!stillValid) {
 					break;
 				}
@@ -540,7 +541,7 @@ public class SchedulingThread extends Thread {
 		// case for constraint update
 		// in default, we deem generalSchedules always have more elements than schedules
 		if (schedules.containsKey(allClassNames)) {
-			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
+			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(generalSchedules.get(allClassNames), constraints);
 			schedules.put(allClassNames, updatedPermuations);
 			result = schedules.get(allClassNames);
 			ready = true;
