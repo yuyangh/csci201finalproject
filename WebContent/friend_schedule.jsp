@@ -15,34 +15,45 @@
 		
 		<script>
 			var socket;
+			var socket;
 			function connectToServer() {
 				socket = new WebSocket("ws://localhost:8080/csci201finalproject/ws");
 				socket.onmessage = function(event) {
 					var table = document.getElementById("tableFriendsList");
-					var row = table.insertRow(0);
-					var imageCell = row.insertCell(0);
-					var nameCell = row.insertCell(1);
-					var img = document.createElement('img');
-					if (event.data == "James Orme-Rogers") {
-						img.src = "James.jpg";
+					var checkUser = false;
+					for (var i = 0, row; row = table.rows[i]; i++) {
+						if (event.data = row.cells[1]) {
+							checkUser = true;
+						}
 					}
-					if (event.data == "Tristan Elma") {
-						img.src = "Tristan.jpg";
+					if (!checkUser) {
+						var row = table.insertRow(0);
+						var imageCell = row.insertCell(0);
+						var nameCell = row.insertCell(1);
+						var img = document.createElement('img');
+						if (event.data == "James Orme-Rogers") {
+							img.src = "James.jpg";
+						}
+						if (event.data == "Tristan Elma") {
+							img.src = "Tristan.jpg";
+						}
+						if (event.data == "Joel Gutierrez") {
+							img.src = "Joel.jpg";
+						}
+						if (event.data == "Yuyang Huang") {
+							img.src = "Yuyang.jpg";
+						}
+						if (event.data == "Luz Camacho") {
+							img.src = "Luz.jpg";
+						}
+						if (event.data == "Kaushik Tandon") {
+							img.src = "Kaushik.jpg";
+						}
+						img.width = "50";
+						img.height = "50";
+						imageCell.appendChild(img);
+						nameCell.innerHTML = event.data;
 					}
-					if (event.data == "Joel Gutierrez") {
-						img.src = "Joel.jpg";
-					}
-					if (event.data == "Yuyang Huang") {
-						img.src = "Yuyang.jpg";
-					}
-					if (event.data == "Luz Camacho") {
-						img.src = "Luz.jpg";
-					}
-					if (event.data == "Kaushik Tandon") {
-						img.src = "Kaushik.jpg";
-					}
-					imageCell.appendChild(img);
-					nameCell.innerHTML = event.data;
 				}
 			}
 			
@@ -379,14 +390,41 @@
 		    					var friendName = friendsListGlobalVar.data[j].name;
 		    					if(friendName == usernameStudent) {
 		    						console.log(friendName + " and " + usernameStudent);
-		    				  		var table = document.getElementById("tableFriendsList");
-		    						var row = table.insertRow(0);
-		    						var imageCell = row.insertCell(0);
-		    						var nameCell = row.insertCell(1);
-		    						var img = document.createElement('img');
-		    					    img.src = 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=724855971220792&height=50&width=50&ext=1545905095&hash=AeR03A09EVzAE71Q'; 
-		    						imageCell.appendChild(img);
-		    						nameCell.innerHTML = friendName;
+		    						var table = document.getElementById("tableFriendsList");
+		    				  		var checkUser = false;
+		    						for (var i = 0, row; row = table.rows[i]; i++) {
+		    							if (usernameStudent = row.cells[1]) {
+		    								checkUser = true;
+		    							}
+		    						}
+		    						if (!checkUser) {
+		    							var row = table.insertRow(0);
+			    						var imageCell = row.insertCell(0);
+			    						var nameCell = row.insertCell(1);
+			    						var img = document.createElement('img');
+			    						if (friendName == "James Orme-Rogers") {
+			    							img.src = "James.jpg";
+			    						}
+			    						if (friendName == "Tristan Elma") {
+			    							img.src = "Tristan.jpg";
+			    						}
+			    						if (friendName == "Joel Gutierrez") {
+			    							img.src = "Joel.jpg";
+			    						}
+			    						if (friendName == "Yuyang Huang") {
+			    							img.src = "Yuyang.jpg";
+			    						}
+			    						if (friendName == "Luz Camacho") {
+			    							img.src = "Luz.jpg";
+			    						}
+			    						if (friendName == "Kaushik Tandon") {
+			    							img.src = "Kaushik.jpg";
+			    						}
+			    						img.width = "50";
+			    						img.height = "50";
+			    						imageCell.appendChild(img);
+			    						nameCell.innerHTML = friendName;
+		    						}
 		    					}
 		    				} //end of inner for loop
 						} // end of outer for loop
@@ -394,6 +432,8 @@
 			   	} //end of async call
 			   	xhttp.send();		  		
 			} //end of function call
+
+
 		  	
 			function modalClicked(id) {
 				var modal = document.getElementById('myModal');
