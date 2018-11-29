@@ -268,6 +268,9 @@ public class RemoveInfo extends HttpServlet {
 					
 				}
 				
+				
+				
+				
 				// with constructor, it will start to compute
 				SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
 						(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
@@ -282,11 +285,21 @@ public class RemoveInfo extends HttpServlet {
 	//				Thread.yield();
 	//			}
 				
-				while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
-						session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
-		//			schedulingThread.yield();
-					Thread.yield();
+				// case for constraint update
+				if(addClassKey.equals("")) {
+					// while not ready
+					while (!schedulingThread.isReady()) {
+						Thread.yield();
+					}
+				}else {
+					while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
+							session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
+			//			schedulingThread.yield();
+						Thread.yield();
+					}
 				}
+				
+				
 				//System.out.println("isReady"+schedulingThread.isReady());
 				//System.out.println("Result"+schedulingThread.getResult());
 				

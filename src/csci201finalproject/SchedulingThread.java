@@ -536,7 +536,7 @@ public class SchedulingThread extends Thread {
 		// case for constraint update
 		// in default, we deem generalSchedules always have more elements than schedules
 		if (schedules.containsKey(allClassNames)) {
-			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(schedules.get(allClassNames), constraints);
+			ArrayList<ArrayList<Section>> updatedPermuations = getPermutationWithConstraints(generalSchedules.get(allClassNames), constraints);
 			schedules.put(allClassNames, updatedPermuations);
 			result = schedules.get(allClassNames);
 			ready = true;
