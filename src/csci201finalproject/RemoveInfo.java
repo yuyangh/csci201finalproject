@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 
 /*
 Fixing:
@@ -117,51 +118,203 @@ public class RemoveInfo extends HttpServlet {
 		        }
 				else if(request.getParameter("action").equals("class")) {
 		        	// Remove class from 'groups' session variable
-					groups.get(Integer.parseInt(request.getParameter("group_num"))).remove(Integer.parseInt(request.getParameter("class_num")));
+					if(Integer.parseInt(request.getParameter("class_num")) < groups.get(Integer.parseInt(request.getParameter("group_num"))).size()) {
+						groups.get(Integer.parseInt(request.getParameter("group_num"))).remove(Integer.parseInt(request.getParameter("class_num")));
+					}
 		        }
 			}
 			// Re-print UI
-	        for(int i = 0; i < groups.size(); i++) {
-	        	out.println("<div class=\"row h-100 header-row\">");
-	        	out.println("<div class=\"col-4 h-100 group-header\">");
-	        	out.println("Group " + (i+1));
-	        	out.println("</div>");
-	        	out.println("<div class=\"col-4 no-padding\">");
-	        	out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
-	        	out.println("</div>");
-	        	out.println("</div>");
-	        	for(int j = 0; j < groups.get(i).size(); j++) {
-	        		out.println("<div class=\"row h-100 class-row\">");
-	        		out.println("<div class=\"col-4 h-100 class-entry\">");
-	        		out.println(groups.get(i).get(j).get(0));
-	        		out.println("</div>");
-	        		out.println("<div class=\"col-4 h-100 class-entry\">");
-	        		out.println(groups.get(i).get(j).get(1));
-	        		out.println("</div>");
-	        		out.println("<div class=\"col-4 no-padding\">");
-	        		out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
-	        		out.println("</div>");
-	        		out.println("</div>");
-	        	}
-        		out.println("<div class=\"row class-row\">");
-        		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
-        		out.println("</div>");
-        		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
-        		out.println("</div>");
-        		out.println("<div class=\"col-4 no-padding\">");
-        		out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
-        		out.println("</div>");
-        		out.println("</div>");
-	        }
-        	out.println("<div class=\"row group-add-row\">");
-        	out.println("<div class=\"col-4 no-padding\">");
-        	out.println("<button type=\"button\" class=\"btn btn-success button-add-group\" onclick=\"addGroup()\">Add Group</button>");
-        	out.println("</div>");
-        	out.println("<div class=\"col-8 no-padding\">");
-        	out.println("</div>");
-        	out.println("</div>");
+			for (int i = 0; i < groups.size() - 1; i++) {
+				out.println("<div class=\"row h-100 header-row\">");
+				out.println("<div class=\"col-4 h-100 group-header\">");
+				out.println("Group " + (i + 1));
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
+				out.println("</div>");
+				out.println("</div>");
+				for (int j = 0; j < groups.get(i).size(); j++) {
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(0));
+					out.println("</div>");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(1));
+					out.println("</div>");
+					out.println("<div class=\"col-4 no-padding\">");
+					//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+					out.println("</div>");
+					out.println("</div>");
+				}
+				/*
+				out.println("<div class=\"row class-row\">");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
+				out.println("</div>");
+				*/
+				out.println("</div>");
+			}
+			if(groups.size() > 0) {
+				int i = groups.size() - 1;
+				out.println("<div class=\"row h-100 header-row\">");
+				out.println("<div class=\"col-4 h-100 group-header\">");
+				out.println("Group " + (i + 1));
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<button type=\"button\" class=\"btn btn-danger button-remove-group\" onclick=\"removeGroup(" + i + ")\">Remove Group</button>");
+				out.println("</div>");
+				out.println("</div>");
+				for (int j = 0; j < groups.get(i).size() - 1; j++) {
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(0));
+					out.println("</div>");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(1));
+					out.println("</div>");
+					out.println("<div class=\"col-4 no-padding\">");
+					//out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+					out.println("</div>");
+					out.println("</div>");
+				}
+				if(groups.get(i).size() > 0) {
+					int j = groups.get(i).size() - 1;
+					out.println("<div class=\"row h-100 class-row " + i + " \">");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(0));
+					out.println("</div>");
+					out.println("<div class=\"col-4 h-100 class-entry\">");
+					out.println(groups.get(i).get(j).get(1));
+					out.println("</div>");
+					out.println("<div class=\"col-4 no-padding\">");
+					out.println("<button type=\"button\" class=\"btn btn-danger button-remove-class\" onclick=\"removeClass(" + i + "," + j + ")\">Remove Class</button>");
+					out.println("</div>");
+					out.println("</div>");
+				}
+				out.println("<div class=\"row class-row\">");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"department_input" + i + "\" placeholder=\"Department Code\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<input type=\"text\" class=\"class-input\" id=\"number_input" + i + "\" placeholder=\"Course Number\">");
+				out.println("</div>");
+				out.println("<div class=\"col-4 no-padding\">");
+				out.println("<button type=\"button\" class=\"btn btn-success button-add-class\" onclick=\"addClass(" + i + ")\">Add Class</button>");
+				out.println("</div>");
+				out.println("</div>");
+			}
+			out.println("<div class=\"row group-add-row\">");
+			out.println("<div class=\"col-4 no-padding\">");
+			out.println("<button type=\"button\" class=\"btn btn-success button-add-group\" onclick=\"addGroup()\">Add Group</button>");
+			out.println("</div>");
+			out.println("<div class=\"col-8 no-padding\">");
+			out.println("</div>");
+			out.println("</div>");
+		}
+		
+		if(!((request.getParameter("constraint_num") != null && request.getParameter("constraint_num").equals("-1")) || (request.getParameter("group_num") != null && request.getParameter("group_num").equals("-1")))) {
+			
+			// todo start of Tristan's code
+	
+			if (session.getAttribute("schedules") == null) {
+				ConcurrentHashMap<String, ArrayList<ArrayList<Section>>> schedules = new ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>();
+				session.setAttribute("schedules", schedules);
+			}
+			if(session.getAttribute("totalClasses") == null) {
+				ArrayList<AddClass> totalClasses = new ArrayList<AddClass>();
+				session.setAttribute("totalClasses", totalClasses);
+			}
+			if(session.getAttribute("constraintArrayList") == null) {
+				ArrayList<Constraint> constraintArrayList = new ArrayList<Constraint>();
+				session.setAttribute("constraintArrayList", constraintArrayList);
+			}
+			if(session.getAttribute("result") == null) {
+				ArrayList<ArrayList<Section>> result = new ArrayList<ArrayList<Section>>();
+				session.setAttribute("result", result);
+			}
+			
+			String addClassKey = null;
+			
+			if(!request.getParameter("action").equals("group")) {
+				
+				// CASE FOR CONSTRAINT
+				if (request.getParameter("action").equals("constraint") && Integer.parseInt(request.getParameter("constraint_num")) >= 0) {
+					addClassKey = "";
+					ArrayList<Constraint> constraintArrayList = (ArrayList<Constraint>) session.getAttribute("constraintArrayList");
+	
+					if(!constraintArrayList.isEmpty()) {
+						constraintArrayList.remove(constraintArrayList.size()-1);
+					}
+					
+					//SchedulingThread.printPrettyConstraints(constraintArrayList);
+					
+					session.setAttribute("constraintArrayList", constraintArrayList);
+				}
+				
+				// CASE FOR REMOVE CLASSES
+				else if(request.getParameter("action").equals("class")){
+					ArrayList<AddClass> totalClasses = ((ArrayList<AddClass>)session.getAttribute("totalClasses"));
+					totalClasses = SchedulingThread.deleteLastClass(totalClasses);
+					session.setAttribute("totalClasses", totalClasses);
+					System.out.println("totalClasses: "+totalClasses.size());
+					System.out.print("Classes in totalClasses: ");
+					SchedulingThread.printPrettyTotalClasses(totalClasses);
+					
+				}
+				
+				
+				
+				
+				// with constructor, it will start to compute
+				SchedulingThread schedulingThread = new SchedulingThread((ArrayList<AddClass>)session.getAttribute("totalClasses"), (ArrayList<Constraint>)session.getAttribute("constraintArrayList"),
+						(ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>) session.getAttribute("schedules"), addClassKey);
+				System.out.println("Constraints in schedulingThread");
+				SchedulingThread.printPrettyConstraints(schedulingThread.getConstraints());
+				
+				// we may optimize the code below to make it easier to access
+				//System.out.println("total classes before calling thread"+(ArrayList<AddClass>)session.getAttribute("totalClasses"));
+				//System.out.println("Key: " + schedulingThread.getAllClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses")));
+				
+	//			while(!schedulingThread.isReady()) {
+	//				Thread.yield();
+	//			}
+				
+				// case for constraint update
+				if(addClassKey!=null&&addClassKey.equals("")) {
+					// while not ready
+					while (!schedulingThread.isReady()) {
+						Thread.yield();
+					}
+				}else {
+					while (!((ConcurrentHashMap<String, ArrayList<ArrayList<Section>>>)
+							session.getAttribute("schedules")).containsKey(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""))) {
+			//			schedulingThread.yield();
+						Thread.yield();
+					}
+				}
+				
+				
+				//System.out.println("isReady"+schedulingThread.isReady());
+				//System.out.println("Result"+schedulingThread.getResult());
+				
+				
+				// result is stored in the result
+				//System.out.println("Constraint array: " + schedulingThread.getConstraints());
+				//ArrayList<ArrayList<Section>> ourResults = schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), ""));
+				//System.out.println("Result set size: " + ourResults.size());
+				//SchedulingThread.printPrettyPermutations(ourResults);
+				session.setAttribute("result", schedulingThread.getSchedules().get(SchedulingThread.concatPrevClassNames((ArrayList<AddClass>)session.getAttribute("totalClasses"), "")));
+				
+				session.setAttribute("schedules", schedulingThread.getSchedules());
+		
+				// end of Tristan's code
+			}
 		}
 	}
 	public String buildDayString(String monday, String tuesday, String wednesday, String thursday, String friday) {

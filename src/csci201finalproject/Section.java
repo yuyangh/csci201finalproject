@@ -9,14 +9,18 @@ public class Section {
 	private String StartTime;
 	private String EndTime;
 	private ArrayList<Integer> Days;
+	private String dept;
+	private String classCode;
 
-	public Section(String sectionID, String SectionName,String type, String startTime, String endTime, ArrayList<Integer> days) {
+	public Section(String sectionID, String SectionName,String type, String startTime, String endTime, ArrayList<Integer> days, String dept, String classCode) {
 			this.SectionID = sectionID;
 			this.SectionName=SectionName;
 			this.Type = type;
 			this.StartTime = startTime;
 			this.EndTime = endTime;
 			this.Days = days;
+			this.dept = dept;
+			this.classCode = classCode;
 		}
 
 	public Section(String sectionID, String type, String startTime, String endTime, ArrayList<Integer> days) {
@@ -26,6 +30,14 @@ public class Section {
 		this.EndTime = endTime;
 		this.Days = days;
 	}
+	
+	public String getDept() {
+		return this.dept;
+	}
+	
+	public String getClassCode() {
+		return this.classCode;
+	}
 
 	public String getSectionID() {
 		return SectionID;
@@ -33,6 +45,10 @@ public class Section {
 
 	public void setSectionID(String sectionID) {
 		this.SectionID = sectionID;
+	}
+	
+	public String getName() {
+		return SectionName;
 	}
 
 	public String getType() {

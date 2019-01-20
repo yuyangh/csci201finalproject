@@ -12,20 +12,4 @@ public class Student {
 		this.userPicURL = userPicURL;
 		this.userEmail = userEmail;
 	}
-
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setUserPicURL(String userPicURL) {
-		this.userPicURL = userPicURL;
-	}
-
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
-	}
 }

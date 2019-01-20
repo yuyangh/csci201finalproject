@@ -1,12 +1,16 @@
 package csci201finalproject;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
 
 /**
  * Servlet implementation class GetUsersTakingClassServlet
@@ -36,9 +40,19 @@ public class GetUsersTakingClassServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		System.out.println("In get users servlet. ");
+		PrintWriter out = response.getWriter();
 		String classID = request.getParameter("classID");
-		// send classID to database to get results of people taking that class
-		// send a response of it back
+		RetriveUsersInClass retrive = new RetriveUsersInClass(classID);
+		ArrayList<Student> usersInClass = retrive.getUsersInClass();
+		for(int i = 0; i < usersInClass.size(); i++) {
+			Student single = usersInClass.get(i);
+			System.out.println(single.username);
+		}
+		Gson gson = new Gson();
+		String jsonData = gson.toJson(usersInClass);
+		out.println(jsonData);
 	}
 
 }

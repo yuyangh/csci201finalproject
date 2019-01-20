@@ -1,16 +1,18 @@
 package csci201finalproject;
 
-import java.sql.*;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 /**
  * Servlet implementation class AddUniqueUserServlet
@@ -47,6 +49,8 @@ public class AddUniqueUserServlet extends HttpServlet {
 		String userID = request.getParameter("userID");
 		String userName = request.getParameter("userName");
 		String userPicURL = request.getParameter("userPicURL");
+		
+		System.out.println("URL: " + userPicURL);
 
 		Connection conn = null;
 		Statement st = null;
@@ -54,22 +58,21 @@ public class AddUniqueUserServlet extends HttpServlet {
 		ResultSet rs = null;
 
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:mysql://localhost/ScheduleMe?user=root&password=cs201pw&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
+					"jdbc:mysql://localhost/ScheduleMe?user=root&password=root&useSSL=false&AllowPublicKeyRetrieval=True&serverTimezone=PST");
 			ps = conn.prepareStatement("SELECT * FROM Users WHERE facebookID=? AND email=?");
 
 			ps.setString(1, userID); // set first variable in prepared statement
 			ps.setString(2, userEmail);
 			rs = ps.executeQuery();
 			if (!(rs.next())) {
-				ps = conn.prepareStatement("INSERT INTO Users(facebookID,name,email,img,groupCode) VALUES(?,?,?,?,?)");
+				ps = conn.prepareStatement("INSERT INTO Users(facebookID,name,email,img) VALUES(?,?,?,?)");
 
 				ps.setString(1, userID); // set first variable in prepared statement
 				ps.setString(2, userName);
 				ps.setString(3, userEmail);
 				ps.setString(4, userPicURL);
-				ps.setInt(5, -1);
 				ps.executeUpdate();
 			} else {
 				System.out.println("User is already in database.");

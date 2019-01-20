@@ -1,5 +1,12 @@
 @charset "UTF-8";
 
+.title{
+	font-family: 'Euphoria Script';
+	font-size: 30px;
+	font-weight: bold;
+	align: center;
+}
+
 .panel-classes {
 	border: solid #c2c2c2 1px;
 }
@@ -71,6 +78,105 @@
 	text-align: center;
 	font:15px arial, sans-serif;
 	padding-top: 7px;
+}
+
+.schedule-class{
+	height: 100%;
+	width: 100%;
+	background-color: #eeeeee;
+	border: solid #727272 1px;
+	text-align: center;
+	font:15px arial, sans-serif;
+}
+
+.schedule-class-button{
+	width:92%;
+	height:100%;
+	color: white;
+	border-radius: 0px 5px 5px 0px;
+	border: solid #343434 1px;
+	font:15px arial, sans-serif;
+}
+
+.section-header{
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	align: center;
+	float: center;
+	font:20px arial, sans-serif;
+}
+
+.schedule-header{
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	font:17px arial, sans-serif;
+	padding-top: 7px;
+}
+
+.schedule-number{
+	height: 100%;
+	width: 100%;
+	color: white;
+	background-color: #40aabc;
+	border: solid #1b1b1b 1px;
+	border-radius: 5px 5px 0px 0px;
+	text-align: center;
+	font:17px arial, sans-serif;
+	padding-top: 10px;
+}
+
+.schedule-number-row{
+	margin-top: 15px;
+	max-height: 10%;
+	padding-top: 10px;
+}
+
+.schedule-key{
+	height: 100%;
+	width: 100%;
+	color: white;
+	background-color: #40aabc;
+	border: solid #1b1b1b 1px;
+	text-align: center;
+	font:14px arial, sans-serif;
+}
+
+.schedule-key-last{
+	height: 100%;
+	width: 88%;
+	color: white;
+	background-color: #40aabc;
+	border: solid #1b1b1b 1px;
+	text-align: center;
+	font:14px arial, sans-serif;
+}
+
+.schedule-key-row{
+	max-height: 10%;
+}
+
+.schedule-body{
+	height: 100%;
+	width: 100%;
+	background-color: #eeeeee;
+	border: solid #727272 1px;
+	text-align: center;
+	font:14px arial, sans-serif;
+}
+
+.schedule-body-last{
+	height: 100%;
+	width: 88%;
+	background-color: #eeeeee;
+	border: solid #727272 1px;
+	text-align: center;
+	font:14px arial, sans-serif;
+}
+
+.schedule-body-row{
+	max-height: 10%;
 }
 
 .header-row{
